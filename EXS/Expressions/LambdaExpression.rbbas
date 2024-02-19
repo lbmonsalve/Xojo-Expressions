@@ -1,8 +1,40 @@
 #tag Class
 Protected Class LambdaExpression
 Inherits EXS.Expressions.Expression
+	#tag Method, Flags = &h21
+		Private Shared Function ChkReturnExpression(body As Expression) As Expression
+		  Select Case body
+		  Case IsA TypedParameterExpression, IsA ConstantExpression
+		    Return New ReturnExpression(body)
+		  Case IsA FullConditionalExpression
+		    Dim cond As FullConditionalExpression= FullConditionalExpression(body)
+		    cond.IfTrue= ChkReturnExpression(cond.IfTrue)
+		    cond.IfFalse= ChkReturnExpression(cond.IfFalse)
+		  Case IsA UnaryExpression // add oper
+		    Dim unar As UnaryExpression= UnaryExpression(body)
+		    Dim blockExpr As BlockExpression= Expression.Block(unar,_
+		    New ReturnExpression(unar.Operand))
+		    Return blockExpr
+		  Case IsA AssignBinaryExpression
+		    Dim assi As AssignBinaryExpression= AssignBinaryExpression(body)
+		    Dim blockExpr As BlockExpression= Expression.Block(assi,_
+		    New ReturnExpression(assi.Left))
+		    Return blockExpr
+		  Case IsA BlockExpression
+		    Dim block As BlockExpression= BlockExpression(body)
+		    Dim exprs() As Expression= block.Expressions
+		    Dim lastIdx As Integer= exprs.LastIdx
+		    exprs(lastIdx)= ChkReturnExpression(exprs(lastIdx))
+		  End Select
+		  
+		  Return body
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function Compile() As LambdaDelegate
+		  mBody= ChkReturnExpression(mBody)
+		  
 		  mCompiler= New LambdaCompiler(Self)
 		  mCompiler.EmitLambdaBody
 		  

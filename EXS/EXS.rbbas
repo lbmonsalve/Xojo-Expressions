@@ -3,7 +3,7 @@ Protected Module EXS
 	#tag Method, Flags = &h0
 		Function ChkMethodParams(Extends value As Introspection.MethodInfo, left As Introspection.TypeInfo, right As Introspection.TypeInfo) As Boolean
 		  Dim methodParams() As Introspection.ParameterInfo= value.GetParameters
-		  Dim lastIdx As Integer= methodParams.LastIdx
+		  Dim lastIdx As Integer= methodParams.LastIdxEXS
 		  If lastIdx= -1 Then Return False // none param
 		  If lastIdx= 0 Then // one param
 		    If methodParams(0).ParameterType.Name<> right.Name Then Return False
@@ -17,64 +17,18 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Count(Extends values() As Integer) As Integer
-		  Return values.LastIdx+ 1
+		Function CountEXS(Extends values() As Object) As Integer
+		  Return values.LastIdxEXS+ 1
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Count(Extends values() As Introspection.TypeInfo) As Integer
-		  Return values.LastIdx+ 1
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Count(Extends values() As Object) As Integer
-		  Return values.LastIdx+ 1
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Count(Extends values() As String) As Integer
-		  Return values.LastIdx+ 1
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Count(Extends values() As Variant) As Integer
-		  Return values.LastIdx+ 1
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function DefaultValue(Extends value As Introspection.TypeInfo) As Variant
-		  // look for default types:
-		  Dim o1 As New EXS.TypesUtils.DefaultTypes
-		  Dim ti As Introspection.TypeInfo= Introspection.GetType(o1)
-		  Dim propType As Introspection.PropertyInfo= ti.GetPropertyInfo(value.FullName)
-		  If Not (propType Is Nil) Then Return propType.Value(o1)
-		  
-		  // look for register classes
-		  Break
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function EndFile(Extends value As BinaryStream) As Boolean
+		Function EndFileEXS(Extends value As BinaryStream) As Boolean
 		  #if RBVersion< 2019.02
 		    Return value.EOF
 		  #else
 		    Return value.EndOfFile
 		  #endif
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetHashCode(Extends str1 As String) As Integer
-		  If str1.Len= 0 Then Return 0
-		  
-		  Dim key As Variant= str1
-		  Return key.Hash
 		End Function
 	#tag EndMethod
 
@@ -93,7 +47,7 @@ Protected Module EXS
 	#tag Method, Flags = &h0
 		Function GetMethodInfo(Extends value As Introspection.TypeInfo, methodName As String) As Introspection.MethodInfo
 		  Dim methods() As Introspection.MethodInfo= value.GetMethods
-		  For i As Integer= methods.LastIdx To 0 Step -1
+		  For i As Integer= methods.LastIdxEXS To 0 Step -1
 		    Dim method As Introspection.MethodInfo= methods(i)
 		    If method.Name= methodName Then Return method
 		  Next
@@ -106,12 +60,12 @@ Protected Module EXS
 		Function GetMethodToString(Extends value As Introspection.TypeInfo) As Introspection.MethodInfo
 		  // search for method "ToString" returns String and NO params
 		  Dim methods() As Introspection.MethodInfo= value.GetMethods
-		  For i As Integer= methods.LastIdx To 0 Step -1
+		  For i As Integer= methods.LastIdxEXS To 0 Step -1
 		    Dim method As Introspection.MethodInfo= methods(i)
 		    If method.Name.Lowercase = "tostring" And Not (method.ReturnType Is Nil) Then
 		      If method.ReturnType.Name= "String" Then
 		        Dim methodParams() As Introspection.ParameterInfo= method.GetParameters
-		        If methodParams.LastIdx= -1 Then
+		        If methodParams.LastIdxEXS= -1 Then
 		          Return method
 		        End If
 		      End If
@@ -245,12 +199,6 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As Dictionary) As Integer
-		  Return values.Ubound
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function LastIdx(Extends values() As EXS.Expressions.Expression) As Integer
 		  Return values.Ubound
 		End Function
@@ -263,63 +211,45 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As Integer) As Integer
+		Function LastIdxEXS(Extends values() As Integer) As Integer
 		  Return values.Ubound
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As Introspection.ConstructorInfo) As Integer
+		Function LastIdxEXS(Extends values() As Introspection.MethodInfo) As Integer
 		  Return values.Ubound
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As Introspection.MethodInfo) As Integer
+		Function LastIdxEXS(Extends values() As Introspection.ParameterInfo) As Integer
 		  Return values.Ubound
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As Introspection.ParameterInfo) As Integer
+		Function LastIdxEXS(Extends values() As Object) As Integer
 		  Return values.Ubound
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As Introspection.TypeInfo) As Integer
+		Function LastIdxEXS(Extends values() As Pair) As Integer
 		  Return values.Ubound
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As Object) As Integer
-		  Return values.Ubound
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As Pair) As Integer
-		  Return values.Ubound
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As String) As Integer
-		  Return values.Ubound
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As Variant) As Integer
+		Function LastIdxEXS(Extends values() As Variant) As Integer
 		  Return values.Ubound
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function MatchTypeWith(Extends values() As EXS.Expressions.ParameterExpression, varts() As Variant) As Boolean
-		  If values.LastIdx= -1 Or varts.LastIdx= -1 Then Return False
-		  If values.LastIdx<> varts.LastIdx Then Return False
+		  If values.LastIdx= -1 Or varts.LastIdxEXS= -1 Then Return False
+		  If values.LastIdx<> varts.LastIdxEXS Then Return False
 		  
 		  For i As Integer= 0 To values.LastIdx
 		    Dim valueType As Introspection.TypeInfo= values(i).Type
@@ -433,7 +363,7 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToString(Extends values() As Boolean) As String()
+		Function ToStringEXS(Extends values() As Boolean) As String()
 		  Dim ret() As String
 		  
 		  For Each value As Boolean In values
@@ -445,7 +375,7 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToString(Extends values() As Currency) As String()
+		Function ToStringEXS(Extends values() As Currency) As String()
 		  Dim ret() As String
 		  
 		  For Each value As Currency In values
@@ -457,19 +387,7 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToString(Extends values() As Date) As String()
-		  Dim ret() As String
-		  
-		  For Each value As Date In values
-		    ret.Append value.SQLDateTime
-		  Next
-		  
-		  Return ret
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ToString(Extends values() As Double) As String()
+		Function ToStringEXS(Extends values() As Double) As String()
 		  Dim ret() As String
 		  
 		  For Each value As Double In values
@@ -481,7 +399,7 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToString(Extends values() As Int64) As String()
+		Function ToStringEXS(Extends values() As Int64) As String()
 		  Dim ret() As String
 		  
 		  For Each value As Int64 In values
@@ -493,7 +411,7 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToString(Extends values() As Integer) As String()
+		Function ToStringEXS(Extends values() As Integer) As String()
 		  Dim ret() As String
 		  
 		  For Each value As Integer In values
@@ -505,7 +423,7 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToString(Extends values() As Object) As String()
+		Function ToStringEXS(Extends values() As Object) As String()
 		  Dim ret() As String
 		  
 		  For Each value As Object In values
@@ -524,7 +442,7 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToString(Extends values() As Single) As String()
+		Function ToStringEXS(Extends values() As Single) As String()
 		  Dim ret() As String
 		  
 		  For Each value As Single In values
@@ -536,10 +454,10 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToString(Extends values() As Variant) As String()
+		Function ToStringEXS(Extends values() As Variant) As String()
 		  Dim ret() As String
 		  
-		  For i As Integer= 0 To values.LastIdx
+		  For i As Integer= 0 To values.LastIdxEXS
 		    ret.Append values(i).StringValue
 		  Next
 		  
@@ -595,29 +513,29 @@ Protected Module EXS
 		    Select Case value.ArrayElementType
 		    Case 2
 		      Dim values() As Integer= value
-		      ret= values.ToString
+		      ret= values.ToStringEXS
 		    Case 3
 		      Dim values() As Int64= value
-		      ret= values.ToString
+		      ret= values.ToStringEXS
 		    Case 4
 		      Dim values() As Single= value
-		      ret= values.ToString
+		      ret= values.ToStringEXS
 		    Case 5
 		      Dim values() As Double= value
-		      ret= values.ToString
+		      ret= values.ToStringEXS
 		    Case 6
 		      Dim values() As Currency= value
-		      ret= values.ToString
+		      ret= values.ToStringEXS
 		    Case 7
 		      Dim values() As Date= value
-		      ret= values.ToString
+		      ret= values.ToStringEXS
 		    Case 8
 		      ret= value
 		    Case 9 // TODO: not working! maybe validate before
 		      Try
 		        #pragma BreakOnExceptions Off
 		        Dim values() As Variant= value
-		        ret= values.ToString
+		        ret= values.ToStringEXS
 		        #pragma BreakOnExceptions Default
 		      Catch exc As RuntimeException
 		        System.DebugLog CurrentMethodName+ " exc: "+ Introspection.GetType(exc).Name
@@ -625,7 +543,7 @@ Protected Module EXS
 		      End Try
 		    Case 11
 		      Dim values() As Boolean= value
-		      ret= values.ToString
+		      ret= values.ToStringEXS
 		    Case Else
 		      ret.Append kUnsupported
 		    End Select
@@ -659,7 +577,7 @@ Protected Module EXS
 		Function ToTypeInfo(Extends values() As Variant) As Introspection.TypeInfo()
 		  Dim ret() As Introspection.TypeInfo
 		  
-		  For i As Integer= 0 To values.LastIdx
+		  For i As Integer= 0 To values.LastIdxEXS
 		    ret.Append Introspection.TypeInfo(values(i))
 		  Next
 		  

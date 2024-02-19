@@ -924,7 +924,7 @@ Inherits TestGroup
 		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.ArrayIndex)"
 		  
 		  Dim actualArr() As Integer= EXS.Expressions.ConstantExpression(testExpr.Left).Value
-		  Assert.AreEqual 2, actualArr.LastIdx, "AreEqual 2, actualArr.LastIdx"
+		  Assert.AreEqual 2, actualArr.LastIdxEXS, "AreEqual 2, actualArr.LastIdx"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Right).Value
 		  Assert.AreEqual 1, actual.IntegerValue, "AreEqual 1, actual.IntegerValue"

@@ -1,54 +1,6 @@
 #tag Class
 Protected Class LambdaCompiler
 Implements ILambdaCompiler,ILambdaCompilerFriend
-	#tag Method, Flags = &h21
-		Private Shared Sub ChkLambdaBody(lambda As LambdaExpression)
-		  Dim body As Expression= lambda.Body
-		  If body IsA BlockExpression Then
-		    Dim block As BlockExpression= BlockExpression(body)
-		    Dim exprs() As Expression= block.Expressions
-		    body= block.GetLastExpression
-		    Select Case body
-		    Case IsA TypedParameterExpression, IsA ConstantExpression
-		      exprs(exprs.Ubound)= New ReturnExpression(body)
-		    Case IsA FullConditionalExpression
-		      Dim cond As FullConditionalExpression= FullConditionalExpression(body)
-		      If cond.IfFalse IsA ConstantExpression Then _
-		      cond.IfFalse= New ReturnExpression(cond.IfFalse)
-		      If cond.IfTrue IsA ConstantExpression Then _
-		      cond.IfTrue= New ReturnExpression(cond.IfTrue)
-		    Case IsA UnaryExpression // add oper
-		      Dim unar As UnaryExpression= UnaryExpression(body)
-		      Dim blockExpr As BlockExpression= Expression.Block(unar,_
-		      New ReturnExpression(unar.Operand))
-		      exprs(exprs.Ubound)= blockExpr
-		    Case IsA AssignBinaryExpression
-		      Dim assi As AssignBinaryExpression= AssignBinaryExpression(body)
-		      Dim blockExpr As BlockExpression= Expression.Block(assi,_
-		      New ReturnExpression(assi.Left))
-		      exprs(exprs.Ubound)= blockExpr
-		    End Select
-		    Return
-		  End If
-		  
-		  Select Case body
-		  Case IsA TypedParameterExpression, IsA ConstantExpression
-		    lambda.Body= New ReturnExpression(body)
-		  Case IsA FullConditionalExpression
-		    Dim cond As FullConditionalExpression= FullConditionalExpression(body)
-		    If cond.IfFalse IsA ConstantExpression Then _
-		    cond.IfFalse= New ReturnExpression(cond.IfFalse)
-		    If cond.IfTrue IsA ConstantExpression Then _
-		    cond.IfTrue= New ReturnExpression(cond.IfTrue)
-		  Case IsA UnaryExpression // add oper
-		    Dim unar As UnaryExpression= UnaryExpression(body)
-		    Dim blockExpr As BlockExpression= Expression.Block(unar,_
-		    New ReturnExpression(unar.Operand))
-		    lambda.Body= blockExpr
-		  End Select
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub Constructor(file As FolderItem, Optional loading As LoadingAction)
 		  mLoading= loading
@@ -273,9 +225,9 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  // emit opCode argumentsCount
 		  Dim icode As OpCodes
 		  If expr.Obj Is Nil Then icode= OpCodes.Call_ Else icode= OpCodes.CallVirt
-		  EmitCode icode.ToInteger, args.Count
+		  EmitCode icode.ToInteger, args.CountEXS
 		  // emit arguments headerAddress
-		  For i As Integer= 0 To argsHeader.LastIdx
+		  For i As Integer= 0 To argsHeader.LastIdxEXS
 		    Dim pa As Pair= argsHeaderType(i)
 		    EmitHeaderAddress pa.Left.UInt64Value, pa.Right.UInt64Value
 		    pa= argsHeader(i)
@@ -454,7 +406,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If ti Is Nil Then ti= GetTypeInfo(LambdaCompiler)
 		  
 		  Static methods() As Introspection.MethodInfo
-		  If methods.LastIdx= -1 Then
+		  If methods.LastIdxEXS= -1 Then
 		    Dim methodsSelf() As Introspection.MethodInfo= ti.GetMethods
 		    For Each method As Introspection.MethodInfo In methodsSelf
 		      If method.Name.Left(7)= kMethodNameSuffix Then methods.Append method
@@ -478,7 +430,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  
 		  If idx= -1 Then // not found
 		    mObjects.Append key
-		    Return mObjects.LastIdx
+		    Return mObjects.LastIdxEXS
 		  End If
 		  
 		  Return idx
@@ -725,8 +677,6 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  mScopes.Append New Dictionary
 		  
 		  mParametersValues= New Dictionary
-		  
-		  ChkLambdaBody mLambda
 		End Sub
 	#tag EndMethod
 
@@ -736,7 +686,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  Dim tiSelf As Introspection.TypeInfo= Introspection.GetType(Self)
 		  
 		  Static methods() As Introspection.MethodInfo
-		  If methods.LastIdx= -1 Then // once
+		  If methods.LastIdxEXS= -1 Then // once
 		    Dim methodsSelf() As Introspection.MethodInfo= tiSelf.GetMethods
 		    For Each method As Introspection.MethodInfo In methodsSelf
 		      If method.Name= "EmitExpression" Then methods.Append(method)
@@ -767,7 +717,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		Private Function LocalValueGet(name As String) As Variant
 		  Dim ret As Variant
 		  
-		  For i As Integer= mScopes.LastIdx To 0 Step -1
+		  For i As Integer= mScopes.LastIdxEXS To 0 Step -1
 		    Dim scopeVars As Dictionary= mScopes(i)
 		    If scopeVars.HasKey(name) Then Return scopeVars.Value(name)
 		  Next
@@ -778,7 +728,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 
 	#tag Method, Flags = &h21
 		Private Sub LocalValueSet(scope As UInt16, paramName As String, constValue As Variant)
-		  While mScopes.LastIdx< scope
+		  While mScopes.LastIdxEXS< scope
 		    mScopes.Append New Dictionary
 		  Wend
 		  
@@ -900,7 +850,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If mParametersValues.HasKey(leftValueStringValue) Then
 		    localValue= mParametersValues.Value(leftValueStringValue)
 		    localValue= localValue+ GetVariantValue(rightType, rightValue)
-		    If mInstructionsBS.EndFile Then // last instruction
+		    If mInstructionsBS.EndFileEXS Then // last instruction
 		      mRetValue= localValue
 		      Return
 		    End If
@@ -932,7 +882,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If mParametersValues.HasKey(leftValueStringValue) Then
 		    localValue= mParametersValues.Value(leftValueStringValue)
 		    localValue= localValue And GetVariantValue(rightType, rightValue)
-		    If mInstructionsBS.EndFile Then // last instruction
+		    If mInstructionsBS.EndFileEXS Then // last instruction
 		      mRetValue= localValue
 		      Return
 		    End If
@@ -974,7 +924,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		    mRetValue= methodInfo.Invoke(Nil, methodParams)
 		  End If
 		  
-		  If mInstructionsBS.EndFile Then
+		  If mInstructionsBS.EndFileEXS Then
 		    Break // todo:
 		  End If
 		End Sub
@@ -1018,7 +968,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If mParametersValues.HasKey(leftValueStringValue) Then
 		    localValue= mParametersValues.Value(leftValueStringValue)
 		    localValue= localValue/ GetVariantValue(rightType, rightValue)
-		    If mInstructionsBS.EndFile Then // last instruction
+		    If mInstructionsBS.EndFileEXS Then // last instruction
 		      mRetValue= localValue
 		      Return
 		    End If
@@ -1050,7 +1000,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If mParametersValues.HasKey(leftValueStringValue) Then
 		    localValue= mParametersValues.Value(leftValueStringValue)
 		    localValue= localValue XOr GetVariantValue(rightType, rightValue)
-		    If mInstructionsBS.EndFile Then // last instruction
+		    If mInstructionsBS.EndFileEXS Then // last instruction
 		      mRetValue= localValue
 		      Return
 		    End If
@@ -1101,7 +1051,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If mParametersValues.HasKey(leftValueStringValue) Then
 		    localValue= mParametersValues.Value(leftValueStringValue)
 		    localValue= Bitwise.ShiftLeft(localValue.IntegerValue, GetVariantValue(rightType, rightValue).IntegerValue)
-		    If mInstructionsBS.EndFile Then // last instruction
+		    If mInstructionsBS.EndFileEXS Then // last instruction
 		      mRetValue= localValue
 		      Return
 		    End If
@@ -1151,7 +1101,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If mParametersValues.HasKey(leftValueStringValue) Then
 		    localValue= mParametersValues.Value(leftValueStringValue)
 		    localValue= localValue Mod GetVariantValue(rightType, rightValue)
-		    If mInstructionsBS.EndFile Then // last instruction
+		    If mInstructionsBS.EndFileEXS Then // last instruction
 		      mRetValue= localValue
 		      Return
 		    End If
@@ -1183,7 +1133,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If mParametersValues.HasKey(leftValueStringValue) Then
 		    localValue= mParametersValues.Value(leftValueStringValue)
 		    localValue= localValue* GetVariantValue(rightType, rightValue)
-		    If mInstructionsBS.EndFile Then // last instruction
+		    If mInstructionsBS.EndFileEXS Then // last instruction
 		      mRetValue= localValue
 		      Return
 		    End If
@@ -1215,7 +1165,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If mParametersValues.HasKey(leftValueStringValue) Then
 		    localValue= mParametersValues.Value(leftValueStringValue)
 		    localValue= localValue Or GetVariantValue(rightType, rightValue)
-		    If mInstructionsBS.EndFile Then // last instruction
+		    If mInstructionsBS.EndFileEXS Then // last instruction
 		      mRetValue= localValue
 		      Return
 		    End If
@@ -1247,7 +1197,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If mParametersValues.HasKey(leftValueStringValue) Then
 		    localValue= mParametersValues.Value(leftValueStringValue)
 		    localValue= localValue.DoubleValue ^ GetVariantValue(rightType, rightValue).DoubleValue
-		    If mInstructionsBS.EndFile Then // last instruction
+		    If mInstructionsBS.EndFileEXS Then // last instruction
 		      mRetValue= localValue
 		      Return
 		    End If
@@ -1308,7 +1258,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If mParametersValues.HasKey(leftValueStringValue) Then
 		    localValue= mParametersValues.Value(leftValueStringValue)
 		    localValue= Bitwise.ShiftRight(localValue.IntegerValue, GetVariantValue(rightType, rightValue).IntegerValue)
-		    If mInstructionsBS.EndFile Then // last instruction
+		    If mInstructionsBS.EndFileEXS Then // last instruction
 		      mRetValue= localValue
 		      Return
 		    End If
@@ -1338,7 +1288,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  size= ReadVIntValue
 		  Dim paramName As String= mHeaderMB.StringValue(pos, size)
 		  
-		  If mInstructionsBS.EndFile Then
+		  If mInstructionsBS.EndFileEXS Then
 		    Break // TODO:
 		  End If
 		  
@@ -1366,7 +1316,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  size= ReadVIntValue
 		  Dim leftName As String= mHeaderMB.StringValue(pos, size)
 		  
-		  If mInstructionsBS.EndFile Then
+		  If mInstructionsBS.EndFileEXS Then
 		    Break // todo:
 		  End If
 		  
@@ -1397,7 +1347,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  If mParametersValues.HasKey(leftValueStringValue) Then
 		    localValue= mParametersValues.Value(leftValueStringValue)
 		    localValue= localValue- GetVariantValue(rightType, rightValue)
-		    If mInstructionsBS.EndFile Then // last instruction
+		    If mInstructionsBS.EndFileEXS Then // last instruction
 		      mRetValue= localValue
 		      Return
 		    End If
@@ -1438,7 +1388,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  ParametersChk values
 		  
 		  mInstructionsBS.Position= 0
-		  While Not mInstructionsBS.EndFile // read instructions
+		  While Not mInstructionsBS.EndFileEXS // read instructions
 		    Dim method As Introspection.MethodInfo= GetMethod(mInstructionsBS.ReadUInt8)
 		    method.Invoke Self
 		  Wend

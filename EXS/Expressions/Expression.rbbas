@@ -75,7 +75,7 @@ Protected Class Expression
 		  Dim typeArguments() As Introspection.TypeInfo
 		  Dim arguments() As Expression
 		  
-		  For i As Integer= 0 To params.LastIdx
+		  For i As Integer= 0 To params.LastIdxEXS
 		    Dim item As Pair= params(i)
 		    If item.Left.Type= 8 Then // string:
 		      typeArguments.Append EXS.GetType(item.Left.StringValue)
