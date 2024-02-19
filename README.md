@@ -1,2 +1,4 @@
 # Xojo-Expressions
-Implementation of lambda expression
+Implementation of MS lambda expression.  
+
+code expressions to be represented as objects in the form of expression trees.  
