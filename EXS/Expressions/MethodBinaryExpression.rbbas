@@ -1,6 +1,12 @@
 #tag Class
 Protected Class MethodBinaryExpression
 Inherits EXS.Expressions.SimpleBinaryExpression
+	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitMethodBinary(Self)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Sub Constructor(nodeType As ExpressionType, left As Expression, right As Expression, retType As Introspection.TypeInfo, method As Introspection.MethodInfo)
 		  // Calling the overridden superclass constructor.
@@ -14,6 +20,20 @@ Inherits EXS.Expressions.SimpleBinaryExpression
 		  mMethod= method
 		End Sub
 	#tag EndMethod
+
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mMethod
+			End Get
+		#tag EndGetter
+		Method As Introspection.MethodInfo
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h1
+		Protected mMethod As Introspection.MethodInfo
+	#tag EndProperty
 
 
 	#tag ViewBehavior

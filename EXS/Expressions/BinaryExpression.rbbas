@@ -1,8 +1,8 @@
 #tag Class
 Protected Class BinaryExpression
 Inherits EXS.Expressions.Expression
-	#tag Method, Flags = &h1000
-		Sub Constructor(left As Expression, right As Expression)
+	#tag Method, Flags = &h1001
+		Protected Sub Constructor(left As Expression, right As Expression)
 		  // Calling the overridden superclass constructor.
 		  Super.Constructor
 		  
@@ -33,21 +33,8 @@ Inherits EXS.Expressions.Expression
 		Left As Expression
 	#tag EndComputedProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mMethod
-			End Get
-		#tag EndGetter
-		Method As Introspection.MethodInfo
-	#tag EndComputedProperty
-
 	#tag Property, Flags = &h21
 		Private mLeft As Expression
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected mMethod As Introspection.MethodInfo
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

@@ -2,8 +2,64 @@
 Protected Class Resolver
 Implements EXS.Expressions.IVisitor
 	#tag Method, Flags = &h0
+		Sub Constructor(ParamArray paramValues As Variant)
+		  mParamValues= paramValues
+		  mEnv= New Env
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub DefineParams(paramsExpr() As EXS.Expressions.ParameterExpression)
+		   If Not paramsExpr.MatchTypeWith(mParamValues) Then Break
+		  
+		  For i As Integer= 0 To paramsExpr.LastIdx
+		    Dim paramExpr As EXS.Expressions.ParameterExpression= paramsExpr(i)
+		    mEnv.Define paramExpr.Name, mParamValues(i)
+		  Next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Resolve(expr As EXS.Expressions.Expression) As Variant
 		  Return expr.Accept(Self)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function ResolveBlock(expressions() As EXS.Expressions.Expression, newEnv As Env) As Variant
+		  Dim mRetValue As Variant
+		  Dim previous As Env= mEnv
+		  
+		  Try
+		    #pragma BreakOnExceptions Off
+		    mEnv= newEnv
+		    
+		    For i As Integer= 0 To expressions.LastIdx
+		      mRetValue= Resolve(expressions(i))
+		    Next
+		    #pragma BreakOnExceptions Default
+		  Finally
+		    mEnv= previous
+		  End Try
+		  
+		  Return mRetValue
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitAssign(expr As EXS.Expressions.AssignBinaryExpression) As Variant
+		  Dim name As String= EXS.Expressions.ParameterExpression(expr.Left).Name
+		  Dim value As Variant= Resolve(expr.Right)
+		  
+		  mEnv.Assign name, value
+		  
+		  Return value
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitBlock(expr As EXS.Expressions.BlockExpression) As Variant
+		  Return ResolveBlock(expr.Expressions, New Env(mEnv))
 		End Function
 	#tag EndMethod
 
@@ -24,29 +80,129 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
+		Function VisitLambda(expr As EXS.Expressions.LambdaExpression) As Variant
+		  DefineParams expr.Parameters
+		  
+		  Return Resolve(expr.Body)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitMethodBinary(expr As EXS.Expressions.MethodBinaryExpression) As Variant
 		  Dim left As Variant= Resolve(expr.Left)
 		  Dim right As Variant= Resolve(expr.Right)
-		  Dim result As Variant
 		  
-		  Select Case expr.NodeType
-		  Case EXS.ExpressionType.Add
-		    result= left+ right
-		    
-		  Case EXS.ExpressionType.Subtract
-		    result= left- right
-		    
-		  Case EXS.ExpressionType.Multiply
-		    result= left* right
-		    
-		  Case EXS.ExpressionType.Divide
-		    result= left/ right
-		    
-		  End Select
+		  Dim params() As Variant
+		  params.Append right
+		  
+		  Dim result As Variant= expr.Method.Invoke(left, params)
 		  
 		  Return result
 		End Function
 	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitMethodCall(expr As EXS.Expressions.MethodCallExpression) As Variant
+		  Dim methodParams() As Variant
+		  Dim args() As EXS.Expressions.Expression= expr.Arguments
+		  
+		  For i As Integer= 0 To args.LastIdx
+		    Dim arg As Variant= Resolve(args(i))
+		    methodParams.Append arg
+		  Next
+		  
+		  Dim methodInfo As Introspection.MethodInfo= expr.Method
+		  Dim mRetValue As Variant
+		  
+		  If methodInfo.ReturnType Is Nil Then
+		    methodInfo.Invoke Nil, methodParams
+		  Else
+		    mRetValue= methodInfo.Invoke(Nil, methodParams)
+		  End If
+		  
+		  Return mRetValue
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
+		  Dim left As Variant= Resolve(expr.Left)
+		  Dim right As Variant= Resolve(expr.Right)
+		  
+		  Select Case expr.NodeType
+		  Case EXS.ExpressionType.And_
+		    Return left And right
+		    
+		  Case EXS.ExpressionType.Or_
+		    Return left Or right
+		    
+		  Case EXS.ExpressionType.ExclusiveOr
+		    Return left XOr right
+		    
+		  Case EXS.ExpressionType.LeftShift
+		    Return Bitwise.ShiftLeft(left, right)
+		    
+		  Case EXS.ExpressionType.RightShift
+		    Return Bitwise.ShiftRight(left, right)
+		    
+		  Case EXS.ExpressionType.GreaterThan
+		    Return left> right
+		    
+		  Case EXS.ExpressionType.GreaterThanOrEqual
+		    Return left>= right
+		    
+		  Case EXS.ExpressionType.LessThan
+		    Return left< right
+		    
+		  Case EXS.ExpressionType.LessThanOrEqual
+		    Return left<= right
+		    
+		  Case EXS.ExpressionType.NotEqual
+		    Return left<> right
+		    
+		  Case EXS.ExpressionType.Equal
+		    Return left.Equals(right)
+		    
+		  Case EXS.ExpressionType.Add
+		    Return left+ right
+		    
+		  Case EXS.ExpressionType.Subtract
+		    Return left- right
+		    
+		  Case EXS.ExpressionType.Multiply
+		    Return left* right
+		    
+		  Case EXS.ExpressionType.Divide
+		    Return left/ right
+		    
+		  End Select
+		  
+		  Return Nil
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitTypedParameter(expr As EXS.Expressions.TypedParameterExpression) As Variant
+		  Return mEnv.Get(expr.Name)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitUnary(expr As EXS.Expressions.UnaryExpression) As Variant
+		  Dim from As Variant= Resolve(expr.Operand)
+		  
+		  Return Convert(from, expr.Type.Name)
+		End Function
+	#tag EndMethod
+
+
+	#tag Property, Flags = &h21
+		Private mEnv As Env
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mParamValues() As Variant
+	#tag EndProperty
 
 
 	#tag ViewBehavior

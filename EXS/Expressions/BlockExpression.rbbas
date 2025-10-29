@@ -1,6 +1,12 @@
 #tag Class
 Protected Class BlockExpression
 Inherits EXS.Expressions.Expression
+	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitBlock(Self)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Sub Constructor(expressions() As Expression)
 		  // Calling the overridden superclass constructor.
@@ -17,6 +23,14 @@ Inherits EXS.Expressions.Expression
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1000
+		Sub Constructor(variables() As ParameterExpression, expressions() As Expression)
+		  Constructor expressions
+		  
+		  mVariables= variables
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function Expressions() As Expression()
 		  Return mExpressions
@@ -26,10 +40,14 @@ Inherits EXS.Expressions.Expression
 	#tag Method, Flags = &h0
 		Function ToString() As String
 		  Dim bs As New BinaryStream(New MemoryBlock(0))
+		  
+		  bs.Write "{"
 		  For i As Integer= 0 To mExpressions.LastIdx
 		    bs.Write mExpressions(i).ToString
 		    If i< mExpressions.LastIdx Then bs.Write EndOfLine
 		  Next
+		  bs.Write "}"
+		  
 		  bs.Position= 0
 		  
 		  Return bs.Read(bs.Length, Encodings.UTF8)

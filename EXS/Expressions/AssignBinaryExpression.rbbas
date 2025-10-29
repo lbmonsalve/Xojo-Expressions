@@ -1,8 +1,14 @@
 #tag Class
 Protected Class AssignBinaryExpression
 Inherits EXS.Expressions.BinaryExpression
+	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitAssign(Self)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
-		Sub Constructor(left As Expression, right As Expression)
+		Sub Constructor(left As ParameterExpression, right As Expression)
 		  // Calling the overridden superclass constructor.
 		  // Note that this may need modifications if there are multiple constructor choices.
 		  // Possible constructor calls:

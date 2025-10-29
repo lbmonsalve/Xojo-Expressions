@@ -1,6 +1,12 @@
 #tag Class
 Protected Class TypedParameterExpression
 Inherits EXS.Expressions.ParameterExpression
+	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitTypedParameter(Self)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Sub Constructor(typeParam As Introspection.TypeInfo, name As String)
 		  // Calling the overridden superclass constructor.

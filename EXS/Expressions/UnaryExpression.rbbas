@@ -1,6 +1,12 @@
 #tag Class
 Protected Class UnaryExpression
 Inherits EXS.Expressions.Expression
+	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitUnary(Self)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Sub Constructor(nodeType As ExpressionType, operand As Expression, typeTo As Introspection.TypeInfo, method As Introspection.MethodInfo)
 		  // Calling the overridden superclass constructor.

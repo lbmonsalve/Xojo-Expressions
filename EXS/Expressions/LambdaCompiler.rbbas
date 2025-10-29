@@ -52,31 +52,6 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function Convert(from As Variant, toType As String) As Variant
-		  Select Case toType
-		  Case "String"
-		    Return from.StringValue
-		  Case "Integer"
-		    Return from.IntegerValue
-		  Case "Int32"
-		    Return from.Int32Value
-		  Case "Int64"
-		    Return from.Int64Value
-		  Case "UInt32"
-		    Return from.UInt32Value
-		  Case "UInt64"
-		    Return from.UInt64Value
-		  Case "Double"
-		    Return from.DoubleValue
-		  Case "Boolean"
-		    Return from.BooleanValue
-		  Case Else
-		    Break
-		  End Select
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Function DefineLabel() As LabelMark
 		  mLabelCounter= mLabelCounter+ 1
 		  

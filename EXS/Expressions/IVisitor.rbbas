@@ -1,6 +1,18 @@
 #tag Interface
 Protected Interface IVisitor
 	#tag Method, Flags = &h0
+		Function VisitAssign(expr As EXS.Expressions.AssignBinaryExpression) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitBlock(expr As EXS.Expressions.BlockExpression) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function VisitConstant(expr As EXS.Expressions.ConstantExpression) As Variant
 		  
 		End Function
@@ -13,7 +25,37 @@ Protected Interface IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function VisitLambda(expr As EXS.Expressions.LambdaExpression) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitMethodBinary(expr As EXS.Expressions.MethodBinaryExpression) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitMethodCall(expr As EXS.Expressions.MethodCallExpression) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitTypedParameter(expr As EXS.Expressions.TypedParameterExpression) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitUnary(expr As EXS.Expressions.UnaryExpression) As Variant
 		  
 		End Function
 	#tag EndMethod

@@ -13,20 +13,26 @@ Protected Class System
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function EnvironmentVariable(name As String) As String
-		  Return System.EnvironmentVariable(name)
+		 Shared Function ElapsedMicroseconds() As Double
+		  Return Microseconds
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub EnvironmentVariable(name As String, Assigns value As String)
-		  System.EnvironmentVariable(name)= value
-		End Sub
+		 Shared Function ElapsedTicks() As Integer
+		  Return Ticks
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		 Shared Function FontAt(index As Integer) As String
 		  Return Font(index)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function GetEnvironment(name As String) As String
+		  Return System.EnvironmentVariable(name)
 		End Function
 	#tag EndMethod
 
@@ -43,21 +49,9 @@ Protected Class System
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub Log(level As EXS.System.LogLevel, msg As String)
-		  Log CType(level, Integer), msg
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		 Shared Sub Log(level As Integer, msg As String)
 		  System.Log level, msg
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function Microseconds() As Double
-		  Return Microseconds
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -76,9 +70,9 @@ Protected Class System
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Ticks() As Integer
-		  Return Ticks
-		End Function
+		 Shared Sub SetEnvironment(name As String, Assigns value As String)
+		  System.EnvironmentVariable(name)= value
+		End Sub
 	#tag EndMethod
 
 
@@ -154,19 +148,6 @@ Protected Class System
 		#tag EndGetter
 		Shared NetworkInterfaceCount As Integer
 	#tag EndComputedProperty
-
-
-	#tag Enum, Name = LogLevel, Type = Integer, Flags = &h0
-		Emergency= 1000
-		  Alert
-		  Critical
-		  Error
-		  Warning
-		  Notice
-		  Information
-		  Debug
-		Success
-	#tag EndEnum
 
 
 	#tag ViewBehavior

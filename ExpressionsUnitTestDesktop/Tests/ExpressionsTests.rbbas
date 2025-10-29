@@ -26,7 +26,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(addExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(addExpr.Right).Value Is o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(addExpr.Right).Value Is o2)"
-		  Assert.IsTrue (addExpr.Method Is methodAdd), "IsTrue (addExpr.Method Is methodAdd)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(addExpr)
+		  Assert.IsTrue (testExprT.Method Is methodAdd), "IsTrue (testExprT.Method Is methodAdd)"
 		  Assert.AreSame "10 + 20", addExpr.ToString, "AreSame ""10 + 20"", addExpr.ToString"
 		  
 		  Dim params() As Variant
@@ -93,7 +95,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2)"
-		  Assert.IsTrue (testExpr.Method Is method), "IsTrue (testExpr.Method Is method)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(testExpr)
+		  Assert.IsTrue (testExprT.Method Is method), "IsTrue (testExprT.Method Is method)"
 		  Assert.AreSame "True & False", testExpr.ToString, "AreSame ""True & False"", testExpr.ToString"
 		  
 		  Dim params() As Variant
@@ -212,7 +216,7 @@ Inherits TestGroup
 		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
 		  expr.Add(expr.Constant(4), expr.Constant(2)), _
 		  expr.Constant(42))
-		  Dim str1 As String= "4 + 2"+ EndOfLine.UNIX+ "42"
+		  Dim str1 As String= "{4 + 2"+ EndOfLine.UNIX+ "42}"
 		  Dim str2 As String= ReplaceLineEndings(blockExpr.ToString, EndOfLine.UNIX)
 		  Assert.AreSame str1, str2, "AreSame str1, str2"
 		  
@@ -228,8 +232,8 @@ Inherits TestGroup
 		  Dim exprs() As EXS.Expressions.Expression= blockExpr.Expressions
 		  Assert.AreEqual 2, exprs.LastIdx, "AreEqual 2, exprs.LastIdx"
 		  
-		  str1= "System.DebugLog(""hello"")"+ EndOfLine.Unix+ "System.DebugLog(""World!"")"+ _
-		  EndOfLine.Unix+ "42"
+		  str1= "{System.DebugLog(""hello"")"+ EndOfLine.Unix+ "System.DebugLog(""World!"")"+ _
+		  EndOfLine.Unix+ "42}"
 		  str2= ReplaceLineEndings(blockExpr.ToString, EndOfLine.UNIX)
 		  Assert.AreSame str1, str2, "AreSame str1, str2"
 		End Sub
@@ -372,7 +376,7 @@ Inherits TestGroup
 		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
 		  expr.Constant(42))
 		  Dim str1 As String= blockExpr.ToString
-		  Assert.AreSame "42", str1, "AreSame ""42"", str1"
+		  Assert.AreSame "{42}", str1, "AreSame ""{42}"", str1"
 		  
 		  Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
 		  Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
@@ -421,7 +425,7 @@ Inherits TestGroup
 		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
 		  expr.Convert(expr.Constant(10), EXS.GetType("String")))
 		  Dim str1 As String= blockExpr.ToString
-		  Assert.AreSame "(10 -> String)", str1, "AreSame ""(10 -> String)"", str1"
+		  Assert.AreSame "{(10 -> String)}", str1, "AreSame ""{(10 -> String)}"", str1"
 		  
 		  Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
 		  'Assert.AreEqual Variant.TypeString, result.Type, "AreEqual Variant.TypeString, result.Type"
@@ -454,7 +458,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2)"
-		  Assert.IsTrue (testExpr.Method Is method), "IsTrue (testExpr.Method Is method)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(testExpr)
+		  Assert.IsTrue (testExprT.Method Is method), "IsTrue (testExprT.Method Is method)"
 		  Assert.AreSame "10 / 2", testExpr.ToString, "AreSame ""10 / 2"", testExpr.ToString"
 		  
 		  Dim params() As Variant
@@ -522,7 +528,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value= o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value= o2)"
-		  Assert.IsTrue (testExpr.Method Is method), "IsTrue (testExpr.Method Is method)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(testExpr)
+		  Assert.IsTrue (testExprT.Method Is method), "IsTrue (testExprT.Method Is method)"
 		  Assert.AreSame "15 << 2", testExpr.ToString, "AreSame ""15 << 2"", testExpr.ToString"
 		  
 		  Dim params() As Variant
@@ -579,7 +587,7 @@ Inherits TestGroup
 		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
 		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!")), _
 		  expr.Constant(42))
-		  Dim str1 As String= "System.DebugLog(""hello world!"")"+ EndOfLine.UNIX+ "42"
+		  Dim str1 As String= "{System.DebugLog(""hello world!"")"+ EndOfLine.UNIX+ "42}"
 		  Dim str2 As String= ReplaceLineEndings(blockExpr.ToString, EndOfLine.UNIX)
 		  Assert.AreSame str1, str2, "AreSame str1, str2"
 		  
@@ -613,7 +621,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2)"
-		  Assert.IsTrue (testExpr.Method Is method), "IsTrue (testExpr.Method Is method)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(testExpr)
+		  Assert.IsTrue (testExprT.Method Is method), "IsTrue (testExprT.Method Is method)"
 		  Assert.AreSame "100 % 15", testExpr.ToString, "AreSame ""100 % 15"", testExpr.ToString"
 		  
 		  Dim params() As Variant
@@ -667,7 +677,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2)"
-		  Assert.IsTrue (testExpr.Method Is method), "IsTrue (testExpr.Method Is method)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(testExpr)
+		  Assert.IsTrue (testExprT.Method Is method), "IsTrue (testExprT.Method Is method)"
 		  Assert.AreSame "10 * 20", testExpr.ToString, "AreSame ""10 * 20"", testExpr.ToString"
 		  
 		  Dim params() As Variant
@@ -721,7 +733,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2)"
-		  Assert.IsTrue (testExpr.Method Is method), "IsTrue (testExpr.Method Is method)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(testExpr)
+		  Assert.IsTrue (testExprT.Method Is method), "IsTrue (testExprT.Method Is method)"
 		  Assert.AreSame "True | False", testExpr.ToString, "AreSame ""True | False"", testExpr.ToString"
 		  
 		  Dim params() As Variant
@@ -826,7 +840,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2)"
-		  Assert.IsTrue (testExpr.Method Is method), "IsTrue (testExpr.Method Is method)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(testExpr)
+		  Assert.IsTrue (testExprT.Method Is method), "IsTrue (testExprT.Method Is method)"
 		  Assert.AreSame "10 ^ 3", testExpr.ToString, "AreSame ""10 ^ 3"", testExpr.ToString"
 		  
 		  Dim params() As Variant
@@ -880,7 +896,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value= o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value= o2)"
-		  Assert.IsTrue (testExpr.Method Is method), "IsTrue (testExpr.Method Is method)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(testExpr)
+		  Assert.IsTrue (testExprT.Method Is method), "IsTrue (testExprT.Method Is method)"
 		  Assert.AreSame "31 >> 2", testExpr.ToString, "AreSame ""31 >> 2"", testExpr.ToString"
 		  
 		  Dim params() As Variant
@@ -941,7 +959,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value= o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value= o2)"
-		  Assert.IsTrue (testExpr.Method Is method), "IsTrue (testExpr.Method Is method)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(testExpr)
+		  Assert.IsTrue (testExprT.Method Is method), "IsTrue (testExprT.Method Is method)"
 		  Assert.AreSame "10(2)", testExpr.ToString, "AreSame ""10(2)"", testExpr.ToString"
 		  
 		  Dim params() As Variant
@@ -977,7 +997,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2)"
-		  Assert.IsTrue (testExpr.Method Is method), "IsTrue (testExpr.Method Is method)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(testExpr)
+		  Assert.IsTrue (testExprT.Method Is method), "IsTrue (testExprT.Method Is method)"
 		  Assert.AreSame "10 - 20", testExpr.ToString, "AreSame ""10 - 20"", testExpr.ToString"
 		  
 		  Dim params() As Variant
@@ -1031,7 +1053,9 @@ Inherits TestGroup
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Left).Value Is o1)"
 		  Assert.IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2), _
 		  "IsTrue (EXS.Expressions.ConstantExpression(testExpr.Right).Value Is o2)"
-		  Assert.IsTrue (testExpr.Method Is method), "IsTrue (testExpr.Method Is method)"
+		  
+		  Dim testExprT As EXS.Expressions.MethodBinaryExpression= EXS.Expressions.MethodBinaryExpression(testExpr)
+		  Assert.IsTrue (testExprT.Method Is method), "IsTrue (testExprT.Method Is method)"
 		  Assert.AreSame "87 ¿ 107", testExpr.ToString, "AreSame ""87 ¿ 107"", testExpr.ToString"
 		  
 		  Dim params() As Variant

@@ -1,55 +1,61 @@
 #tag Class
-Protected Class TempExpression
-Inherits EXS.Expressions.Expression
-	#tag Method, Flags = &h1000
-		Sub Constructor(retType As Introspection.TypeInfo)
-		  // Calling the overridden superclass constructor.
-		  Super.Constructor
+Protected Class Env
+	#tag Method, Flags = &h0
+		Sub Assign(name As String, value As Variant)
+		  If mLocals.HasKey(name) Then
+		    mLocals.Value(name)= value
+		    Return
+		  End If
 		  
-		  mType= retType
+		  If Not (mEnclosing Is Nil) Then
+		    mEnclosing.Assign name, value
+		    Return
+		  End If
 		  
-		  mCounter= mCounter+ 1
-		  mId= mCounter
+		  Raise GetRuntimeExc("undefined variable """+ name+ """")
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub ResetCounter()
-		  mCounter= 0
+		Sub Constructor()
+		  mLocals= New Dictionary
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToString() As String
-		  Return "T"+ Str(Id)
+		Sub Constructor(enclosing As Env)
+		  Constructor
+		  
+		  mEnclosing= enclosing
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Define(name As String, value As Variant)
+		  mLocals.Value(name)= value
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Get(name As String) As Variant
+		  If mLocals.HasKey(name) Then Return mLocals.Value(name)
+		  If Not (mEnclosing Is Nil) Then Return mEnclosing.Get(name)
+		  
+		  Raise GetRuntimeExc("undefined variable """+ name+ """")
 		End Function
 	#tag EndMethod
 
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mId
-			End Get
-		#tag EndGetter
-		Id As Integer
-	#tag EndComputedProperty
-
 	#tag Property, Flags = &h21
-		Private Shared mCounter As Integer
+		Private mEnclosing As Env
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mId As Integer
+		Private mLocals As Dictionary
 	#tag EndProperty
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="Id"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true

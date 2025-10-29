@@ -10,7 +10,7 @@ Implements EXS.Expressions.IVisitor
 		  
 		  For Each expr As EXS.Expressions.Expression In exprs
 		    sb.Append ","
-		    sb.Append expr.Accept(Self)
+		    sb.Append expr.Accept(Self) // Print(expr)
 		  Next
 		  
 		  sb.Append ")"
@@ -22,6 +22,28 @@ Implements EXS.Expressions.IVisitor
 	#tag Method, Flags = &h0
 		Function Print(expr As EXS.Expressions.Expression) As String
 		  Return expr.Accept(Self)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitAssign(expr As EXS.Expressions.AssignBinaryExpression) As Variant
+		  Return Parenthesize(expr.NodeType.ToStringSymbol, expr.Left, expr.Right)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitBlock(expr As EXS.Expressions.BlockExpression) As Variant
+		  Dim expressions() As EXS.Expressions.Expression= expr.Expressions
+		  Dim sb() As String
+		  
+		  sb.Append "{"
+		  For i As Integer= 0 To expressions.LastIdx
+		    sb.Append Print(expressions(i))
+		    If i< expressions.LastIdx Then sb.Append "; "
+		  Next
+		  sb.Append "}"
+		  
+		  Return Join(sb, "")
 		End Function
 	#tag EndMethod
 
@@ -42,8 +64,50 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function VisitLambda(expr As EXS.Expressions.LambdaExpression) As Variant
+		  Dim params() As EXS.Expressions.ParameterExpression= expr.Parameters
+		  Dim sb() As String
+		  
+		  sb.Append "("
+		  For i As Integer= 0 To params.LastIdx
+		    sb.Append params(i).ToString
+		    If i< params.LastIdx Then sb.Append ", "
+		  Next
+		  sb.Append ") => "
+		  
+		  sb.Append Print(expr.Body)
+		  
+		  Return Join(sb, "")
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitMethodBinary(expr As EXS.Expressions.MethodBinaryExpression) As Variant
+		  Return Parenthesize(expr.Method.Name, expr.Left, expr.Right)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitMethodCall(expr As EXS.Expressions.MethodCallExpression) As Variant
+		  Return expr.ToString
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
 		  Return Parenthesize(expr.NodeType.ToStringSymbol, expr.Left, expr.Right)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitTypedParameter(expr As EXS.Expressions.TypedParameterExpression) As Variant
+		  Return expr.ToString
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitUnary(expr As EXS.Expressions.UnaryExpression) As Variant
+		  Return expr.ToString
 		End Function
 	#tag EndMethod
 

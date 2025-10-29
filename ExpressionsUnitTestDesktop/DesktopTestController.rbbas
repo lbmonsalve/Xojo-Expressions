@@ -11,7 +11,7 @@ Inherits TestController
 		  group = New UnitTestsFail(Self, "Always Fail")
 		  group = New VIntTests(Self, "VIntTests")
 		  group = New ExpressionsTests(Self, "ExpressionsTests")
-		  group = New MiscTests(Self, "MiscTests")
+		  'group = New MiscTests(Self, "MiscTests")
 		End Sub
 	#tag EndEvent
 

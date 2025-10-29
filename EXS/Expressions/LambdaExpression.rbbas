@@ -1,6 +1,12 @@
 #tag Class
 Protected Class LambdaExpression
 Inherits EXS.Expressions.Expression
+	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitLambda(Self)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Shared Function ChkReturnExpression(body As Expression) As Expression
 		  Select Case body
@@ -38,7 +44,7 @@ Inherits EXS.Expressions.Expression
 		  mCompiler= New LambdaCompiler(Self)
 		  mCompiler.EmitLambdaBody
 		  
-		  Return WeakAddressOf Run // return:
+		  Return WeakAddressOf Run
 		End Function
 	#tag EndMethod
 

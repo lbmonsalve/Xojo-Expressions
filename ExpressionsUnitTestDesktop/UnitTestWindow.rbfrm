@@ -150,31 +150,112 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // misc:
-		  Dim expr As EXS.Expressions.Expression
-		  'expr= New EXS.Expressions.DefaultExpression(GetTypeInfo(TCPSocket))
-		  expr= expr.Add(expr.Constant(1), expr.Multiply(expr.Constant(2), expr.Constant(2)))
+		  // assign:
+		  Dim expr, blockExpr As EXS.Expressions.Expression
+		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s1")
+		  blockExpr= expr.Block(_
+		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr),_
+		  expr.Assign(paramExpr, expr.Constant("world")),_
+		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)_
+		  )
+		  expr= expr.Lambda(blockExpr, paramExpr)
 		  
 		  'Dim printer As New EXS.Misc.Printer
 		  'Dim str1 As String= printer.Print(expr)
 		  
-		  Dim resolver As New EXS.Misc.Resolver
-		  Dim result As Variant= resolver.Resolve(expr)
+		  Dim resolver As New EXS.Misc.Resolver("hello")
+		  Dim result As Variant
+		  Try
+		    result= resolver.Resolve(expr)
+		  Catch exc As RuntimeException
+		    Break
+		  End Try
 		  Dim str2 As String= expr.ToString
 		  Break
 		  
 		  
-		  // reduce:
+		  // runtime exception:
 		  'Dim expr As EXS.Expressions.Expression
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
+		  ''expr= expr.Lambda(expr.Divide(expr.Constant(5), paramExpr), paramExpr)
+		  'expr= expr.Lambda(_
+		  'expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr),_
+		  'expr.Parameter(EXS.GetType("Integer"), "b"))
 		  '
-		  'Dim multExpr As EXS.Expressions.BinaryExpression= expr.Multiply(expr.Constant(2), expr.Constant(2))
-		  'Dim addExpr As EXS.Expressions.BinaryExpression= expr.Add(expr.Constant(1), multExpr)
-		  ''Assert.AreSame "1 + 2 * 2", addExpr.ToString, "AreSame ""1 + 2 * 2"", addExpr.ToString"
+		  ''Dim printer As New EXS.Misc.Printer
+		  ''Dim str1 As String= printer.Print(expr)
 		  '
-		  'Dim lambdaExpr As EXS.Expressions.LambdaExpression= expr.Lambda(addExpr)
-		  'Dim str1 As String= lambdaExpr.ToString
+		  'Dim resolver As New EXS.Misc.Resolver(0)
+		  'Dim result As Variant
+		  'Try
+		  'result= resolver.Resolve(expr)
+		  'Catch exc As RuntimeException
+		  'Break
+		  'End Try
+		  'Dim str2 As String= expr.ToString
+		  'Break
+		  
+		  
+		  // misc block:
+		  'Dim expr As EXS.Expressions.Expression
+		  'expr= expr.Block(_
+		  'expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("1 + 2 * 3")),_
+		  'expr.Add(expr.Constant(1), expr.Multiply(expr.Constant(2), expr.Constant(3)))_
+		  ')
 		  '
-		  'Dim result As Variant= lambdaExpr.Compile.Invoke(Nil)
+		  ''Dim printer As New EXS.Misc.Printer
+		  ''Dim str1 As String= printer.Print(expr)
+		  '
+		  'Dim resolver As New EXS.Misc.Resolver
+		  'Dim result As Variant= resolver.Resolve(expr)
+		  'Dim str2 As String= expr.ToString
+		  'Break
+		  
+		  
+		  // lambda resolver:
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
+		  'expr= expr.Lambda(expr.Add(paramExpr, expr.Constant(5)), paramExpr)
+		  '
+		  ''Dim printer As New EXS.Misc.Printer
+		  ''Dim str1 As String= printer.Print(expr)
+		  '
+		  'Dim resolver As New EXS.Misc.Resolver(4)
+		  'Dim result As Variant= resolver.Resolve(expr)
+		  'Dim str3 As String= expr.ToString
+		  'Break
+		  
+		  
+		  // misc:
+		  'Dim expr As EXS.Expressions.Expression
+		  'expr= New EXS.Expressions.DefaultExpression(GetTypeInfo(TCPSocket))
+		  'expr= expr.Add(expr.Constant(1), expr.Multiply(expr.Constant(2), expr.Constant(2)))
+		  'expr= expr.And_(expr.Constant(True), expr.Constant(True))
+		  'expr= expr.LeftShift(expr.Constant(&b00011111), expr.Constant(2))
+		  
+		  'Dim o1 As New ObjectWithBinaryExprMethod(10)
+		  'Dim o2 As New ObjectWithBinaryExprMethod(20)
+		  'Dim o3 As ObjectWithBinaryExprMethod= o1+ o2
+		  'Dim methodAdd As Introspection.MethodInfo= Introspection.GetType(o1).GetMethodInfo("Operator_Add")
+		  'expr= expr.Add(expr.Constant(o1), expr.Constant(o2), methodAdd)
+		  'expr= expr.Subtract(expr.Constant(o1), expr.Constant(o2), Introspection.GetType(o1).GetMethodInfo("Operator_Subtract"))
+		  
+		  'expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!"))
+		  'expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "Random")
+		  'expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "GetEnvironment", expr.Constant("HOMEPATH"))
+		  
+		  'expr= expr.Convert(expr.Constant(40), EXS.GetType("String"))
+		  'expr= expr.Parameter(EXS.GetType("Integer"), "a")
+		  
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
+		  'expr= expr.Lambda(expr.Add(paramExpr, expr.Constant(5)), paramExpr)
+		  
+		  'Dim printer As New EXS.Misc.Printer
+		  'Dim str1 As String= printer.Print(expr)
+		  
+		  'Dim resolver As New EXS.Misc.Resolver
+		  'Dim result As Variant= resolver.Resolve(expr)
+		  'Dim str2 As String= expr.ToString
 		  'Break
 		  
 		  
@@ -390,6 +471,20 @@ End
 		  'Break
 		  'Break
 		  
+		  
+		  // variant:
+		  'Dim vart1 As Variant= "1"
+		  'Dim vart2 As Variant= 2
+		  'Dim vart3 As Variant= vart1+ vart2
+		  'Break
+		  
+		  
+		  // INF IND (NaN):
+		  'Dim var1 As Variant= -2
+		  'Dim var2 As Variant= 0
+		  'Dim var3 As Variant= var1/ var2
+		  'Dim var4 As Variant= sqrt(var1)
+		  'Break
 		End Sub
 	#tag EndEvent
 #tag EndEvents

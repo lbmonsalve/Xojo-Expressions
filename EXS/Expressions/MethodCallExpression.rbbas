@@ -2,6 +2,12 @@
 Protected Class MethodCallExpression
 Inherits EXS.Expressions.Expression
 	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitMethodCall(Self)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function Arguments() As Expression()
 		  Return mArguments
 		End Function
