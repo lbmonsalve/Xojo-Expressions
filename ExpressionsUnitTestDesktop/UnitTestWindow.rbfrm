@@ -150,28 +150,42 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // reduce:
+		  // misc:
 		  Dim expr As EXS.Expressions.Expression
+		  'expr= New EXS.Expressions.DefaultExpression(GetTypeInfo(TCPSocket))
+		  expr= expr.Add(expr.Constant(1), expr.Multiply(expr.Constant(2), expr.Constant(2)))
 		  
-		  Dim multExpr As EXS.Expressions.BinaryExpression= expr.Multiply(expr.Constant(2), expr.Constant(2))
-		  Dim addExpr As EXS.Expressions.BinaryExpression= expr.Add(expr.Constant(1), multExpr)
-		  'Assert.AreSame "1 + 2 * 2", addExpr.ToString, "AreSame ""1 + 2 * 2"", addExpr.ToString"
+		  'Dim printer As New EXS.Misc.Printer
+		  'Dim str1 As String= printer.Print(expr)
 		  
-		  Dim lambdaExpr As EXS.Expressions.LambdaExpression= expr.Lambda(addExpr)
-		  Dim str1 As String= lambdaExpr.ToString
-		  
-		  Dim result As Variant= lambdaExpr.Compile.Invoke(Nil)
+		  Dim resolver As New EXS.Misc.Resolver
+		  Dim result As Variant= resolver.Resolve(expr)
+		  Dim str2 As String= expr.ToString
 		  Break
+		  
+		  
+		  // reduce:
+		  'Dim expr As EXS.Expressions.Expression
+		  '
+		  'Dim multExpr As EXS.Expressions.BinaryExpression= expr.Multiply(expr.Constant(2), expr.Constant(2))
+		  'Dim addExpr As EXS.Expressions.BinaryExpression= expr.Add(expr.Constant(1), multExpr)
+		  ''Assert.AreSame "1 + 2 * 2", addExpr.ToString, "AreSame ""1 + 2 * 2"", addExpr.ToString"
+		  '
+		  'Dim lambdaExpr As EXS.Expressions.LambdaExpression= expr.Lambda(addExpr)
+		  'Dim str1 As String= lambdaExpr.ToString
+		  '
+		  'Dim result As Variant= lambdaExpr.Compile.Invoke(Nil)
+		  'Break
 		  
 		  
 		  // convert:
 		  'Dim expr As EXS.Expressions.Expression
 		  'Dim result As Variant
 		  '
-		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(GetType("Integer"), "a")
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
 		  'Dim typeAsExpr As EXS.Expressions.UnaryExpression= expr.Convert(_
 		  'paramExpr, _
-		  'GetType("String"))
+		  'EXS.GetType("String"))
 		  'Dim str1 As String= typeAsExpr.ToString
 		  '
 		  'Dim lambdaExpr As EXS.Expressions.LambdaExpression= expr.Lambda(_

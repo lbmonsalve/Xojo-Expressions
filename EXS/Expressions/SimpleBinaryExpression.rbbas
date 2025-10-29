@@ -1,6 +1,12 @@
 #tag Class
 Protected Class SimpleBinaryExpression
 Inherits EXS.Expressions.BinaryExpression
+	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitSimpleBinary(Self)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Sub Constructor(nodeType As ExpressionType, left As Expression, right As Expression, retType As Introspection.TypeInfo)
 		  // Calling the overridden superclass constructor.
@@ -13,12 +19,6 @@ Inherits EXS.Expressions.BinaryExpression
 		  mNodeType= nodeType
 		  mType= retType
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Gen(comp As ILambdaCompilerFriend) As Expression
-		  Return New SimpleBinaryExpression(mNodeType, Left.Reduce(comp), Right.Reduce(comp), mType)
-		End Function
 	#tag EndMethod
 
 

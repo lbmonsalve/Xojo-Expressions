@@ -6,8 +6,8 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim addExpr As EXS.Expressions.BinaryExpression= expr.Add(expr.Constant(1), expr.Constant(2))
 		  Assert.IsNotNil addExpr, "IsNotNil addExpr"
-		  Assert.IsTrue (addExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Add), _
-		  "IsTrue (addExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Add)"
+		  Assert.IsTrue (addExpr.NodeType= EXS.ExpressionType.Add), _
+		  "IsTrue (addExpr.NodeType= EXS.ExpressionType.Add)"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(addExpr.Left).Value
 		  Assert.AreEqual 1, actual.IntegerValue, "AreEqual 1, actual.IntegerValue"
@@ -73,8 +73,8 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.And_(expr.Constant(True), expr.Constant(True))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.And_), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.And_)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.And_), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.And_)"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Left).Value
 		  Assert.IsTrue actual.BooleanValue, "IsTrue actual.BooleanValue"
@@ -156,8 +156,8 @@ Inherits TestGroup
 		  
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.Assign(testParam, expr.Constant("Hello"))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Assign), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Assign)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.Assign), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.Assign)"
 		  Assert.IsTrue testExpr.Left Is testParam, "IsTrue testExpr.Left Is testParam"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Right).Value
@@ -387,8 +387,8 @@ Inherits TestGroup
 		  expr.Constant("10"), _
 		  EXS.GetType("Integer"))
 		  Assert.IsNotNil typeAsExpr, "IsNotNil typeAsExpr"
-		  Assert.IsTrue (typeAsExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Convert), _
-		  "IsTrue (typeAsExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Convert)"
+		  Assert.IsTrue (typeAsExpr.NodeType= EXS.ExpressionType.Convert), _
+		  "IsTrue (typeAsExpr.NodeType= EXS.ExpressionType.Convert)"
 		  
 		  Dim ti As Introspection.TypeInfo= typeAsExpr.Type
 		  Assert.AreEqual "Int32", ti.Name, "AreEqual ""Int32"", ti.Name"
@@ -434,8 +434,8 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.Divide(expr.Constant(2), expr.Constant(2))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Divide), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Divide)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.Divide), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.Divide)"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Left).Value
 		  Assert.AreEqual 2, actual.IntegerValue, "AreEqual 2, actual.IntegerValue"
@@ -502,8 +502,8 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.LeftShift(expr.Constant(15), expr.Constant(1))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.LeftShift), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.LeftShift)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.LeftShift), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.LeftShift)"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Left).Value
 		  Assert.AreEqual 15, actual.IntegerValue, "AreEqual 15, actual.IntegerValue"
@@ -593,8 +593,8 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.Modulo(expr.Constant(12), expr.Constant(5))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Modulo), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Modulo)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.Modulo), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.Modulo)"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Left).Value
 		  Assert.AreEqual 12, actual.IntegerValue, "AreEqual 12, actual.IntegerValue"
@@ -647,8 +647,8 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.Multiply(expr.Constant(2), expr.Constant(2))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Multiply), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Multiply)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.Multiply), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.Multiply)"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Left).Value
 		  Assert.AreEqual 2, actual.IntegerValue, "AreEqual 2, actual.IntegerValue"
@@ -701,8 +701,8 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.Or_(expr.Constant(False), expr.Constant(False))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Or_), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Or_)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.Or_), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.Or_)"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Left).Value
 		  Assert.IsFalse actual.BooleanValue, "IsFalse actual.BooleanValue"
@@ -806,8 +806,8 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.Power(expr.Constant(2), expr.Constant(2))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Power), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Subtract)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.Power), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.Subtract)"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Left).Value
 		  Assert.AreEqual 2, actual.IntegerValue, "AreEqual 2, actual.IntegerValue"
@@ -860,8 +860,8 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.RightShift(expr.Constant(31), expr.Constant(1))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.RightShift), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.RightShift)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.RightShift), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.RightShift)"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Left).Value
 		  Assert.AreEqual 31, actual.IntegerValue, "AreEqual 31, actual.IntegerValue"
@@ -920,8 +920,8 @@ Inherits TestGroup
 		  
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.Subscript(expr.Constant(arr), expr.Constant(1))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.ArrayIndex), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.ArrayIndex)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.ArrayIndex), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.ArrayIndex)"
 		  
 		  Dim actualArr() As Integer= EXS.Expressions.ConstantExpression(testExpr.Left).Value
 		  Assert.AreEqual 2, actualArr.LastIdxEXS, "AreEqual 2, actualArr.LastIdx"
@@ -957,8 +957,8 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.Subtract(expr.Constant(2), expr.Constant(2))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Subtract), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.Subtract)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.Subtract), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.Subtract)"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Left).Value
 		  Assert.AreEqual 2, actual.IntegerValue, "AreEqual 2, actual.IntegerValue"
@@ -1011,8 +1011,8 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim testExpr As EXS.Expressions.BinaryExpression= expr.XOr_(expr.Constant(85), expr.Constant(43))
 		  Assert.IsNotNil testExpr, "IsNotNil testExpr"
-		  Assert.IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.ExclusiveOr), _
-		  "IsTrue (testExpr.NodeType= EXS.Expressions.Expression.ExpressionType.ExclusiveOr)"
+		  Assert.IsTrue (testExpr.NodeType= EXS.ExpressionType.ExclusiveOr), _
+		  "IsTrue (testExpr.NodeType= EXS.ExpressionType.ExclusiveOr)"
 		  
 		  Dim actual As Variant= EXS.Expressions.ConstantExpression(testExpr.Left).Value
 		  Assert.AreEqual 85, actual.IntegerValue, "AreEqual 85, actual.IntegerValue"

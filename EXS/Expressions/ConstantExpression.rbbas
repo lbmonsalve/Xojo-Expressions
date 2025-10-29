@@ -1,6 +1,12 @@
 #tag Class
 Protected Class ConstantExpression
 Inherits EXS.Expressions.Expression
+	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitConstant(Self)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Sub Constructor(value As Variant)
 		  // Calling the overridden superclass constructor.

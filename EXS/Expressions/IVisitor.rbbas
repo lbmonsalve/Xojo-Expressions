@@ -1,25 +1,20 @@
-#tag Class
-Protected Class DefaultExpression
-Inherits EXS.Expressions.Expression
+#tag Interface
+Protected Interface IVisitor
 	#tag Method, Flags = &h0
-		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
-		  Return visitor.VisitDefault(Self)
+		Function VisitConstant(expr As EXS.Expressions.ConstantExpression) As Variant
+		  
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1000
-		Sub Constructor(typeExpr As Introspection.TypeInfo)
-		  // Calling the overridden superclass constructor.
-		  Super.Constructor
+	#tag Method, Flags = &h0
+		Function VisitDefault(expr As EXS.Expressions.DefaultExpression) As Variant
 		  
-		  mNodeType= ExpressionType.Default
-		  mType= typeExpr
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToString() As String
-		  Return mType.FullName
+		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
+		  
 		End Function
 	#tag EndMethod
 
@@ -59,5 +54,5 @@ Inherits EXS.Expressions.Expression
 			InheritedFrom="Object"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Class
-#tag EndClass
+End Interface
+#tag EndInterface

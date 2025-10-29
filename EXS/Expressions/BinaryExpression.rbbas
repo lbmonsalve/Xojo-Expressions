@@ -12,22 +12,6 @@ Inherits EXS.Expressions.Expression
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Reduce(compiler As ILambdaCompilerFriend) As Expression
-		  Dim x As Expression= Gen(compiler)
-		  Dim t As New TempExpression(Type)
-		  
-		  Break
-		  // Emit out, t.ToString+ " = "+ x.ToString
-		  Dim begin As LabelMark= compiler.DefineLabel
-		  Dim after As LabelMark= compiler.DefineLabel
-		  compiler.EmitExpr t, begin, after
-		  compiler.EmitExpr x, begin, after
-		  
-		  Return t
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function ToString() As String
 		  If mLeft Is Nil Or mRight Is Nil Then Raise GetRuntimeExc("mLeft Is Nil Or mRight Is Nil")
 		  

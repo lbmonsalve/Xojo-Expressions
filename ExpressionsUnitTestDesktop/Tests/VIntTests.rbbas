@@ -11,22 +11,22 @@ Inherits TestGroup
 		  rangeMax= rangeMax- 1
 		  
 		  Dim exp As UInt8= rangeMin
-		  Dim mb As MemoryBlock= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  Dim act As UInt8= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  Dim mb As MemoryBlock= EXS.GetVUint64(exp)
+		  Dim act As UInt8= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= rangeMax
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= EXS.System.Random.InRange(rangeMin, rangeMax)
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -43,22 +43,22 @@ Inherits TestGroup
 		  rangeMax= rangeMax- 1
 		  
 		  Dim exp As UInt16= rangeMin
-		  Dim mb As MemoryBlock= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  Dim act As UInt16= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  Dim mb As MemoryBlock= EXS.GetVUint64(exp)
+		  Dim act As UInt16= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= rangeMax
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= EXS.System.Random.InRange(rangeMin, rangeMax)
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -75,22 +75,22 @@ Inherits TestGroup
 		  rangeMax= rangeMax- 1
 		  
 		  Dim exp As UInt32= rangeMin
-		  Dim mb As MemoryBlock= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  Dim act As UInt32= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  Dim mb As MemoryBlock= EXS.GetVUint64(exp)
+		  Dim act As UInt32= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= rangeMax
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= EXS.System.Random.InRange(rangeMin, rangeMax)
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -107,22 +107,22 @@ Inherits TestGroup
 		  rangeMax= rangeMax- 1
 		  
 		  Dim exp As UInt32= rangeMin
-		  Dim mb As MemoryBlock= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  Dim act As UInt32= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  Dim mb As MemoryBlock= EXS.GetVUint64(exp)
+		  Dim act As UInt32= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= rangeMax
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= EXS.System.Random.InRange(rangeMin, rangeMax)
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -139,15 +139,15 @@ Inherits TestGroup
 		  rangeMax= rangeMax- 1
 		  
 		  Dim exp As UInt64= rangeMin
-		  Dim mb As MemoryBlock= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  Dim act As UInt64= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  Dim mb As MemoryBlock= EXS.GetVUint64(exp)
+		  Dim act As UInt64= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= rangeMax
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -156,8 +156,8 @@ Inherits TestGroup
 		  rangeRnd= rangeRnd* EXS.System.Random.Number
 		  rangeRnd= rangeMin+ rangeRnd
 		  exp= rangeRnd
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -174,15 +174,15 @@ Inherits TestGroup
 		  rangeMax= rangeMax- 1
 		  
 		  Dim exp As UInt64= rangeMin
-		  Dim mb As MemoryBlock= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  Dim act As UInt64= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  Dim mb As MemoryBlock= EXS.GetVUint64(exp)
+		  Dim act As UInt64= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= rangeMax
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -191,8 +191,8 @@ Inherits TestGroup
 		  rangeRnd= rangeRnd* EXS.System.Random.Number
 		  rangeRnd= rangeMin+ rangeRnd
 		  exp= rangeRnd
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -209,15 +209,15 @@ Inherits TestGroup
 		  rangeMax= rangeMax- 1
 		  
 		  Dim exp As UInt64= rangeMin
-		  Dim mb As MemoryBlock= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  Dim act As UInt64= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  Dim mb As MemoryBlock= EXS.GetVUint64(exp)
+		  Dim act As UInt64= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= rangeMax
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -226,8 +226,8 @@ Inherits TestGroup
 		  rangeRnd= rangeRnd* EXS.System.Random.Number
 		  rangeRnd= rangeMin+ rangeRnd
 		  exp= rangeRnd
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -244,15 +244,15 @@ Inherits TestGroup
 		  rangeMax= rangeMax- 1
 		  
 		  Dim exp As UInt64= rangeMin
-		  Dim mb As MemoryBlock= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  Dim act As UInt64= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  Dim mb As MemoryBlock= EXS.GetVUint64(exp)
+		  Dim act As UInt64= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= rangeMax
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -261,8 +261,8 @@ Inherits TestGroup
 		  rangeRnd= rangeRnd* EXS.System.Random.Number
 		  rangeRnd= rangeMin+ rangeRnd
 		  exp= rangeRnd
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -278,15 +278,15 @@ Inherits TestGroup
 		  Dim rangeMax As UInt64= &hFFFFFFFFFFFFFFFF
 		  
 		  Dim exp As UInt64= rangeMin
-		  Dim mb As MemoryBlock= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  Dim act As UInt64= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  Dim mb As MemoryBlock= EXS.GetVUint64(exp)
+		  Dim act As UInt64= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  exp= rangeMax
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -295,8 +295,8 @@ Inherits TestGroup
 		  rangeRnd= rangeRnd* EXS.System.Random.Number
 		  rangeRnd= rangeMin+ rangeRnd
 		  exp= rangeRnd
-		  mb= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  act= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  mb= EXS.GetVUint64(exp)
+		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
@@ -306,8 +306,8 @@ Inherits TestGroup
 	#tag Method, Flags = &h0
 		Sub DefaultTest()
 		  Dim exp As Integer= 10
-		  Dim mb As MemoryBlock= EXS.Expressions.LambdaCompiler.GetVUint64(exp)
-		  Dim act As Integer= EXS.Expressions.LambdaCompiler.GetVUint64Value(mb)
+		  Dim mb As MemoryBlock= EXS.GetVUint64(exp)
+		  Dim act As Integer= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		End Sub
