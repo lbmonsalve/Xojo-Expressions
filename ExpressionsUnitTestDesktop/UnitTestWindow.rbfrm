@@ -151,14 +151,15 @@ End
 	#tag Event
 		Sub Action()
 		  // assign:
-		  Dim expr, blockExpr As EXS.Expressions.Expression
+		  Dim expr As EXS.Expressions.Expression
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s1")
-		  blockExpr= expr.Block(_
-		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr),_
-		  expr.Assign(paramExpr, expr.Constant("world")),_
-		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)_
-		  )
-		  expr= expr.Lambda(blockExpr, paramExpr)
+		  
+		  Dim exprs() As EXS.Expressions.Expression
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs.Append expr.Assign(paramExpr, expr.Constant("world"))
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  
+		  expr= expr.Lambda(New EXS.Expressions.BlockExpression(exprs), paramExpr)
 		  
 		  'Dim printer As New EXS.Misc.Printer
 		  'Dim str1 As String= printer.Print(expr)

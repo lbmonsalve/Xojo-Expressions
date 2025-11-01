@@ -56,8 +56,6 @@ Protected Class Expression
 
 	#tag Method, Flags = &h0
 		 Shared Function Assign(left As ParameterExpression, right As Expression) As BinaryExpression
-		  'If Not (expr.Left IsA ParameterExpression) Then Raise GetRuntimeExc("Not (expr.Left IsA ParameterExpression)")
-		  'If Not (expr.Right IsA ConstantExpression) Then Raise GetRuntimeExc("Not (expr.Right IsA ConstantExpression)")
 		  If Not left.Type.IsAssignable(right.Type) Then Raise GetRuntimeExc("Not left.Type.IsAssignable(right.Type)")
 		  
 		  Return New AssignBinaryExpression(left, right)

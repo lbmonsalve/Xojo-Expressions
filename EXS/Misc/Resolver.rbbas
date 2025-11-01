@@ -10,7 +10,8 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h21
 		Private Sub DefineParams(paramsExpr() As EXS.Expressions.ParameterExpression)
-		   If Not paramsExpr.MatchTypeWith(mParamValues) Then Break
+		  If Not paramsExpr.MatchTypeWith(mParamValues) Then _
+		  Raise GetRuntimeExc("Not paramsExpr.MatchTypeWith(mParamValues)")
 		  
 		  For i As Integer= 0 To paramsExpr.LastIdx
 		    Dim paramExpr As EXS.Expressions.ParameterExpression= paramsExpr(i)
