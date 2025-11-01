@@ -127,8 +127,27 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
-		  Dim left As Variant= Resolve(expr.Left)
-		  Dim right As Variant= Resolve(expr.Right)
+		  Dim left, right As Variant
+		  left= Resolve(expr.Left)
+		  
+		  If left.Type= 11 Then // TypeBoolean
+		    Select Case expr.NodeType // short-circuit
+		    Case EXS.ExpressionType.And_
+		      If Not left Then Return left
+		      
+		      right= Resolve(expr.Right)
+		      Return left And right
+		      
+		    Case EXS.ExpressionType.Or_
+		      If left Then Return left
+		      
+		      right= Resolve(expr.Right)
+		      Return left Or right
+		      
+		    End Select
+		  End If
+		  
+		  right= Resolve(expr.Right)
 		  
 		  Select Case expr.NodeType
 		  Case EXS.ExpressionType.And_

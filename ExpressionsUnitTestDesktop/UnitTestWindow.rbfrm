@@ -150,21 +150,17 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // assign:
+		  // boolean short-circuit
 		  Dim expr As EXS.Expressions.Expression
-		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s1")
-		  
-		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  exprs.Append expr.Assign(paramExpr, expr.Constant("world"))
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  
-		  expr= expr.Lambda(New EXS.Expressions.BlockExpression(exprs), paramExpr)
+		  'expr= expr.And_(expr.Constant(True), expr.Constant(False))
+		  'expr= expr.And_(expr.Constant(False), expr.Constant(False))
+		  'expr= expr.Or_(expr.Constant(True), expr.Constant(False))
+		  expr= expr.Or_(expr.Constant(False), expr.Constant(False))
 		  
 		  'Dim printer As New EXS.Misc.Printer
 		  'Dim str1 As String= printer.Print(expr)
 		  
-		  Dim resolver As New EXS.Misc.Resolver("hello")
+		  Dim resolver As New EXS.Misc.Resolver
 		  Dim result As Variant
 		  Try
 		    result= resolver.Resolve(expr)
@@ -173,6 +169,31 @@ End
 		  End Try
 		  Dim str2 As String= expr.ToString
 		  Break
+		  
+		  
+		  // assign:
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s1")
+		  '
+		  'Dim exprs() As EXS.Expressions.Expression
+		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  'exprs.Append expr.Assign(paramExpr, expr.Constant("world"))
+		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  '
+		  'expr= expr.Lambda(New EXS.Expressions.BlockExpression(exprs), paramExpr)
+		  '
+		  ''Dim printer As New EXS.Misc.Printer
+		  ''Dim str1 As String= printer.Print(expr)
+		  '
+		  'Dim resolver As New EXS.Misc.Resolver("hello")
+		  'Dim result As Variant
+		  'Try
+		  'result= resolver.Resolve(expr)
+		  'Catch exc As RuntimeException
+		  'Break
+		  'End Try
+		  'Dim str2 As String= expr.ToString
+		  'Break
 		  
 		  
 		  // runtime exception:
