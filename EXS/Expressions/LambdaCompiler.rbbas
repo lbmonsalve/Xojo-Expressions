@@ -121,19 +121,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub EmitExpression(expr As ConstantExpression, begin As LabelMark, after As LabelMark)
-		  // store in header
-		  Dim constHeaderType As Pair= StoreHeader(expr.Type)
-		  Dim constHeader As Pair= StoreHeader(expr)
-		  
-		  // emit const
-		  EmitHeaderAddress constHeaderType.Left.UInt64Value, constHeaderType.Right.UInt64Value
-		  EmitHeaderAddress constHeader.Left.UInt64Value, constHeader.Right.UInt64Value
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub EmitExpression(expr As FullConditionalExpression, begin As LabelMark, after As LabelMark)
+		Private Sub EmitExpression(expr As ConditionalExpression, begin As LabelMark, after As LabelMark)
 		  If expr.Test IsA ConstantExpression _
 		    And (expr.IfTrue IsA ConstantExpression Or expr.IfTrue IsA TypedParameterExpression) _
 		    And (expr.IfFalse IsA ConstantExpression Or expr.IfFalse IsA TypedParameterExpression) Then
@@ -174,6 +162,18 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  Else // TODO: evaluate test
 		    Break
 		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub EmitExpression(expr As ConstantExpression, begin As LabelMark, after As LabelMark)
+		  // store in header
+		  Dim constHeaderType As Pair= StoreHeader(expr.Type)
+		  Dim constHeader As Pair= StoreHeader(expr)
+		  
+		  // emit const
+		  EmitHeaderAddress constHeaderType.Left.UInt64Value, constHeaderType.Right.UInt64Value
+		  EmitHeaderAddress constHeader.Left.UInt64Value, constHeader.Right.UInt64Value
 		End Sub
 	#tag EndMethod
 

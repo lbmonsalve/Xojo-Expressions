@@ -358,7 +358,7 @@ Protected Module EXS
 		    body= EXS.Expressions.BlockExpression(body).GetLastExpression
 		  End If
 		  If body= test Then Return True
-		  If body IsA EXS.Expressions.FullConditionalExpression Then Return True
+		  If body IsA EXS.Expressions.ConditionalExpression Then Return True
 		  If body IsA EXS.Expressions.TypedParameterExpression Then Return True
 		  If body IsA EXS.Expressions.UnaryExpression Then Return True
 		  

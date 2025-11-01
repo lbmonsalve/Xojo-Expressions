@@ -65,6 +65,18 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function VisitConditional(expr As EXS.Expressions.ConditionalExpression) As Variant
+		  If Resolve(expr.Test) Then
+		    Return Resolve(expr.IfTrue)
+		  ElseIf Not (expr.IfFalse Is Nil) Then
+		    Return Resolve(expr.IfFalse)
+		  End If
+		  
+		  Return Nil
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function VisitConstant(expr As EXS.Expressions.ConstantExpression) As Variant
 		  // Parte de la interfaz EXS.Expressions.IVisitor.
 		  

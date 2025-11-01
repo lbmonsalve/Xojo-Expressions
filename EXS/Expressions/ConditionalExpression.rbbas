@@ -1,8 +1,14 @@
 #tag Class
 Protected Class ConditionalExpression
 Inherits EXS.Expressions.Expression
-	#tag Method, Flags = &h1001
-		Protected Sub Constructor(test As Expression, ifTrue As Expression)
+	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitConditional(Self)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1000
+		Sub Constructor(test As Expression, ifTrue As Expression)
 		  // Calling the overridden superclass constructor.
 		  Super.Constructor
 		  
@@ -13,20 +19,41 @@ Inherits EXS.Expressions.Expression
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function GetFalse() As Expression
-		  Return Expression.Empty
-		End Function
+	#tag Method, Flags = &h1000
+		Sub Constructor(test As Expression, ifTrue As Expression, ifFalse As Expression)
+		  // Calling the overridden superclass constructor.
+		  // Note that this may need modifications if there are multiple constructor choices.
+		  // Possible constructor calls:
+		  // Constructor(test As Expression, ifTrue As Expression) -- From ConditionalExpression
+		  // Constructor() -- From Expression
+		  Constructor(test, ifTrue)
+		  
+		  mFalse= ifFalse
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1000
+		Sub Constructor(test As Expression, ifTrue As Expression, ifFalse As Expression, typeExpr As Introspection.TypeInfo)
+		  // Calling the overridden superclass constructor.
+		  // Note that this may need modifications if there are multiple constructor choices.
+		  // Possible constructor calls:
+		  // Constructor(test As Expression, ifTrue As Expression, ifFalse As Expression) -- From FullConditionalExpression
+		  // Constructor(test As Expression, ifTrue As Expression) -- From ConditionalExpression
+		  // Constructor() -- From Expression
+		  Constructor(test, ifTrue, ifFalse)
+		  
+		  mType= typeExpr
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		 Shared Function Make(test As Expression, ifTrue As Expression, ifFalse As Expression, typeExpr As Introspection.TypeInfo) As ConditionalExpression
 		  If ifTrue.Type<> typeExpr Or ifFalse.Type<> typeExpr Then
-		    Return New FullConditionalExpressionWithType(test, ifTrue, ifFalse, typeExpr)
+		    Return New ConditionalExpression(test, ifTrue, ifFalse, typeExpr)
 		  ElseIf  ifFalse IsA DefaultExpression And ifFalse.Type= GetType("Ptr") Then
 		    Return New ConditionalExpression(test, ifTrue)
 		  Else
-		    Return New FullConditionalExpression(test, ifTrue, ifFalse)
+		    Return New ConditionalExpression(test, ifTrue, ifFalse)
 		  End If
 		End Function
 	#tag EndMethod
@@ -44,9 +71,14 @@ Inherits EXS.Expressions.Expression
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return GetFalse
+			  Return mFalse
 			End Get
 		#tag EndGetter
+		#tag Setter
+			Set
+			  mFalse= value
+			End Set
+		#tag EndSetter
 		IfFalse As Expression
 	#tag EndComputedProperty
 
@@ -63,6 +95,10 @@ Inherits EXS.Expressions.Expression
 		#tag EndSetter
 		IfTrue As Expression
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mFalse As Expression
+	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mTest As Expression

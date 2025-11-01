@@ -12,8 +12,8 @@ Inherits EXS.Expressions.Expression
 		  Select Case body
 		  Case IsA TypedParameterExpression, IsA ConstantExpression
 		    Return New ReturnExpression(body)
-		  Case IsA FullConditionalExpression
-		    Dim cond As FullConditionalExpression= FullConditionalExpression(body)
+		  Case IsA ConditionalExpression
+		    Dim cond As ConditionalExpression= ConditionalExpression(body)
 		    cond.IfTrue= ChkReturnExpression(cond.IfTrue)
 		    cond.IfFalse= ChkReturnExpression(cond.IfFalse)
 		  Case IsA UnaryExpression // add oper

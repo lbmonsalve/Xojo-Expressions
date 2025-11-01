@@ -48,6 +48,12 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function VisitConditional(expr As EXS.Expressions.ConditionalExpression) As Variant
+		  Return Parenthesize(" iif ", expr.Test, expr.IfTrue, expr.IfFalse)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function VisitConstant(expr As EXS.Expressions.ConstantExpression) As Variant
 		  // Parte de la interfaz EXS.Expressions.IVisitor.
 		  

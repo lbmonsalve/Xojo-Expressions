@@ -150,12 +150,14 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // boolean short-circuit
+		  // conditional:
 		  Dim expr As EXS.Expressions.Expression
-		  'expr= expr.And_(expr.Constant(True), expr.Constant(False))
-		  'expr= expr.And_(expr.Constant(False), expr.Constant(False))
-		  'expr= expr.Or_(expr.Constant(True), expr.Constant(False))
-		  expr= expr.Or_(expr.Constant(False), expr.Constant(False))
+		  Dim num As Integer= 100
+		  expr= expr.Condition(_
+		  expr.Constant(num> 10), _
+		  expr.Constant("num > 10"), _
+		  expr.Constant("num < 10") _
+		  )
 		  
 		  'Dim printer As New EXS.Misc.Printer
 		  'Dim str1 As String= printer.Print(expr)
@@ -167,8 +169,39 @@ End
 		  Catch exc As RuntimeException
 		    Break
 		  End Try
+		  Break
+		  
+		  num= 9
+		  expr= expr.Condition(_
+		  expr.Constant(num> 10), _
+		  expr.Constant("num > 10"), _
+		  expr.Constant("num < 10") _
+		  )
+		  
+		  result= resolver.Resolve(expr)
 		  Dim str2 As String= expr.ToString
 		  Break
+		  
+		  
+		  // boolean short-circuit
+		  'Dim expr As EXS.Expressions.Expression
+		  ''expr= expr.And_(expr.Constant(True), expr.Constant(False))
+		  ''expr= expr.And_(expr.Constant(False), expr.Constant(False))
+		  ''expr= expr.Or_(expr.Constant(True), expr.Constant(False))
+		  'expr= expr.Or_(expr.Constant(False), expr.Constant(False))
+		  '
+		  ''Dim printer As New EXS.Misc.Printer
+		  ''Dim str1 As String= printer.Print(expr)
+		  '
+		  'Dim resolver As New EXS.Misc.Resolver
+		  'Dim result As Variant
+		  'Try
+		  'result= resolver.Resolve(expr)
+		  'Catch exc As RuntimeException
+		  'Break
+		  'End Try
+		  'Dim str2 As String= expr.ToString
+		  'Break
 		  
 		  
 		  // assign:
