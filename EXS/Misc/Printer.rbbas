@@ -100,14 +100,14 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
-		  Return Parenthesize(expr.NodeType.ToStringSymbol, expr.Left, expr.Right)
+		Function VisitParameter(expr As EXS.Expressions.ParameterExpression) As Variant
+		  Return expr.ToString
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function VisitTypedParameter(expr As EXS.Expressions.TypedParameterExpression) As Variant
-		  Return expr.ToString
+		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
+		  Return Parenthesize(expr.NodeType.ToStringSymbol, expr.Left, expr.Right)
 		End Function
 	#tag EndMethod
 

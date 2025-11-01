@@ -191,12 +191,6 @@ Protected Class Expression
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Equal(left As Expression, right As Expression) As BinaryExpression
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		 Shared Function Lambda(body As Expression, ParamArray parameters As ParameterExpression) As LambdaExpression
 		  Return New LambdaExpression(body, parameters)
 		End Function

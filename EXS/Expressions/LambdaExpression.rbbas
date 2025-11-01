@@ -10,7 +10,7 @@ Inherits EXS.Expressions.Expression
 	#tag Method, Flags = &h21
 		Private Shared Function ChkReturnExpression(body As Expression) As Expression
 		  Select Case body
-		  Case IsA TypedParameterExpression, IsA ConstantExpression
+		  Case IsA ParameterExpression, IsA ConstantExpression
 		    Return New ReturnExpression(body)
 		  Case IsA ConditionalExpression
 		    Dim cond As ConditionalExpression= ConditionalExpression(body)

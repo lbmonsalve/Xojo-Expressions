@@ -49,13 +49,13 @@ Protected Interface IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
+		Function VisitParameter(expr As EXS.Expressions.ParameterExpression) As Variant
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function VisitTypedParameter(expr As EXS.Expressions.TypedParameterExpression) As Variant
+		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
 		  
 		End Function
 	#tag EndMethod

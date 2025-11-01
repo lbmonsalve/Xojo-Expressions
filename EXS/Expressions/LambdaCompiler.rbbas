@@ -123,19 +123,19 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 	#tag Method, Flags = &h21
 		Private Sub EmitExpression(expr As ConditionalExpression, begin As LabelMark, after As LabelMark)
 		  If expr.Test IsA ConstantExpression _
-		    And (expr.IfTrue IsA ConstantExpression Or expr.IfTrue IsA TypedParameterExpression) _
-		    And (expr.IfFalse IsA ConstantExpression Or expr.IfFalse IsA TypedParameterExpression) Then
+		    And (expr.IfTrue IsA ConstantExpression Or expr.IfTrue IsA ParameterExpression) _
+		    And (expr.IfFalse IsA ConstantExpression Or expr.IfFalse IsA ParameterExpression) Then
 		    Dim testValue As Boolean= ConstantExpression(expr.Test).Value.BooleanValue
 		    If testValue Then
 		      EmitExpr expr.IfTrue, begin, after
 		    Else
 		      EmitExpr expr.IfFalse, begin, after
 		    End If
-		  ElseIf expr.Test IsA TypedParameterExpression Then
+		  ElseIf expr.Test IsA ParameterExpression Then
 		    Dim icode As OpCodes
 		    Dim local As UInt16= ScopeDeclareLocal
 		    
-		    EmitLocal local, TypedParameterExpression(expr.Test)
+		    EmitLocal local, ParameterExpression(expr.Test)
 		    
 		    // emit jumpTrue local "labelTrue"
 		    icode= OpCodes.JumpTrue
@@ -232,7 +232,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 	#tag Method, Flags = &h21
 		Private Sub EmitExpression(expr As ReturnExpression, begin As LabelMark, after As LabelMark)
 		  Dim icode As OpCodes
-		  If expr.Expr IsA TypedParameterExpression Then
+		  If expr.Expr IsA ParameterExpression Then
 		    icode= OpCodes.RetParam
 		  Else
 		    icode= OpCodes.Ret
@@ -279,31 +279,16 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub EmitExpression(expr As TypedParameterExpression, begin As LabelMark, after As LabelMark)
-		  // store in header
-		  Dim paramHeaderType As Pair= StoreHeader(expr.Type)
-		  Dim paramHeader As Pair= StoreHeader(expr)
-		  
-		  // emit param
-		  EmitHeaderAddress paramHeaderType.Left.UInt64Value, paramHeaderType.Right.UInt64Value
-		  EmitHeaderAddress paramHeader.Left.UInt64Value, paramHeader.Right.UInt64Value
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Sub EmitExpression(expr As UnaryExpression, begin As LabelMark, after As LabelMark)
 		  Dim icode As OpCodes= expr.NodeType.ToInstructionCode
 		  
 		  Select Case icode
 		  Case OpCodes.Convert
 		    Dim oper As Expression= expr.Operand
-		    If oper IsA TypedParameterExpression Then
-		      Dim exprT As EXS.Expressions.Expression
-		      Dim operAsParam As ParameterExpression= exprT.Parameter(expr.Type, TypedParameterExpression(oper).Name)
-		      oper= operAsParam
-		      
+		    If oper IsA ParameterExpression Then
+		      Break
 		      'Dim local As UInt16= ScopeDeclareLocal
-		      'EmitLocal local, TypedParameterExpression(oper)
+		      'EmitLocal local, ParameterExpression(oper)
 		    End If
 		    
 		    EmitCode icode.ToInteger
@@ -343,7 +328,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub EmitLocal(local As UInt16, param As TypedParameterExpression)
+		Private Sub EmitLocal(local As UInt16, param As ParameterExpression)
 		  // store in header
 		  Dim paramHeaderType As Pair= StoreHeader(param.Type)
 		  Dim paramHeader As Pair= StoreHeader(param)

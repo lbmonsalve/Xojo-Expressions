@@ -359,7 +359,7 @@ Protected Module EXS
 		  End If
 		  If body= test Then Return True
 		  If body IsA EXS.Expressions.ConditionalExpression Then Return True
-		  If body IsA EXS.Expressions.TypedParameterExpression Then Return True
+		  If body IsA EXS.Expressions.ParameterExpression Then Return True
 		  If body IsA EXS.Expressions.UnaryExpression Then Return True
 		  
 		  Return False

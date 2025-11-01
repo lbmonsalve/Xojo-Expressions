@@ -138,6 +138,12 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function VisitParameter(expr As EXS.Expressions.ParameterExpression) As Variant
+		  Return mEnv.Get(expr.Name)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
 		  Dim left, right As Variant
 		  left= Resolve(expr.Left)
@@ -210,12 +216,6 @@ Implements EXS.Expressions.IVisitor
 		  End Select
 		  
 		  Return Nil
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function VisitTypedParameter(expr As EXS.Expressions.TypedParameterExpression) As Variant
-		  Return mEnv.Get(expr.Name)
 		End Function
 	#tag EndMethod
 

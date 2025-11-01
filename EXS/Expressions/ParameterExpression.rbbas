@@ -1,6 +1,39 @@
 #tag Class
 Protected Class ParameterExpression
 Inherits EXS.Expressions.Expression
+	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitParameter(Self)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1000
+		Sub Constructor(typeParam As Introspection.TypeInfo, name As String)
+		  // Calling the overridden superclass constructor.
+		  // Note that this may need modifications if there are multiple constructor choices.
+		  // Possible constructor calls:
+		  // Constructor(name As String) -- From ParameterExpression
+		  // Constructor() -- From Expression
+		  Constructor name
+		  
+		  mType= typeParam
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1000
+		Sub Constructor(typeParam As Introspection.TypeInfo, name As String, isByRef As Boolean)
+		  // Calling the overridden superclass constructor.
+		  // Note that this may need modifications if there are multiple constructor choices.
+		  // Possible constructor calls:
+		  // Constructor(name As String) -- From ParameterExpression
+		  // Constructor() -- From Expression
+		  Constructor name
+		  
+		  mType= typeParam
+		  mIsByRef= isByRef
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1001
 		Protected Sub Constructor(name As String)
 		  // Calling the overridden superclass constructor.
@@ -13,9 +46,7 @@ Inherits EXS.Expressions.Expression
 
 	#tag Method, Flags = &h0
 		 Shared Function Make(typeParam As Introspection.TypeInfo, name As String, isByRef As Boolean) As ParameterExpression
-		  If IsByRef Then Return New ByRefParameterExpression(typeParam, name)
-		  
-		  Return New TypedParameterExpression(typeParam, name)
+		  Return New ParameterExpression(typeParam, name, IsByRef)
 		End Function
 	#tag EndMethod
 
@@ -29,11 +60,15 @@ Inherits EXS.Expressions.Expression
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return False
+			  return mIsByRef
 			End Get
 		#tag EndGetter
 		IsByRef As Boolean
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h1
+		Protected mIsByRef As Boolean
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected mName As String
