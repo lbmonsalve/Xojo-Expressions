@@ -159,8 +159,9 @@ End
 		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
 		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
 		  
-		  expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN), _
-		  New EXS.Expressions.BlockExpression(exprs)), paramI, paramN)
+		  expr= expr.Lambda(expr.Block(expr.While_(_
+		  expr.LessThan(paramI, paramN), New EXS.Expressions.BlockExpression(exprs)), expr.Constant(42))_
+		  , paramI, paramN)
 		  
 		  'Dim printer As New EXS.Misc.Printer
 		  'Dim str1 As String= printer.Print(expr)

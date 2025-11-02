@@ -308,7 +308,7 @@ Inherits TestGroup
 		  Assert.IsNotNil lambdaExpr, "IsNotNil lambdaExpr"
 		  
 		  Dim actual As String= lambdaExpr.ToString
-		  Assert.AreSame "arg => arg + 1", actual, "AreSame ""arg => arg + 1"", actual"
+		  Assert.AreSame "(arg) => arg + 1", actual, "AreSame ""(arg) => arg + 1"", actual"
 		End Sub
 	#tag EndMethod
 

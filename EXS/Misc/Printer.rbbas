@@ -62,14 +62,6 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function VisitDefault(expr As EXS.Expressions.DefaultExpression) As Variant
-		  // Parte de la interfaz EXS.Expressions.IVisitor.
-		  
-		  Return expr.ToString
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function VisitLambda(expr As EXS.Expressions.LambdaExpression) As Variant
 		  Dim params() As EXS.Expressions.ParameterExpression= expr.Parameters
 		  Dim sb() As String

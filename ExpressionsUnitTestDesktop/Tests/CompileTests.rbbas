@@ -10,7 +10,7 @@ Inherits TestGroup
 		  expr.Add(paramExpr, expr.Constant(1)), _
 		  paramExpr)
 		  Dim str1 As String= lambdaExpr.ToString
-		  Assert.AreSame "a => a + 1", str1, "AreSame ""a => a + 1"", str1"
+		  Assert.AreSame "(a) => a + 1", str1, "AreSame ""(a) => a + 1"", str1"
 		  
 		  Dim params() As Variant
 		  params.Append 1
@@ -23,7 +23,7 @@ Inherits TestGroup
 		  paramExpr)
 		  
 		  str1= lambdaExpr.ToString
-		  Assert.AreSame "a => a + "" world""", str1, "AreSame ""a => a + "" world"""", str1"
+		  Assert.AreSame "(a) => a + "" world""", str1, "AreSame ""(a) => a + "" world"""", str1"
 		  
 		  ReDim params(-1)
 		  params.Append "Hello"
@@ -41,7 +41,7 @@ Inherits TestGroup
 		  expr.And_(paramExpr, expr.Constant(True)), _
 		  paramExpr)
 		  Dim str1 As String= lambdaExpr.ToString
-		  Assert.AreSame "a => a & True", str1, "AreSame ""a => a & True"", str1"
+		  Assert.AreSame "(a) => a & True", str1, "AreSame ""(a) => a & True"", str1"
 		  
 		  Dim params() As Variant
 		  params.Append True
@@ -57,7 +57,7 @@ Inherits TestGroup
 		  expr.And_(paramExpr, expr.Constant(85)), _
 		  paramExpr)
 		  str1= lambdaExpr.ToString
-		  Assert.AreSame "a => a & 85", str1, "AreSame ""a => a & 85"", str1"
+		  Assert.AreSame "(a) => a & 85", str1, "AreSame ""(a) => a & 85"", str1"
 		  
 		  params(0)= 170
 		  result= lambdaExpr.Compile.Invoke(params)
@@ -183,7 +183,7 @@ Inherits TestGroup
 		  expr.Divide(paramExpr, expr.Constant(2)), _
 		  paramExpr)
 		  Dim str1 As String= lambdaExpr.ToString
-		  Assert.AreSame "a => a / 2", str1, "AreSame ""a => a / 2"", str1"
+		  Assert.AreSame "(a) => a / 2", str1, "AreSame ""(a) => a / 2"", str1"
 		  
 		  Dim params() As Variant
 		  params.Append 2
@@ -201,7 +201,7 @@ Inherits TestGroup
 		  expr.LeftShift(paramExpr, expr.Constant(2)), _
 		  paramExpr)
 		  Dim str1 As String= lambdaExpr.ToString
-		  Assert.AreSame "a => a << 2", str1, "AreSame ""a => a << 2"", str1"
+		  Assert.AreSame "(a) => a << 2", str1, "AreSame ""(a) => a << 2"", str1"
 		  
 		  Dim params() As Variant
 		  params.Append &b00011111
@@ -235,7 +235,7 @@ Inherits TestGroup
 		  expr.Modulo(paramExpr, expr.Constant(2)), _
 		  paramExpr)
 		  Dim str1 As String= lambdaExpr.ToString
-		  Assert.AreSame "a => a % 2", str1, "AreSame ""a => a % 2"", str1"
+		  Assert.AreSame "(a) => a % 2", str1, "AreSame ""(a) => a % 2"", str1"
 		  
 		  Dim params() As Variant
 		  params.Append 5
@@ -253,7 +253,7 @@ Inherits TestGroup
 		  expr.Multiply(paramExpr, expr.Constant(2)), _
 		  paramExpr)
 		  Dim str1 As String= lambdaExpr.ToString
-		  Assert.AreSame "a => a * 2", str1, "AreSame ""a => a * 2"", str1"
+		  Assert.AreSame "(a) => a * 2", str1, "AreSame ""(a) => a * 2"", str1"
 		  
 		  Dim params() As Variant
 		  params.Append 2
@@ -271,7 +271,7 @@ Inherits TestGroup
 		  expr.Or_(paramExpr, expr.Constant(False)), _
 		  paramExpr)
 		  Dim str1 As String= lambdaExpr.ToString
-		  Assert.AreSame "a => a | False", str1, "AreSame ""a => a | False"", str1"
+		  Assert.AreSame "(a) => a | False", str1, "AreSame ""(a) => a | False"", str1"
 		  
 		  Dim params() As Variant
 		  params.Append False
@@ -287,7 +287,7 @@ Inherits TestGroup
 		  expr.Or_(paramExpr, expr.Constant(85)), _
 		  paramExpr)
 		  str1= lambdaExpr.ToString
-		  Assert.AreSame "a => a | 85", str1, "AreSame ""a => a | 85"", str1"
+		  Assert.AreSame "(a) => a | 85", str1, "AreSame ""(a) => a | 85"", str1"
 		  
 		  params(0)= 170
 		  result= lambdaExpr.Compile.Invoke(params)
@@ -304,7 +304,7 @@ Inherits TestGroup
 		  expr.Power(paramExpr, expr.Constant(2)), _
 		  paramExpr)
 		  Dim str1 As String= lambdaExpr.ToString
-		  Assert.AreSame "a => a ^ 2", str1, "AreSame ""a => a ^ 2"", str1"
+		  Assert.AreSame "(a) => a ^ 2", str1, "AreSame ""(a) => a ^ 2"", str1"
 		  
 		  Dim params() As Variant
 		  params.Append 5
@@ -322,7 +322,7 @@ Inherits TestGroup
 		  expr.RightShift(paramExpr, expr.Constant(2)), _
 		  paramExpr)
 		  Dim str1 As String= lambdaExpr.ToString
-		  Assert.AreSame "a => a >> 2", str1, "AreSame ""a => a >> 2"", str1"
+		  Assert.AreSame "(a) => a >> 2", str1, "AreSame ""(a) => a >> 2"", str1"
 		  
 		  Dim params() As Variant
 		  params.Append &b00011111
@@ -340,7 +340,7 @@ Inherits TestGroup
 		  expr.Subtract(paramExpr, expr.Constant(1)), _
 		  paramExpr)
 		  Dim str1 As String= lambdaExpr.ToString
-		  Assert.AreSame "a => a - 1", str1, "AreSame ""a => a - 1"", str1"
+		  Assert.AreSame "(a) => a - 1", str1, "AreSame ""(a) => a - 1"", str1"
 		  
 		  Dim params() As Variant
 		  params.Append 1
@@ -358,7 +358,7 @@ Inherits TestGroup
 		  expr.XOr_(paramExpr, expr.Constant(False)), _
 		  paramExpr)
 		  Dim str1 As String= lambdaExpr.ToString
-		  Assert.AreSame "a => a ¿ False", str1, "AreSame ""a => a ¿ False"", str1"
+		  Assert.AreSame "(a) => a ¿ False", str1, "AreSame ""(a) => a ¿ False"", str1"
 		  
 		  Dim params() As Variant
 		  params.Append False
@@ -391,7 +391,7 @@ Inherits TestGroup
 		  expr.XOr_(paramExpr, expr.Constant(7)), _
 		  paramExpr)
 		  str1= lambdaExpr.ToString
-		  Assert.AreSame "a => a ¿ 7", str1, "AreSame ""a => a ¿ 7"", str1"
+		  Assert.AreSame "(a) => a ¿ 7", str1, "AreSame ""(a) => a ¿ 7"", str1"
 		  
 		  params(0)= 31
 		  result= lambdaExpr.Compile.Invoke(params)
