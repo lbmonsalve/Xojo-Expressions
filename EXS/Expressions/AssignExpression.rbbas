@@ -8,6 +8,20 @@ Inherits EXS.Expressions.BinaryExpression
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
+		Sub Constructor(left As ConstantExpression, right As Expression)
+		  // Calling the overridden superclass constructor.
+		  // Note that this may need modifications if there are multiple constructor choices.
+		  // Possible constructor calls:
+		  // Constructor(left As Expression, right As Expression) -- From BinaryExpression
+		  // Constructor() -- From Expression
+		  Super.Constructor left, right
+		  
+		  mNodeType= ExpressionType.Assign
+		  mType= left.Type
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1000
 		Sub Constructor(left As ParameterExpression, right As Expression)
 		  // Calling the overridden superclass constructor.
 		  // Note that this may need modifications if there are multiple constructor choices.

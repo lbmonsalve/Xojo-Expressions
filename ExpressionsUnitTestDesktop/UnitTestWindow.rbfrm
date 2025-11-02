@@ -150,64 +150,18 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // while:
+		  // compile:
 		  Dim expr As EXS.Expressions.Expression
-		  Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
-		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
+		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
+		  Dim lambdaExpr As EXS.Expressions.LambdaExpression= expr.Lambda(_
+		  expr.Add(paramExpr, expr.Constant(1)), _
+		  paramExpr)
 		  
-		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
-		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
-		  
-		  expr= expr.Lambda(expr.Block(expr.While_(_
-		  expr.LessThan(paramI, paramN), New EXS.Expressions.BlockExpression(exprs)), expr.Constant(42))_
-		  , paramI, paramN)
-		  
-		  'Dim printer As New EXS.Misc.Printer
-		  'Dim str1 As String= printer.Print(expr)
-		  
-		  Dim resolver As New EXS.Misc.Resolver(1, 10)
-		  Dim result As Variant
-		  Try
-		    result= resolver.Resolve(expr)
-		  Catch exc As RuntimeException
-		    Break
-		  End Try
-		  Dim str2 As String= expr.ToString
+		  Dim params() As Variant
+		  params.Append 1
+		  Dim result As Variant= lambdaExpr.Compile.Invoke(params)
+		  Dim str1 As String= lambdaExpr.ToString
 		  Break
-		  
-		  
-		  // conditional:
-		  'Dim expr As EXS.Expressions.Expression
-		  'Dim num As Integer= 100
-		  'expr= expr.Condition(_
-		  'expr.Constant(num> 10), _
-		  'expr.Constant("num > 10"), _
-		  'expr.Constant("num < 10") _
-		  ')
-		  '
-		  ''Dim printer As New EXS.Misc.Printer
-		  ''Dim str1 As String= printer.Print(expr)
-		  '
-		  'Dim resolver As New EXS.Misc.Resolver
-		  'Dim result As Variant
-		  'Try
-		  'result= resolver.Resolve(expr)
-		  'Catch exc As RuntimeException
-		  'Break
-		  'End Try
-		  'Break
-		  '
-		  'num= 9
-		  'expr= expr.Condition(_
-		  'expr.Constant(num> 10), _
-		  'expr.Constant("num > 10"), _
-		  'expr.Constant("num < 10") _
-		  ')
-		  '
-		  'result= resolver.Resolve(expr)
-		  'Dim str2 As String= expr.ToString
-		  'Break
 		  
 		  
 		  // boolean short-circuit
@@ -221,31 +175,6 @@ End
 		  ''Dim str1 As String= printer.Print(expr)
 		  '
 		  'Dim resolver As New EXS.Misc.Resolver
-		  'Dim result As Variant
-		  'Try
-		  'result= resolver.Resolve(expr)
-		  'Catch exc As RuntimeException
-		  'Break
-		  'End Try
-		  'Dim str2 As String= expr.ToString
-		  'Break
-		  
-		  
-		  // assign:
-		  'Dim expr As EXS.Expressions.Expression
-		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s1")
-		  '
-		  'Dim exprs() As EXS.Expressions.Expression
-		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  'exprs.Append expr.Assign(paramExpr, expr.Constant("world"))
-		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  '
-		  'expr= expr.Lambda(New EXS.Expressions.BlockExpression(exprs), paramExpr)
-		  '
-		  ''Dim printer As New EXS.Misc.Printer
-		  ''Dim str1 As String= printer.Print(expr)
-		  '
-		  'Dim resolver As New EXS.Misc.Resolver("hello")
 		  'Dim result As Variant
 		  'Try
 		  'result= resolver.Resolve(expr)
@@ -274,68 +203,6 @@ End
 		  'Catch exc As RuntimeException
 		  'Break
 		  'End Try
-		  'Dim str2 As String= expr.ToString
-		  'Break
-		  
-		  
-		  // misc block:
-		  'Dim expr As EXS.Expressions.Expression
-		  'expr= expr.Block(_
-		  'expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("1 + 2 * 3")),_
-		  'expr.Add(expr.Constant(1), expr.Multiply(expr.Constant(2), expr.Constant(3)))_
-		  ')
-		  '
-		  ''Dim printer As New EXS.Misc.Printer
-		  ''Dim str1 As String= printer.Print(expr)
-		  '
-		  'Dim resolver As New EXS.Misc.Resolver
-		  'Dim result As Variant= resolver.Resolve(expr)
-		  'Dim str2 As String= expr.ToString
-		  'Break
-		  
-		  
-		  // lambda resolver:
-		  'Dim expr As EXS.Expressions.Expression
-		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
-		  'expr= expr.Lambda(expr.Add(paramExpr, expr.Constant(5)), paramExpr)
-		  '
-		  ''Dim printer As New EXS.Misc.Printer
-		  ''Dim str1 As String= printer.Print(expr)
-		  '
-		  'Dim resolver As New EXS.Misc.Resolver(4)
-		  'Dim result As Variant= resolver.Resolve(expr)
-		  'Dim str3 As String= expr.ToString
-		  'Break
-		  
-		  
-		  // misc:
-		  'Dim expr As EXS.Expressions.Expression
-		  'expr= expr.Add(expr.Constant(1), expr.Multiply(expr.Constant(2), expr.Constant(2)))
-		  'expr= expr.And_(expr.Constant(True), expr.Constant(True))
-		  'expr= expr.LeftShift(expr.Constant(&b00011111), expr.Constant(2))
-		  
-		  'Dim o1 As New ObjectWithBinaryExprMethod(10)
-		  'Dim o2 As New ObjectWithBinaryExprMethod(20)
-		  'Dim o3 As ObjectWithBinaryExprMethod= o1+ o2
-		  'Dim methodAdd As Introspection.MethodInfo= Introspection.GetType(o1).GetMethodInfo("Operator_Add")
-		  'expr= expr.Add(expr.Constant(o1), expr.Constant(o2), methodAdd)
-		  'expr= expr.Subtract(expr.Constant(o1), expr.Constant(o2), Introspection.GetType(o1).GetMethodInfo("Operator_Subtract"))
-		  
-		  'expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!"))
-		  'expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "Random")
-		  'expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "GetEnvironment", expr.Constant("HOMEPATH"))
-		  
-		  'expr= expr.Convert(expr.Constant(40), EXS.GetType("String"))
-		  'expr= expr.Parameter(EXS.GetType("Integer"), "a")
-		  
-		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
-		  'expr= expr.Lambda(expr.Add(paramExpr, expr.Constant(5)), paramExpr)
-		  
-		  'Dim printer As New EXS.Misc.Printer
-		  'Dim str1 As String= printer.Print(expr)
-		  
-		  'Dim resolver As New EXS.Misc.Resolver
-		  'Dim result As Variant= resolver.Resolve(expr)
 		  'Dim str2 As String= expr.ToString
 		  'Break
 		  
@@ -401,29 +268,6 @@ End
 		  'End If
 		  'Break
 		  
-		  
-		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(GetType("Boolean"), "a")
-		  'Dim conditionExpr As EXS.Expressions.ConditionalExpression= expr.Condition(_
-		  'paramExpr, _
-		  'expr.Constant("true"), _
-		  'expr.Constant("false") _
-		  ')
-		  'Dim str1 As String= conditionExpr.ToString
-		  '
-		  'Dim params() As Variant
-		  'params.Append False
-		  'result= expr.Lambda(conditionExpr, paramExpr).Compile.Invoke(params)
-		  'Break
-		  
-		  'Dim num As Integer= 9
-		  'Dim conditionExpr As EXS.Expressions.ConditionalExpression= expr.Condition(_
-		  'expr.Constant(num> 10), _
-		  'expr.Constant("num is greater than 10"), _
-		  'expr.Constant("num is smaller than 10") _
-		  ')
-		  'Dim str1 As String= conditionExpr.ToString
-		  'result= expr.Lambda(conditionExpr).Compile.Invoke(Nil)
-		  'Break
 		  
 		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(GetType("Integer"), "a")
 		  'Dim lambdaExpr As EXS.Expressions.LambdaExpression= expr.Lambda(_
@@ -520,21 +364,6 @@ End
 		  'Array(New EXS.Expressions.ParameterExpression(GetType("String"), "var1")), _
 		  'expr.Constant(42) _
 		  ')
-		  'Break
-		  
-		  
-		  'Dim level As System.LogLevel= System.LogLevel.Emergency
-		  'System.Log System.LogLevel.Success, "hello"
-		  'Dim netw As Variant= System.Network
-		  'Break
-		  
-		  
-		  'Dim ti As Introspection.TypeInfo= GetTypeInfo(System)
-		  'Dim methods() As Introspection.MethodInfo= ti.GetMethods
-		  'Dim method As Introspection.MethodInfo= methods(0)
-		  'Dim params() As Variant
-		  'params.Append "hello"
-		  'method.Invoke Nil, params
 		  'Break
 		  
 		  
