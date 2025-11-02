@@ -310,7 +310,6 @@ End
 		  
 		  // misc:
 		  'Dim expr As EXS.Expressions.Expression
-		  'expr= New EXS.Expressions.DefaultExpression(GetTypeInfo(TCPSocket))
 		  'expr= expr.Add(expr.Constant(1), expr.Multiply(expr.Constant(2), expr.Constant(2)))
 		  'expr= expr.And_(expr.Constant(True), expr.Constant(True))
 		  'expr= expr.LeftShift(expr.Constant(&b00011111), expr.Constant(2))

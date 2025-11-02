@@ -12,7 +12,8 @@ Inherits TestController
 		  group = New VIntTests(Self, "VIntTests")
 		  group = New ExpressionsTests(Self, "ExpressionsTests")
 		  group = New CompileTests(Self, "CompileTests")
-		  'group = New MiscTests(Self, "MiscTests")
+		  group = New PrinterTests(Self, "PrinterTests")
+		  group = New ResolverTests(Self, "ResolverTests")
 		End Sub
 	#tag EndEvent
 
