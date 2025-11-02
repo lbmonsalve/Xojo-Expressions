@@ -48,7 +48,7 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function VisitAssign(expr As EXS.Expressions.AssignBinaryExpression) As Variant
+		Function VisitAssign(expr As EXS.Expressions.AssignExpression) As Variant
 		  Dim name As String= EXS.Expressions.ParameterExpression(expr.Left).Name
 		  Dim value As Variant= Resolve(expr.Right)
 		  
@@ -224,6 +224,16 @@ Implements EXS.Expressions.IVisitor
 		  Dim from As Variant= Resolve(expr.Operand)
 		  
 		  Return Convert(from, expr.Type.Name)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitWhile(expr As EXS.Expressions.WhileExpression) As Variant
+		  While Resolve(expr.Left)
+		    Call Resolve(expr.Right)
+		  Wend
+		  
+		  Return Nil
 		End Function
 	#tag EndMethod
 

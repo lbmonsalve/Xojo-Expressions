@@ -820,6 +820,18 @@ Protected Module EXS
 		    Return "(idx)"
 		  Case EXS.ExpressionType.Convert
 		    Return " -> "
+		  Case EXS.ExpressionType.LessThan
+		    Return " < "
+		  Case EXS.ExpressionType.LessThanOrEqual
+		    Return " <= "
+		  Case EXS.ExpressionType.GreaterThan
+		    Return " > "
+		  Case EXS.ExpressionType.GreaterThanOrEqual
+		    Return " >= "
+		  Case EXS.ExpressionType.While_
+		    Return " while "
+		  Case Else
+		    Break
 		  End Select
 		End Function
 	#tag EndMethod
@@ -1104,7 +1116,8 @@ Protected Module EXS
 		  OnesComplement = 82
 		  IsTrue = 83
 		  IsFalse = 84
-		Ret = 85
+		  Ret = 85
+		While_=86
 	#tag EndEnum
 
 	#tag Enum, Name = OpCodes, Flags = &h0

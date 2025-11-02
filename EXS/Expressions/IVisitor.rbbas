@@ -1,7 +1,7 @@
 #tag Interface
 Protected Interface IVisitor
 	#tag Method, Flags = &h0
-		Function VisitAssign(expr As EXS.Expressions.AssignBinaryExpression) As Variant
+		Function VisitAssign(expr As EXS.Expressions.AssignExpression) As Variant
 		  
 		End Function
 	#tag EndMethod
@@ -62,6 +62,12 @@ Protected Interface IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitUnary(expr As EXS.Expressions.UnaryExpression) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitWhile(expr As EXS.Expressions.WhileExpression) As Variant
 		  
 		End Function
 	#tag EndMethod

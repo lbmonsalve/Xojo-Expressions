@@ -150,37 +150,63 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // conditional:
+		  // while:
 		  Dim expr As EXS.Expressions.Expression
-		  Dim num As Integer= 100
-		  expr= expr.Condition(_
-		  expr.Constant(num> 10), _
-		  expr.Constant("num > 10"), _
-		  expr.Constant("num < 10") _
-		  )
+		  Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
+		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
+		  
+		  Dim exprs() As EXS.Expressions.Expression
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
+		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
+		  
+		  expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN), _
+		  New EXS.Expressions.BlockExpression(exprs)), paramI, paramN)
 		  
 		  'Dim printer As New EXS.Misc.Printer
 		  'Dim str1 As String= printer.Print(expr)
 		  
-		  Dim resolver As New EXS.Misc.Resolver
+		  Dim resolver As New EXS.Misc.Resolver(1, 10)
 		  Dim result As Variant
 		  Try
 		    result= resolver.Resolve(expr)
 		  Catch exc As RuntimeException
 		    Break
 		  End Try
-		  Break
-		  
-		  num= 9
-		  expr= expr.Condition(_
-		  expr.Constant(num> 10), _
-		  expr.Constant("num > 10"), _
-		  expr.Constant("num < 10") _
-		  )
-		  
-		  result= resolver.Resolve(expr)
 		  Dim str2 As String= expr.ToString
 		  Break
+		  
+		  
+		  // conditional:
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim num As Integer= 100
+		  'expr= expr.Condition(_
+		  'expr.Constant(num> 10), _
+		  'expr.Constant("num > 10"), _
+		  'expr.Constant("num < 10") _
+		  ')
+		  '
+		  ''Dim printer As New EXS.Misc.Printer
+		  ''Dim str1 As String= printer.Print(expr)
+		  '
+		  'Dim resolver As New EXS.Misc.Resolver
+		  'Dim result As Variant
+		  'Try
+		  'result= resolver.Resolve(expr)
+		  'Catch exc As RuntimeException
+		  'Break
+		  'End Try
+		  'Break
+		  '
+		  'num= 9
+		  'expr= expr.Condition(_
+		  'expr.Constant(num> 10), _
+		  'expr.Constant("num > 10"), _
+		  'expr.Constant("num < 10") _
+		  ')
+		  '
+		  'result= resolver.Resolve(expr)
+		  'Dim str2 As String= expr.ToString
+		  'Break
 		  
 		  
 		  // boolean short-circuit

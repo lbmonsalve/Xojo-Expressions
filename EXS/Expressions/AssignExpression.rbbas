@@ -1,5 +1,5 @@
 #tag Class
-Protected Class AssignBinaryExpression
+Protected Class AssignExpression
 Inherits EXS.Expressions.BinaryExpression
 	#tag Method, Flags = &h0
 		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant

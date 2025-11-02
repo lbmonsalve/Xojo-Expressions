@@ -82,7 +82,7 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub EmitExpression(expr As AssignBinaryExpression, begin As LabelMark, after As LabelMark)
+		Private Sub EmitExpression(expr As AssignExpression, begin As LabelMark, after As LabelMark)
 		  Dim icode As OpCodes
 		  If expr.Right IsA ConstantExpression Then
 		    icode= OpCodes.Store

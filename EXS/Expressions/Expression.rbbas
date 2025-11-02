@@ -58,7 +58,7 @@ Protected Class Expression
 		 Shared Function Assign(left As ParameterExpression, right As Expression) As BinaryExpression
 		  If Not left.Type.IsAssignable(right.Type) Then Raise GetRuntimeExc("Not left.Type.IsAssignable(right.Type)")
 		  
-		  Return New AssignBinaryExpression(left, right)
+		  Return New AssignExpression(left, right)
 		End Function
 	#tag EndMethod
 
@@ -191,6 +191,18 @@ Protected Class Expression
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function GreaterThan(left As Expression, right As Expression) As SimpleBinaryExpression
+		  Return New EXS.Expressions.SimpleBinaryExpression(EXS.ExpressionType.GreaterThan, left, right, EXS.GetType("Boolean"))
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function GreaterThanOrEqual(left As Expression, right As Expression) As SimpleBinaryExpression
+		  Return New EXS.Expressions.SimpleBinaryExpression(EXS.ExpressionType.GreaterThanOrEqual, left, right, EXS.GetType("Boolean"))
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function Lambda(body As Expression, ParamArray parameters As ParameterExpression) As LambdaExpression
 		  Return New LambdaExpression(body, parameters)
 		End Function
@@ -215,6 +227,18 @@ Protected Class Expression
 		  Raise GetRuntimeExc("Not method.ChkMethodParams(left.Type, right.Type)")
 		  
 		  Return New MethodBinaryExpression(ExpressionType.LeftShift, left, right, method.ReturnType, method)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function LessThan(left As Expression, right As Expression) As SimpleBinaryExpression
+		  Return New EXS.Expressions.SimpleBinaryExpression(EXS.ExpressionType.LessThan, left, right, EXS.GetType("Boolean"))
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function LessThanOrEqual(left As Expression, right As Expression) As SimpleBinaryExpression
+		  Return New EXS.Expressions.SimpleBinaryExpression(EXS.ExpressionType.LessThanOrEqual, left, right, EXS.GetType("Boolean"))
 		End Function
 	#tag EndMethod
 
@@ -418,6 +442,14 @@ Protected Class Expression
 	#tag Method, Flags = &h0
 		 Shared Function Variable(typeParam As Introspection.TypeInfo, name As String) As ParameterExpression
 		  Return ParameterExpression.Make(typeParam, name, False)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function While_(condition As Expression, body As Expression) As WhileExpression
+		  If body Is Nil Then Raise GetRuntimeExc("body Is Nil")
+		  
+		  Return New WhileExpression(condition, body)
 		End Function
 	#tag EndMethod
 

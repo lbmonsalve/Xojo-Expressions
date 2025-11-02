@@ -21,8 +21,8 @@ Inherits EXS.Expressions.Expression
 		    Dim blockExpr As BlockExpression= Expression.Block(unar,_
 		    New ReturnExpression(unar.Operand))
 		    Return blockExpr
-		  Case IsA AssignBinaryExpression
-		    Dim assi As AssignBinaryExpression= AssignBinaryExpression(body)
+		  Case IsA AssignExpression
+		    Dim assi As AssignExpression= AssignExpression(body)
 		    Dim blockExpr As BlockExpression= Expression.Block(assi,_
 		    New ReturnExpression(assi.Left))
 		    Return blockExpr
@@ -78,18 +78,14 @@ Inherits EXS.Expressions.Expression
 	#tag Method, Flags = &h0
 		Function ToString() As String
 		  Dim bs As New BinaryStream(New MemoryBlock(0))
-		  If mParameters.LastIdx= -1 Then // no params
-		    bs.Write "() => "
-		  ElseIf mParameters.LastIdx= 0 Then // one param
-		    bs.Write mParameters(0).ToString+ " => "
-		  Else // params
-		    bs.Write "("
-		    For i As Integer= 0 To mParameters.LastIdx
-		      bs.Write mParameters(i).ToString
-		      If i< mParameters.LastIdx Then bs.Write ", "
-		    Next
-		    bs.Write ")"
-		  End If
+		  
+		  bs.Write "("
+		  For i As Integer= 0 To mParameters.LastIdx
+		    bs.Write mParameters(i).ToString
+		    If i< mParameters.LastIdx Then bs.Write ", "
+		  Next
+		  bs.Write ") => "
+		  
 		  bs.Write mBody.ToString
 		  bs.Position= 0
 		  

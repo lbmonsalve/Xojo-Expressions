@@ -26,7 +26,7 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function VisitAssign(expr As EXS.Expressions.AssignBinaryExpression) As Variant
+		Function VisitAssign(expr As EXS.Expressions.AssignExpression) As Variant
 		  Return Parenthesize(expr.NodeType.ToStringSymbol, expr.Left, expr.Right)
 		End Function
 	#tag EndMethod
@@ -114,6 +114,12 @@ Implements EXS.Expressions.IVisitor
 	#tag Method, Flags = &h0
 		Function VisitUnary(expr As EXS.Expressions.UnaryExpression) As Variant
 		  Return expr.ToString
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function VisitWhile(expr As EXS.Expressions.WhileExpression) As Variant
+		  Return Parenthesize(expr.NodeType.ToStringSymbol, expr.Left, expr.Right)
 		End Function
 	#tag EndMethod
 
