@@ -152,16 +152,18 @@ End
 		Sub Action()
 		  // compile:
 		  Dim expr As EXS.Expressions.Expression
-		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
-		  Dim lambdaExpr As EXS.Expressions.LambdaExpression= expr.Lambda(_
-		  expr.Add(paramExpr, expr.Constant(1)), _
-		  paramExpr)
-		  
-		  Dim params() As Variant
-		  params.Append 1
-		  Dim result As Variant= lambdaExpr.Compile.Invoke(params)
-		  Dim str1 As String= lambdaExpr.ToString
+		  expr= expr.Lambda(expr.Constant(1))
+		  Dim compiler As New EXS.Expressions.Compiler
+		  compiler.Compile expr
 		  Break
+		  
+		  
+		  // binaryCode:
+		  'Dim bytecode As New EXS.Expressions.BinaryCode
+		  'Dim ffile As FolderItem= SpecialFolder.Documents.Child("bytecode.bin")
+		  'bytecode.Save ffile
+		  'Dim bytecode As New EXS.Expressions.BinaryCode(ffile)
+		  'Break
 		  
 		  
 		  // boolean short-circuit

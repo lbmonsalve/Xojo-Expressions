@@ -349,15 +349,6 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function GetFlags() As UInt64
-		  //Dim flags As UInt8= &b01111110 Or &b00000001
-		  //Return flags
-		  
-		  Return 0
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Shared Function GetMethod(code As Integer) As Introspection.MethodInfo
 		  Const kMethodNameSuffix= "Process"
 		  Dim methodName As String= kMethodNameSuffix+ OpCodesAsString(code)
@@ -398,57 +389,8 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Shared Function GetVariantValue(vartType As String, vartValue As MemoryBlock) As Variant
-		  Dim ret As Variant
-		  
-		  Select Case vartType
-		  Case "Int8", "Uint8"
-		    If vartValue.Size= 1 Then ret= vartValue.UInt8Value(0)
-		  Case "Int16", "Uint16"
-		    If vartValue.Size= 2 Then ret= vartValue.UInt16Value(0)
-		  Case "Int32", "Uint32", "Integer", "UInteger"
-		    If vartValue.Size= 4 Then ret= vartValue.UInt32Value(0)
-		  Case "Int64", "Uint64"
-		    If vartValue.Size= 8 Then ret= vartValue.UInt64Value(0)
-		  Case "Currency"
-		    If vartValue.Size= 4 Then ret= vartValue.CurrencyValue(0)
-		  Case "Single"
-		    If vartValue.Size= 4 Then ret= vartValue.SingleValue(0)
-		  Case "Doble"
-		    If vartValue.Size= 8 Then ret= vartValue.DoubleValue(0)
-		  Case "String", "Variant"
-		    ret= vartValue.StringValue(0, vartValue.Size)
-		  Case "Date"
-		    Break
-		  Case "DateTime"
-		    Break
-		  Case "Color"
-		    Break
-		  Case "Boolean"
-		    If vartValue.Size= 1 Then ret= vartValue.BooleanValue(0)
-		  Case Else
-		    Raise GetRuntimeExc(vartType+ " not implemented!")
-		  End Select
-		  
-		  Return ret
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Shared Function GetVersion() As MemoryBlock
-		  Dim mb As New MemoryBlock(3)
-		  mb.LittleEndian= False
-		  mb.UInt8Value(0)= kVersionMayor
-		  mb.UInt16Value(1)= kVersionMinor
-		  
-		  Return mb
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Sub Init()
-		  // use bigEndian for vint type
+		  // use bigEndian for vuint type
 		  
 		  mHeaderMB= New MemoryBlock(kStreamMinSize) // 12bytes
 		  mHeaderMB.LittleEndian= False // bigEndian
@@ -1302,94 +1244,6 @@ Implements ILambdaCompiler,ILambdaCompilerFriend
 		  End Select
 		End Function
 	#tag EndMethod
-
-
-	#tag Note, Name = Spec
-		
-		# Introduction
-		store in big-endian order  
-		use vUInts to encode unsigned integers [VLQ](https://en.wikipedia.org/wiki/Variable-length_quantity)  
-		
-		# Binary format
-		
-		'''
-		+--------------+
-		| Header       |
-		+--------------+
-		| Symbols      |
-		+--------------+
-		| Instructions |
-		+--------------+
-		'''
-		
-		'''
-		+--------+------+---------------------+
-		| offset | size | description         |
-		+--------+------+---------------------+
-		| 0      | 4    | magic: &hBEBECAFE   |
-		| 4      | 1    | mayor version       |
-		| 5      | 2    | minor version       |
-		| 7      | 1    | flags               |
-		| 8      | 2    | instructions offset |
-		| 10     | n    | symbols             |
-		| 10+n   | m    | instructions        |
-		+--------+------+---------------------+
-		'''
-		
-		# Instructions
-		instructions are variable-length in size  
-		instruction begin with 1byte as opCode folows by variable operands  
-		operands are coded in vUint format  
-		
-		+---------+-------+---------------------+
-		| offset  | size  | description         |
-		+---------+-------+---------------------+
-		| 0       | 1     | opCode              |
-		+---------+-------+---------------------+
-		| 1       | vUint | operands            |
-		| ...     | vUint | operands            |
-		+---------+-------+---------------------+
-		
-		## Opcode instructions
-		
-		Nop= &h00
-		
-		Load= &h01
-		LoadParam= &h02
-		
-		Store= &h03
-		StoreParam= &h04
-		
-		Call_= &h05
-		CallVirt= &h06
-		
-		Ret= &h07
-		RetParam= &h08
-		
-		Add= &h09
-		Subtract= &h0A
-		Multiply= &h0B
-		Divide= &h0C
-		Modulo= &h0D
-		Power= &h0E
-		
-		And_= &h10
-		Or_= &h11
-		ExclusiveOr= &h12
-		LeftShift= &h13
-		RightShift= &h14
-		
-		Jump= &h15
-		JumpTrue= &h16
-		JumpFalse= &h17
-		JumpEqual= &h18
-		JumpGreater= &h19
-		JumpGreaterOrEqual= &h1A
-		JumpLess= &h1B
-		JumpLessOrEqual= &h1C
-		
-		Convert= &h1D
-	#tag EndNote
 
 
 	#tag ComputedProperty, Flags = &h0

@@ -106,7 +106,7 @@ Inherits TestGroup
 		  Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
 		  
 		  Dim binfile As FolderItem= GetTemporaryFolderItem //SpecialFolder.Documents.Child("Expressions.bin")
-		  Dim lambdaCompiler As New EXS.Expressions.LambdaCompiler(expr.Lambda(blockExpr))
+		  Dim lambdaCompiler As EXS.Expressions.ILambdaCompiler= New EXS.Expressions.LambdaCompiler(expr.Lambda(blockExpr))
 		  lambdaCompiler.EmitLambdaBody
 		  lambdaCompiler.Save binfile
 		  Assert.IsTrue binfile.Exists, "IsTrue binfile.Exists"
@@ -117,7 +117,7 @@ Inherits TestGroup
 		  Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
 		  
 		  lambdaCompiler= New EXS.Expressions.LambdaCompiler(binfile, WeakAddressOf CompileLoading)
-		  Assert.IsFalse lambdaCompiler.Loaded, "IsFalse lambdaCompiler.Loaded"
+		  Assert.IsFalse EXS.Expressions.LambdaCompiler(lambdaCompiler).Loaded, "IsFalse lambdaCompiler.Loaded"
 		End Sub
 	#tag EndMethod
 

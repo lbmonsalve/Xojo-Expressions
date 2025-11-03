@@ -57,6 +57,15 @@ Protected Module EXS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Function GetFlags() As UInt64
+		  //Dim flags As UInt8= &b01111110 Or &b00000001
+		  //Return flags
+		  
+		  Return 0
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function GetLastExpression(Extends block As EXS.Expressions.BlockExpression) As EXS.Expressions.Expression
 		  Dim exprs() As EXS.Expressions.Expression= block.Expressions
@@ -127,6 +136,55 @@ Protected Module EXS
 		  RegisterDefaultTypes
 		  
 		  Return EXS.TypesUtils.Get(name)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function GetVariantValue(vartType As String, vartValue As MemoryBlock) As Variant
+		  Dim ret As Variant
+		  
+		  Select Case vartType
+		  Case "Int8", "Uint8"
+		    If vartValue.Size= 1 Then ret= vartValue.UInt8Value(0)
+		  Case "Int16", "Uint16"
+		    If vartValue.Size= 2 Then ret= vartValue.UInt16Value(0)
+		  Case "Int32", "Uint32", "Integer", "UInteger"
+		    If vartValue.Size= 4 Then ret= vartValue.UInt32Value(0)
+		  Case "Int64", "Uint64"
+		    If vartValue.Size= 8 Then ret= vartValue.UInt64Value(0)
+		  Case "Currency"
+		    If vartValue.Size= 4 Then ret= vartValue.CurrencyValue(0)
+		  Case "Single"
+		    If vartValue.Size= 4 Then ret= vartValue.SingleValue(0)
+		  Case "Doble"
+		    If vartValue.Size= 8 Then ret= vartValue.DoubleValue(0)
+		  Case "String", "Variant"
+		    ret= vartValue.StringValue(0, vartValue.Size)
+		  Case "Date"
+		    Break
+		  Case "DateTime"
+		    Break
+		  Case "Color"
+		    Break
+		  Case "Boolean"
+		    If vartValue.Size= 1 Then ret= vartValue.BooleanValue(0)
+		  Case Else
+		    Raise GetRuntimeExc(vartType+ " not implemented!")
+		  End Select
+		  
+		  Return ret
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function GetVersion() As MemoryBlock
+		  Dim mb As New MemoryBlock(3)
+		  mb.LittleEndian= False
+		  mb.UInt8Value(0)= kVersionMayor
+		  mb.UInt16Value(1)= kVersionMinor
+		  
+		  Return mb
+		  
 		End Function
 	#tag EndMethod
 
