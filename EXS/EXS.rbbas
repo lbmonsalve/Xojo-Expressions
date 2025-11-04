@@ -492,7 +492,7 @@ Protected Module EXS
 
 	#tag Method, Flags = &h0
 		Function MatchTypeWith(Extends values() As EXS.Expressions.ParameterExpression, varts() As Variant) As Boolean
-		  If values.LastIdx= -1 Or varts.LastIdxEXS= -1 Then Return False
+		  If values.LastIdx= -1 And varts.LastIdxEXS= -1 Then Return True
 		  If values.LastIdx<> varts.LastIdxEXS Then Return False
 		  
 		  For i As Integer= 0 To values.LastIdx
