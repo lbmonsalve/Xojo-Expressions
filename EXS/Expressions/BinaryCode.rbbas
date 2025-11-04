@@ -45,7 +45,7 @@ Protected Class BinaryCode
 		  bs.Position= bs.Position- 1
 		  Dim flags As UInt64= GetVUInt64Value(bs.Read(sizeByte))
 		  
-		  Dim instructionsPosition As UInt32= bs.ReadUInt16
+		  Dim instructionsPosition As UInt16= bs.ReadUInt16
 		  
 		  If Not (mLoading Is Nil) Then // RaiseEvent Loading
 		    If mLoading.Invoke(versionMajor, versionMinor, flags) Then Return
@@ -62,6 +62,65 @@ Protected Class BinaryCode
 		  mInstructionsBS= New BinaryStream(mInstructionsMB)
 		  mInstructionsBS.LittleEndian= False
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Disassemble() As String
+		  Dim sb() As String
+		  
+		  Dim bs As BinaryStream= mHeaderBS
+		  bs.Position= 0
+		  
+		  sb.Append "Header:"
+		  sb.Append "+--------+------+---------------------+"
+		  sb.Append "| offset | size | value               |"
+		  sb.Append "+--------+------+---------------------+"
+		  sb.Append "| 0      | 4    | magic  : 0x"+ Hex(bs.ReadUInt32)
+		  sb.Append "| 4      | 1    | version: "+ Str(bs.ReadUInt8)
+		  sb.Append "| 5      | 2    | minor  : "+ Str(bs.ReadUInt16)
+		  
+		  Dim sizeByte As UInt8= GetVUInt64Size(bs.ReadUInt8)
+		  bs.Position= bs.Position- 1
+		  Dim flags As UInt64= GetVUInt64Value(bs.Read(sizeByte))
+		  
+		  sb.Append "| 7      | "+ Str(sizeByte)+ "    | flags  : "+ Bin(flags)
+		  sb.Append "| "+ Str(bs.Position)+ "      | 2    | ioffset: "+ Str(bs.ReadUInt16)
+		  sb.Append "+--------+------+---------------------+"
+		  
+		  sb.Append "Symbols:"
+		  
+		  while Not bs.EndFileEXS
+		    Break
+		  Wend
+		  
+		  bs= mInstructionsBS
+		  bs.Position= 0
+		  
+		  sb.Append "Instructions:"
+		  
+		  while Not bs.EndFileEXS
+		    sb.Append DisassembleInstruction(bs)
+		  Wend
+		  
+		  Return Join(sb, EndOfLine.Windows)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function DisassembleInstruction(bs As BinaryStream) As String
+		  Dim offset As UInt64= bs.Position
+		  Dim instruction As UInt8= bs.ReadUInt8
+		  Dim opCode As OpCodes= instruction.ToOpCodes
+		  
+		  Select Case opCode
+		  Case OpCodes.Nop
+		    Return Str(offset, "00000")+ " "+ instruction.OpCodesToString
+		  Case Else
+		    Return "Unknown opcode 0x"+ Hex(instruction)
+		  End Select
+		  
+		  
+		End Function
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h0
@@ -122,9 +181,78 @@ Protected Class BinaryCode
 		+--------+------+---------------------+
 		'''
 		
+		# Symbols
+		The symbols are encoded in binary format as a key-value pairs:
+		
+		```
+		+-----+-------------------------+-------+
+		| key | value length (optional) | value | n pairs...
+		+-----+-------------------------+-------+
+		```
+		
+		The key, UInt8 number (most significant bit (MSB) first) has this info:
+		
+		Length = First 3 bits (0-7), length+1 in bytes of the value length when type is string.  
+		Type = Last 4 bits (0-15), type of symbol.
+		
+		Example 1: Length= 1, Type= 11 are key= `2B` in hexadecimal.  
+		Example 2: Length= 0, Type= 4 are key= `04` in hexadecimal.  
+		Example 3: Length= 3, Type= 15 are key= `6F` in hexadecimal.  
+		
+		The type of field could be:
+		
+		0 = Int8
+		1 = UInt8  
+		2 = Int16
+		3 = UInt16  
+		4 = Int32
+		5 = UInt32  
+		6 = Int64
+		7 = UInt64  
+		8, 9, 10, 11 unused
+		12 = Float  
+		13 = Double  
+		14 = Bool  
+		15 = String  
+		
+		When the type are 15 the bytes of length has the next bytes for store the string.
+		```
+		+-----+---------------+--------+
+		| key | string length | string |
+		+-----+---------------+--------+
+		```
+		
+		Code:
+		```
+		  Dim key, typ, lng As UInt8
+		  
+		  typ= 15
+		  lng= 7
+		  
+		  key= Bitwise.ShiftLeft(lng, 5) Or typ
+		  
+		  lng= Bitwise.ShiftRight(key, 5)
+		  typ= &b00001111 And key
+		  
+		  lng= 1
+		  typ= 11
+		  key= Bitwise.ShiftLeft(lng, 5) Or typ
+		  Dim example1 As String= "0x"+ Hex(key)
+		  
+		  lng= 0
+		  typ= 4
+		  key= Bitwise.ShiftLeft(lng, 5) Or typ
+		  Dim example2 As String= "0x"+ Hex(key)
+		  
+		  lng= 3
+		  typ= 15
+		  key= Bitwise.ShiftLeft(lng, 5) Or typ
+		  Dim example3 As String= "0x"+ Hex(key)
+		```
+		
 		# Instructions
 		instructions are variable-length in size  
-		instruction begin with 1byte as opCode folows by variable operands  
+		instruction begin with 1byte as opCode follows by variable operands  
 		operands are coded in vUint format  
 		
 		+---------+-------+---------------------+

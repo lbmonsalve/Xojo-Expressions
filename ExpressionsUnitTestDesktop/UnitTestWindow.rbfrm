@@ -150,19 +150,47 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // compile:
-		  Dim expr As EXS.Expressions.Expression
-		  expr= expr.Lambda(expr.Constant(1))
-		  Dim compiler As New EXS.Expressions.Compiler
-		  compiler.Compile expr
-		  Break
-		  
-		  
 		  // binaryCode:
-		  'Dim bytecode As New EXS.Expressions.BinaryCode
+		  Dim bytecode As New EXS.Expressions.BinaryCode
 		  'Dim ffile As FolderItem= SpecialFolder.Documents.Child("bytecode.bin")
 		  'bytecode.Save ffile
 		  'Dim bytecode As New EXS.Expressions.BinaryCode(ffile)
+		  Dim str1 As String= bytecode.Disassemble
+		  Break
+		  
+		  
+		  // symbol key:
+		  'Dim key, typ, lng As UInt8
+		  '
+		  'typ= 15
+		  'lng= 7
+		  '
+		  'key= Bitwise.ShiftLeft(lng, 5) Or typ
+		  '
+		  'lng= Bitwise.ShiftRight(key, 5)
+		  'typ= &b00001111 And key
+		  '
+		  'lng= 1
+		  'typ= 11
+		  'key= Bitwise.ShiftLeft(lng, 5) Or typ
+		  'Dim example1 As String= "0x"+ Hex(key)
+		  '
+		  'lng= 0
+		  'typ= 4
+		  'key= Bitwise.ShiftLeft(lng, 5) Or typ
+		  'Dim example2 As String= "0x"+ Hex(key)
+		  '
+		  'lng= 3
+		  'typ= 15
+		  'key= Bitwise.ShiftLeft(lng, 5) Or typ
+		  'Dim example3 As String= "0x"+ Hex(key)
+		  'Break
+		  
+		  // compile:
+		  'Dim expr As EXS.Expressions.Expression
+		  'expr= expr.Lambda(expr.Constant(1))
+		  'Dim compiler As New EXS.Expressions.Compiler
+		  'compiler.Compile expr
 		  'Break
 		  
 		  

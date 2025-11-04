@@ -492,6 +492,7 @@ Protected Module EXS
 
 	#tag Method, Flags = &h0
 		Function MatchTypeWith(Extends values() As EXS.Expressions.ParameterExpression, varts() As Variant) As Boolean
+		  If values.LastIdx= -1 And varts Is Nil Then Return True
 		  If values.LastIdx= -1 And varts.LastIdxEXS= -1 Then Return True
 		  If values.LastIdx<> varts.LastIdxEXS Then Return False
 		  
@@ -507,6 +508,75 @@ Protected Module EXS
 
 	#tag Method, Flags = &h21
 		Private Function OpCodesAsString(code As Integer) As String
+		  Select Case code
+		  Case &h00
+		    Return "Nop"
+		  Case &h01
+		    Return "Load"
+		  Case &h02
+		    Return "LoadParam"
+		  Case &h03
+		    Return "Store"
+		  Case &h04
+		    Return "StoreParam"
+		  Case &h05
+		    Return "Call"
+		  Case &h06
+		    Return "CallVirt"
+		  Case &h07
+		    Return "Ret"
+		  Case &h08
+		    Return "RetParam"
+		  Case &h09
+		    Return "Add"
+		  Case &h0A
+		    Return "Subtract"
+		  Case &h0B
+		    Return "Multiply"
+		  Case &h0C
+		    Return "Divide"
+		  Case &h0D
+		    Return "Modulo"
+		  Case &h0E
+		    Return "Power"
+		    
+		  Case &h10
+		    Return "And"
+		  Case &h11
+		    Return "Or"
+		  Case &h12
+		    Return "ExclusiveOr"
+		  Case &h13
+		    Return "LeftShift"
+		  Case &h14
+		    Return "RightShift"
+		  Case &h15
+		    Return "Jump"
+		  Case &h16
+		    Return "JumpTrue"
+		  Case &h17
+		    Return "JumpFalse"
+		  Case &h18
+		    Return "JumpEqual"
+		  Case &h19
+		    Return "JumpGreater"
+		  Case &h1A
+		    Return "JumpGreaterOrEqual"
+		  Case &h1B
+		    Return "JumpLess"
+		  Case &h1C
+		    Return "JumpLessOrEqual"
+		  Case &h1D
+		    Return "Convert"
+		    
+		  Case Else
+		    Raise GetRuntimeExc("cant decode ""OpCodes""")
+		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function OpCodesToString(Extends code As UInt8) As String
 		  Select Case code
 		  Case &h00
 		    Return "Nop"
@@ -676,7 +746,7 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToOpCodes(value As Integer) As OpCodes
+		Function ToOpCodes(Extends value As UInt8) As OpCodes
 		  Select Case value
 		  Case &h00
 		    Return OpCodes.Nop
@@ -1078,7 +1148,7 @@ Protected Module EXS
 	#tag Constant, Name = kStreamMagicHeader, Type = Double, Dynamic = False, Default = \"&hBEBECAFE", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = kStreamMinSize, Type = Double, Dynamic = False, Default = \"12", Scope = Private
+	#tag Constant, Name = kStreamMinSize, Type = Double, Dynamic = False, Default = \"10", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = kVersionMayor, Type = Double, Dynamic = False, Default = \"0", Scope = Private
