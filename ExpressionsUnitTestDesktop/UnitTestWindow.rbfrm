@@ -150,13 +150,41 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // binaryCode:
-		  Dim bytecode As New EXS.Expressions.BinaryCode
-		  'Dim ffile As FolderItem= SpecialFolder.Documents.Child("bytecode.bin")
-		  'bytecode.Save ffile
-		  'Dim bytecode As New EXS.Expressions.BinaryCode(ffile)
-		  Dim str1 As String= bytecode.Disassemble
+		  // compile
+		  Dim expr As EXS.Expressions.Expression
+		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
+		  expr= expr.Lambda(paramExpr, paramExpr) // expr.Constant("hello")
+		  
+		  Dim compiler As New EXS.Expressions.Compiler
+		  compiler.Compile expr
+		  
+		  Dim bcode As EXS.Expressions.BinaryCode= compiler.BinaryCode
+		  Dim str1 As String= bcode.Disassemble
+		  
+		  'bcode.Save SpecialFolder.Documents.Child("bytecode.bin")
 		  Break
+		  
+		  
+		  // binaryCode:
+		  'Dim bytecode As New EXS.Expressions.BinaryCode
+		  'Dim ffile As FolderItem= SpecialFolder.Documents.Child("bytecode.bin")
+		  'Dim bytecode As New EXS.Expressions.BinaryCode(ffile)
+		  'Dim str1 As String= bytecode.Disassemble
+		  
+		  'Dim idx As Integer= bytecode.StoreSymbol("hola")
+		  'idx= bytecode.StoreSymbol("mundo")
+		  'idx= bytecode.StoreSymbol("hola")
+		  'idx= bytecode.StoreSymbol(GetTypeInfo(TCPSocket))
+		  'idx= bytecode.StoreSymbol(New EXS.Expressions.ConstantExpression(11))
+		  'idx= bytecode.StoreSymbol(New EXS.Expressions.ConstantExpression(1.1))
+		  'idx= bytecode.StoreSymbol(New EXS.Expressions.ConstantExpression(False))
+		  '
+		  'bytecode.EmitCode EXS.OpCodes.Ret
+		  'bytecode.EmitValue idx
+		  'Dim str2 As String= bytecode.Disassemble
+		  
+		  'bytecode.Save SpecialFolder.Documents.Child("bytecode.bin")
+		  'Break
 		  
 		  
 		  // symbol key:
@@ -416,6 +444,13 @@ End
 		  'Dim vart1 As Variant= "1"
 		  'Dim vart2 As Variant= 2
 		  'Dim vart3 As Variant= vart1+ vart2
+		  
+		  'Dim i8 As Int8= 108
+		  'Dim u8 As UInt8= 255
+		  'Dim v1 As Variant= i8
+		  'Dim vtype As Integer= v1.Type
+		  'v1= u8
+		  'vtype= v1.Type
 		  'Break
 		  
 		  
