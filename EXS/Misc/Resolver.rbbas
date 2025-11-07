@@ -4,7 +4,7 @@ Implements EXS.Expressions.IVisitor
 	#tag Method, Flags = &h0
 		Sub Constructor(ParamArray paramValues As Variant)
 		  mParamValues= paramValues
-		  mEnv= New EXS.Expressions.Env
+		  mEnv= New Env
 		End Sub
 	#tag EndMethod
 
@@ -27,9 +27,9 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function ResolveBlock(expressions() As EXS.Expressions.Expression, newEnv As EXS.Expressions.Env) As Variant
+		Private Function ResolveBlock(expressions() As EXS.Expressions.Expression, newEnv As Env) As Variant
 		  Dim mRetValue As Variant
-		  Dim previous As EXS.Expressions.Env= mEnv
+		  Dim previous As Env= mEnv
 		  
 		  Try
 		    #pragma BreakOnExceptions Off
@@ -60,7 +60,7 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitBlock(expr As EXS.Expressions.BlockExpression) As Variant
-		  Return ResolveBlock(expr.Expressions, New EXS.Expressions.Env(mEnv))
+		  Return ResolveBlock(expr.Expressions, New Env(mEnv))
 		End Function
 	#tag EndMethod
 
@@ -205,6 +205,12 @@ Implements EXS.Expressions.IVisitor
 		  Case EXS.ExpressionType.Divide
 		    Return left/ right
 		    
+		  Case EXS.ExpressionType.Modulo
+		    Return left Mod right
+		    
+		  Case EXS.ExpressionType.Power
+		    Return left^ right
+		    
 		  End Select
 		  
 		  Return Nil
@@ -231,7 +237,7 @@ Implements EXS.Expressions.IVisitor
 
 
 	#tag Property, Flags = &h21
-		Private mEnv As EXS.Expressions.Env
+		Private mEnv As Env
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

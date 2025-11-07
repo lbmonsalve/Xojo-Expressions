@@ -199,6 +199,12 @@ Protected Class Expression
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function Equal(left As Expression, right As Expression) As SimpleBinaryExpression
+		  Return New EXS.Expressions.SimpleBinaryExpression(EXS.ExpressionType.Equal, left, right, EXS.GetType("Boolean"))
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function GreaterThan(left As Expression, right As Expression) As SimpleBinaryExpression
 		  Return New EXS.Expressions.SimpleBinaryExpression(EXS.ExpressionType.GreaterThan, left, right, EXS.GetType("Boolean"))
 		End Function
@@ -293,6 +299,12 @@ Protected Class Expression
 		  Raise GetRuntimeExc("Not method.ChkMethodParams(left.Type, right.Type)")
 		  
 		  Return New MethodBinaryExpression(ExpressionType.Multiply, left, right, method.ReturnType, method)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function NotEqual(left As Expression, right As Expression) As SimpleBinaryExpression
+		  Return New EXS.Expressions.SimpleBinaryExpression(EXS.ExpressionType.NotEqual, left, right, EXS.GetType("Boolean"))
 		End Function
 	#tag EndMethod
 

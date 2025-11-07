@@ -150,19 +150,55 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // compile
+		  // parameter store header
 		  Dim expr As EXS.Expressions.Expression
-		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
-		  expr= expr.Lambda(paramExpr, paramExpr) // expr.Constant("hello")
+		  'expr= expr.Constant("hello")
+		  'expr= expr.Parameter(EXS.GetType("Integer"), "a")
+		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "b")
+		  expr= expr.Lambda(expr.Add(expr.Multiply(paramExpr, expr.Constant(2)), expr.Constant(3)), paramExpr)
 		  
 		  Dim compiler As New EXS.Expressions.Compiler
 		  compiler.Compile expr
+		  Dim str1 As String= compiler.BinaryCode.Disassemble
 		  
-		  Dim bcode As EXS.Expressions.BinaryCode= compiler.BinaryCode
-		  Dim str1 As String= bcode.Disassemble
+		  Dim dmb As New MemoryBlock(0)
+		  Dim dbs As New BinaryStream(dmb)
 		  
-		  'bcode.Save SpecialFolder.Documents.Child("bytecode.bin")
+		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, dbs)
+		  Dim result As Variant= runner.Run(2)
+		  Dim str2 As String= DefineEncoding(dmb, Encodings.UTF8)
+		  Dim str3 As String= expr.ToString
 		  Break
+		  
+		  
+		  // runner
+		  'Dim expr As EXS.Expressions.Expression
+		  ''expr= expr.Constant(20)
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
+		  'expr= expr.Lambda(expr.Constant("hello"), paramExpr) // expr.Constant("hello")
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler
+		  'compiler.Compile expr
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode)
+		  'Dim result As Variant= runner.Run("world")
+		  'Dim str1 As String= compiler.BinaryCode.Disassemble
+		  'Break
+		  
+		  
+		  // compile
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
+		  'expr= expr.Lambda(paramExpr, paramExpr) // expr.Constant("hello")
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler
+		  'compiler.Compile expr
+		  '
+		  'Dim bcode As EXS.Expressions.BinaryCode= compiler.BinaryCode
+		  'Dim str1 As String= bcode.Disassemble
+		  '
+		  ''bcode.Save SpecialFolder.Documents.Child("bytecode.bin")
+		  'Break
 		  
 		  
 		  // binaryCode:
@@ -196,7 +232,7 @@ End
 		  'key= Bitwise.ShiftLeft(lng, 5) Or typ
 		  '
 		  'lng= Bitwise.ShiftRight(key, 5)
-		  'typ= &b00001111 And key
+		  'typ= &b00011111 And key
 		  '
 		  'lng= 1
 		  'typ= 11

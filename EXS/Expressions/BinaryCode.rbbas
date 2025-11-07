@@ -64,6 +64,9 @@ Protected Class BinaryCode
 		  mInstructionsBS.LittleEndian= False
 		  
 		  Init
+		  
+		  // TODO: load symbols
+		  Break
 		End Sub
 	#tag EndMethod
 
@@ -94,7 +97,7 @@ Protected Class BinaryCode
 		  
 		  sb.Append "# Symbols"
 		  
-		  while Not bs.EndFileEXS
+		  While Not bs.EndFileEXS
 		    sb.Append DisassembleSymbol(bs, idx)
 		    idx= idx+ 1
 		  Wend
@@ -104,11 +107,11 @@ Protected Class BinaryCode
 		  
 		  sb.Append "# Instructions"
 		  
-		  while Not bs.EndFileEXS
+		  While Not bs.EndFileEXS
 		    sb.Append DisassembleInstruction(bs)
 		  Wend
 		  
-		  Return Join(sb, EndOfLine.Windows)
+		  Return Join(sb, EndOfLine.UNIX)
 		End Function
 	#tag EndMethod
 
@@ -121,41 +124,36 @@ Protected Class BinaryCode
 		  Select Case opCode
 		  Case OpCodes.Nop
 		    Return Str(offset, "00000")+ " "+ instruction.OpCodesToString
+		    
 		  Case OpCodes.Ret
-		    Dim sizeByte As UInt8= GetVUInt64Size(mInstructionsBS.ReadUInt8)
-		    mInstructionsBS.Position= mInstructionsBS.Position- 1
-		    
-		    Dim idx As Integer= GetVUInt64Value(mInstructionsBS.Read(sizeByte))
+		    Dim idx As Integer= GetVUInt(mInstructionsBS)
 		    
 		    Return Str(offset, "00000")+ " "+ instruction.OpCodesToString+ _
-		    " idx: "+ Str(idx)
+		    " "+ Str(idx)
+		    
 		  Case OpCodes.Load
-		    Dim sizeByte As UInt8= GetVUInt64Size(mInstructionsBS.ReadUInt8)
-		    mInstructionsBS.Position= mInstructionsBS.Position- 1
-		    
-		    Dim idx As Integer= GetVUInt64Value(mInstructionsBS.Read(sizeByte))
+		    Dim idx As Integer= GetVUInt(mInstructionsBS)
 		    
 		    Return Str(offset, "00000")+ " "+ instruction.OpCodesToString+ _
-		    " idx: "+ Str(idx)
+		    " "+ Str(idx)
+		    
+		  Case OpCodes.And_, OpCodes.Or_, OpCodes.ExclusiveOr, OpCodes.LeftShift, _
+		    OpCodes.RightShift, OpCodes.Greater, OpCodes.GreaterOrEqual, _
+		    OpCodes.Less, OpCodes.LessOrEqual, OpCodes.Equal, OpCodes.NotEqual, _
+		    OpCodes.Add, OpCodes.Subtract, OpCodes.Multiply, OpCodes.Divide, _
+		    OpCodes.Modulo, OpCodes.Power
+		    Return Str(offset, "00000")+ " "+ instruction.OpCodesToString
+		    
 		  Case OpCodes.Convert
-		    Dim sizeByte As UInt8= GetVUInt64Size(mInstructionsBS.ReadUInt8)
-		    mInstructionsBS.Position= mInstructionsBS.Position- 1
-		    
-		    Dim idxParam As Integer= GetVUInt64Value(mInstructionsBS.Read(sizeByte))
-		    
-		    sizeByte= GetVUInt64Size(mInstructionsBS.ReadUInt8)
-		    mInstructionsBS.Position= mInstructionsBS.Position- 1
-		    
-		    Dim idxType As Integer= GetVUInt64Value(mInstructionsBS.Read(sizeByte))
+		    Dim idx As Integer= GetVUInt(mInstructionsBS)
+		    Dim idxType As Integer= GetVUInt(mInstructionsBS)
 		    
 		    Return Str(offset, "00000")+ " "+ instruction.OpCodesToString+ _
-		    " idx: "+ Str(idxParam)+ " idxType: "+ Str(idxType)
+		    " "+ Str(idx)+ " idxType: "+ Str(idxType)
 		    
 		  Case Else
 		    Return "Unknown opcode 0x"+ Hex(instruction)
 		  End Select
-		  
-		  
 		End Function
 	#tag EndMethod
 
@@ -163,26 +161,26 @@ Protected Class BinaryCode
 		Private Function DisassembleSymbol(bs As BinaryStream, idx As UInt32) As String
 		  Dim key As UInt8= bs.ReadUInt8
 		  Dim lng As Integer= Bitwise.ShiftRight(key, 5)
-		  Dim typ As Integer= &b00001111 And key
+		  Dim typ As Integer= &b00011111 And key
 		  Dim offset As UInt64= bs.Position
 		  
 		  Select Case typ
-		  Case 4 // Int32
+		  Case Integer(SymbolType.I32) // Int32
 		    Dim value As Int32= bs.ReadInt32
 		    Return Str(offset, "00000")+ " i32("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(value)
-		  Case 6 // Int64
+		  Case Integer(SymbolType.I64) // Int64
 		    Dim value As Int64= bs.ReadInt64
 		    Return Str(offset, "00000")+ " i64("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(value)
-		  Case 12 // Single
+		  Case Integer(SymbolType.Float) // Single
 		    Dim value As Single= bs.ReadSingle
 		    Return Str(offset, "00000")+ " f32("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(value)
-		  Case 13 // Double
+		  Case Integer(SymbolType.Double) // Double
 		    Dim value As Double= bs.ReadDouble
 		    Return Str(offset, "00000")+ " f64("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(value)
-		  Case 14 // Boolean
+		  Case Integer(SymbolType.Bool) // Boolean
 		    Dim value As Boolean= bs.ReadBoolean
 		    Return Str(offset, "00000")+ " bol("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(value)
-		  Case 15 // string
+		  Case Integer(SymbolType.String) // string
 		    Dim value As String
 		    If lng= 0 Then
 		      Dim size As UInt8= bs.ReadUInt8
@@ -197,22 +195,28 @@ Protected Class BinaryCode
 		    End If
 		    Return Str(offset, "00000")+ " str("+ Str(typ)+ ") "+ Str(idx)+ " """+ value+ """"
 		    
-		  Case 0 // Int8
+		  Case Integer(SymbolType.Parameter)
+		    Dim idxName As Integer= GetVUInt(bs)
+		    Dim idxType As Integer= GetVUInt(bs)
+		    
+		    Return Str(offset, "00000")+ " prm("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(idxName)+ " "+ Str(idxType)
+		    
+		  Case Integer(SymbolType.I8) // Int8
 		    Dim value As Int8= bs.ReadInt8
 		    Return Str(offset, "00000")+ " i8("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(value)
-		  Case 1 // UInt8
+		  Case Integer(SymbolType.U8) // UInt8
 		    Dim value As UInt8= bs.ReadUInt8
 		    Return Str(offset, "00000")+ " u8("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(value)
-		  Case 2 // Int16
+		  Case Integer(SymbolType.I16) // Int16
 		    Dim value As Int16= bs.ReadInt16
 		    Return Str(offset, "00000")+ " i16("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(value)
-		  Case 3 // UInt16
+		  Case Integer(SymbolType.U16) // UInt16
 		    Dim value As UInt16= bs.ReadUInt16
 		    Return Str(offset, "00000")+ " u16("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(value)
-		  Case 5 // UInt32
+		  Case Integer(SymbolType.U32) // UInt32
 		    Dim value As UInt32= bs.ReadUInt32
 		    Return Str(offset, "00000")+ " u32("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(value)
-		  Case 7 // UInt64
+		  Case Integer(SymbolType.U64) // UInt64
 		    Dim value As UInt64= bs.ReadUInt64
 		    Return Str(offset, "00000")+ " u64("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(value)
 		    
@@ -237,7 +241,7 @@ Protected Class BinaryCode
 	#tag Method, Flags = &h21
 		Private Sub Init()
 		  mSymbolCache= New Dictionary
-		  
+		  ReDim mSymbols(-1)
 		End Sub
 	#tag EndMethod
 
@@ -276,19 +280,19 @@ Protected Class BinaryCode
 		  
 		  Select Case valueType
 		  Case 2 // integer Int32
-		    mHeaderBS.WriteUInt8 4
+		    mHeaderBS.WriteUInt8 Integer(SymbolType.I32)
 		    mHeaderBS.WriteInt32 value.Int32Value
 		  Case 3 // long Int64
-		    mHeaderBS.WriteUInt8 6
+		    mHeaderBS.WriteUInt8 Integer(SymbolType.I64)
 		    mHeaderBS.WriteInt64 value.Int64Value
 		  Case 4 // single
-		    mHeaderBS.WriteUInt8 12
+		    mHeaderBS.WriteUInt8 Integer(SymbolType.Float)
 		    mHeaderBS.WriteSingle value.SingleValue
 		  Case 5, 6 // double
-		    mHeaderBS.WriteUInt8 13
+		    mHeaderBS.WriteUInt8 Integer(SymbolType.Double)
 		    mHeaderBS.WriteDouble value.DoubleValue
 		  Case 7 // date as u64
-		    mHeaderBS.WriteUInt8 13
+		    mHeaderBS.WriteUInt8 Integer(SymbolType.Double)
 		    mHeaderBS.WriteDouble value.DateValue.TotalSeconds
 		  Case 8 // string
 		    Return StoreSymbol(value.StringValue)
@@ -296,33 +300,37 @@ Protected Class BinaryCode
 		    Break
 		    'Dim mb As MemoryBlock= GetVUInt64(GetObjectID(expr))
 		  Case 11 // boolean
-		    mHeaderBS.WriteUInt8 14
+		    mHeaderBS.WriteUInt8 Integer(SymbolType.Bool)
 		    mHeaderBS.WriteBoolean value.BooleanValue
 		  Case Else
 		    Raise GetRuntimeExc("variant type not implemented!")
 		  End Select
 		  mHeaderMB.UInt16Value(mHeaderFirstInstruction)= mHeaderBS.Length
 		  
-		  mSymbolCache.Value(value)= 0
+		  mSymbols.Append value
+		  mSymbolCache.Value(value)= mSymbols.LastIdxEXS
 		  
-		  For i As Integer= 0 To mSymbolCache.Count- 1
-		    If mSymbolCache.Key(i)= value Then
-		      mSymbolCache.Value(value)= i
-		      Return i
-		    End If
-		  Next
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function StoreSymbol(ti As Introspection.TypeInfo) As Integer
-		  Return StoreSymbol(ti.FullName)
+		  Return mSymbols.LastIdxEXS
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function StoreSymbol(expr As ParameterExpression) As Integer
-		  Return StoreSymbol(expr.Name)
+		  If mSymbolCache.HasKey(expr) Then Return mSymbolCache.Value(expr).IntegerValue
+		  
+		  Dim name As Integer= StoreSymbol(expr.Name)
+		  Dim typ As Integer= StoreSymbol(expr.Type.FullName)
+		  
+		  mHeaderBS.WriteUInt8 Integer(SymbolType.Parameter)
+		  mHeaderBS.Write GetVUInt64(name)
+		  mHeaderBS.Write GetVUInt64(typ)
+		  
+		  mHeaderMB.UInt16Value(mHeaderFirstInstruction)= mHeaderBS.Length
+		  
+		  mSymbols.Append expr
+		  mSymbolCache.Value(expr)= mSymbols.LastIdxEXS
+		  
+		  Return mSymbols.LastIdxEXS
 		End Function
 	#tag EndMethod
 
@@ -333,10 +341,10 @@ Protected Class BinaryCode
 		  Dim lng As Integer= s.LenB
 		  
 		  If lng< &hFF Then
-		    mHeaderBS.WriteUInt8 15
+		    mHeaderBS.WriteUInt8 Integer(SymbolType.String)
 		    mHeaderBS.WriteUInt8 lng
 		  ElseIf lng< &hFFFF Then
-		    mHeaderBS.WriteUInt8 Bitwise.ShiftLeft(1, 5) Or 15
+		    mHeaderBS.WriteUInt8 Bitwise.ShiftLeft(1, 5) Or 14
 		    mHeaderBS.WriteUInt16 lng
 		  Else
 		    Raise GetRuntimeExc("length of string greater than 0xFFFF")
@@ -345,14 +353,16 @@ Protected Class BinaryCode
 		  mHeaderBS.Write s
 		  mHeaderMB.UInt16Value(mHeaderFirstInstruction)= mHeaderBS.Length
 		  
-		  mSymbolCache.Value(s)= 0
+		  mSymbols.Append s
+		  mSymbolCache.Value(s)= mSymbols.LastIdxEXS
 		  
-		  For i As Integer= 0 To mSymbolCache.Count- 1
-		    If mSymbolCache.Key(i)= s Then
-		      mSymbolCache.Value(s)= i
-		      Return i
-		    End If
-		  Next
+		  Return mSymbols.LastIdxEXS
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Symbols() As Variant()
+		  Return mSymbols
 		End Function
 	#tag EndMethod
 
@@ -401,7 +411,7 @@ Protected Class BinaryCode
 		The key, UInt8 number (most significant bit (MSB) first) has this info:  
 		
 		Length = First 3 bits (0-7), length+1 in bytes of the value length when type is string.  
-		Type = Last 4 bits (0-15), type of symbol.  
+		Type = Last 5 bits (0-32), type of symbol.  
 		
 		Example 1: Length= 1, Type= 11 are key= `2B` in hexadecimal.  
 		Example 2: Length= 0, Type= 4 are key= `04` in hexadecimal.  
@@ -409,23 +419,25 @@ Protected Class BinaryCode
 		
 		The type of field could be:
 		
-		0 = Int8
+		0 = Int8  
 		1 = UInt8  
-		2 = Int16
+		2 = Int16  
 		3 = UInt16  
-		4 = Int32
+		4 = Int32  
 		5 = UInt32  
-		6 = Int64
+		6 = Int64  
 		7 = UInt64  
-		8, 9, 10, 11 unused
-		12 = Float  
-		13 = Double  
-		14 = Bool  
-		15 = String  
+		8, 9 unused  
+		10 = Float  
+		11 = Double  
+		12 = Bool  
+		13 = String  
+		14 = Object  
+		15 = Parameter  
 		
 		the type determine the length of value: i8, u8: 1byte; i16, u16: 2Bytes;...
 		
-		When the type are 15 the bytes of length has the next bytes for store the string.
+		When the type are 14 the bytes of length has the next bytes for store the string.
 		```
 		+-----+---------------+--------+
 		| key | string length | string |
@@ -442,7 +454,7 @@ Protected Class BinaryCode
 		  key= Bitwise.ShiftLeft(lng, 5) Or typ
 		  
 		  lng= Bitwise.ShiftRight(key, 5)
-		  typ= &b00001111 And key
+		  typ= &b00011111 And key
 		  
 		  lng= 1
 		  typ= 11
@@ -580,14 +592,9 @@ Protected Class BinaryCode
 		Private mSymbolCache As Dictionary
 	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  Return mSymbolCache
-			End Get
-		#tag EndGetter
-		Symbols As Dictionary
-	#tag EndComputedProperty
+	#tag Property, Flags = &h21
+		Private mSymbols() As Variant
+	#tag EndProperty
 
 
 	#tag ViewBehavior

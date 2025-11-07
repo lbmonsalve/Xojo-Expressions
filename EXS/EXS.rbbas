@@ -189,6 +189,15 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetVUInt(bs As BinaryStream) As UInt64
+		  Dim sizeByte As UInt8= GetVUInt64Size(bs.ReadUInt8)
+		  bs.Position= bs.Position- 1
+		  
+		  Return GetVUInt64Value(bs.Read(sizeByte))
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetVUInt64(value As UInt64) As MemoryBlock
 		  Dim mValue As MemoryBlock
 		  
@@ -569,6 +578,20 @@ Protected Module EXS
 		  Case &h1D
 		    Return "Convert"
 		    
+		  Case &h2A
+		    Return "Greater"
+		  Case &h2B
+		    Return "GreaterOrEqual"
+		  Case &h2C
+		    Return "Less"
+		  Case &h2D
+		    Return "LessOrEqual"
+		    
+		  Case &h3A
+		    Return "Equal"
+		  Case &h3B
+		    Return "NotEqual"
+		    
 		  Case Else
 		    Raise GetRuntimeExc("cant decode ""OpCodes""")
 		  End Select
@@ -637,6 +660,20 @@ Protected Module EXS
 		    Return "JumpLessOrEqual"
 		  Case &h1D
 		    Return "Convert"
+		    
+		  Case &h2A
+		    Return "Greater"
+		  Case &h2B
+		    Return "GreaterOrEqual"
+		  Case &h2C
+		    Return "Less"
+		  Case &h2D
+		    Return "LessOrEqual"
+		    
+		  Case &h3A
+		    Return "Equal"
+		  Case &h3B
+		    Return "NotEqual"
 		    
 		  Case Else
 		    Raise GetRuntimeExc("cant decode ""OpCodes""")
@@ -721,6 +758,7 @@ Protected Module EXS
 		    Return OpCodes.Modulo
 		  Case EXS.ExpressionType.Power
 		    Return OpCodes.Power
+		    
 		  Case EXS.ExpressionType.And_
 		    Return OpCodes.And_
 		  Case EXS.ExpressionType.Or_
@@ -733,6 +771,21 @@ Protected Module EXS
 		    Return OpCodes.RightShift
 		  Case EXS.ExpressionType.Convert
 		    Return OpCodes.Convert
+		    
+		  Case EXS.ExpressionType.GreaterThan
+		    Return OpCodes.Greater
+		  Case EXS.ExpressionType.GreaterThanOrEqual
+		    Return OpCodes.GreaterOrEqual
+		  Case EXS.ExpressionType.LessThan
+		    Return OpCodes.Less
+		  Case EXS.ExpressionType.LessThanOrEqual
+		    Return OpCodes.LessOrEqual
+		    
+		  Case EXS.ExpressionType.Equal
+		    Return OpCodes.Equal
+		  Case EXS.ExpressionType.NotEqual
+		    Return OpCodes.NotEqual
+		    
 		  Case Else
 		    Raise GetRuntimeExc("ExpressionType not implemented!")
 		  End Select
@@ -799,6 +852,7 @@ Protected Module EXS
 		    Return OpCodes.JumpEqual
 		  Case &h19
 		    Return OpCodes.JumpGreater
+		    
 		  Case &h1A
 		    Return OpCodes.JumpGreaterOrEqual
 		  Case &h1B
@@ -807,6 +861,20 @@ Protected Module EXS
 		    Return OpCodes.JumpLessOrEqual
 		  Case &h1D
 		    Return OpCodes.Convert
+		    
+		  Case &h2A
+		    Return OpCodes.Greater
+		  Case &h2B
+		    Return OpCodes.GreaterOrEqual
+		  Case &h2C
+		    Return OpCodes.Less
+		  Case &h2D
+		    Return OpCodes.LessOrEqual
+		    
+		  Case &h3A
+		    Return OpCodes.Equal
+		  Case &h3B
+		    Return OpCodes.NotEqual
 		    
 		  Case Else
 		    Raise GetRuntimeExc("can't convert value to ""OpCodes""")
@@ -1277,7 +1345,30 @@ Protected Module EXS
 		  JumpGreaterOrEqual= &h1A
 		  JumpLess= &h1B
 		  JumpLessOrEqual= &h1C
-		Convert= &h1D
+		  Convert= &h1D
+		  Greater= &h2A
+		  GreaterOrEqual= &h2B
+		  Less= &h2C
+		  LessOrEqual= &h2D
+		  Equal= &h3A
+		NotEqual= &h3B
+	#tag EndEnum
+
+	#tag Enum, Name = SymbolType, Type = Integer, Flags = &h0
+		I8
+		  U8
+		  I16
+		  U16
+		  I32
+		  U32
+		  I64
+		  U64
+		  Float= 10
+		  Double= 11
+		  Bool= 12
+		  String= 13
+		  Object= 14
+		Parameter= 15
 	#tag EndEnum
 
 
