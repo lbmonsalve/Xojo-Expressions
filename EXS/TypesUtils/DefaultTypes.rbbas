@@ -5,7 +5,7 @@ Protected Class DefaultTypes
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		acol() As Color = &c000000
+		acol() As Color
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

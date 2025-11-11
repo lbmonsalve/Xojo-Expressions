@@ -199,7 +199,7 @@ Protected Class BinaryCode
 		    Dim idxName As Integer= GetVUInt(bs)
 		    Dim idxType As Integer= GetVUInt(bs)
 		    
-		    Return Str(offset, "00000")+ " prm("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(idxName)+ " "+ Str(idxType)
+		    Return Str(offset, "00000")+ " param("+ Str(typ)+ ") "+ Str(idx)+ " "+ Str(idxName)+ " "+ Str(idxType)
 		    
 		  Case Integer(SymbolType.I8) // Int8
 		    Dim value As Int8= bs.ReadInt8
@@ -280,8 +280,16 @@ Protected Class BinaryCode
 		  
 		  Select Case valueType
 		  Case 2 // integer Int32
-		    mHeaderBS.WriteUInt8 Integer(SymbolType.I32)
-		    mHeaderBS.WriteInt32 value.Int32Value
+		    If value.IntegerValue> -128 And value.IntegerValue< 127 Then // i8
+		      mHeaderBS.WriteUInt8 Integer(SymbolType.I8)
+		      mHeaderBS.WriteInt8 value.Int32Value
+		    ElseIf value.IntegerValue> -32768  And value.IntegerValue< 32767  Then // i16
+		      mHeaderBS.WriteUInt8 Integer(SymbolType.I16)
+		      mHeaderBS.WriteInt16 value.Int32Value
+		    Else // i32
+		      mHeaderBS.WriteUInt8 Integer(SymbolType.I32)
+		      mHeaderBS.WriteInt32 value.Int32Value
+		    End If
 		  Case 3 // long Int64
 		    mHeaderBS.WriteUInt8 Integer(SymbolType.I64)
 		    mHeaderBS.WriteInt64 value.Int64Value
@@ -291,7 +299,7 @@ Protected Class BinaryCode
 		  Case 5, 6 // double
 		    mHeaderBS.WriteUInt8 Integer(SymbolType.Double)
 		    mHeaderBS.WriteDouble value.DoubleValue
-		  Case 7 // date as u64
+		  Case 7 // date as double
 		    mHeaderBS.WriteUInt8 Integer(SymbolType.Double)
 		    mHeaderBS.WriteDouble value.DateValue.TotalSeconds
 		  Case 8 // string
@@ -437,7 +445,7 @@ Protected Class BinaryCode
 		
 		the type determine the length of value: i8, u8: 1byte; i16, u16: 2Bytes;...
 		
-		When the type are 14 the bytes of length has the next bytes for store the string.
+		When the type are 13 the bytes of length has the next bytes for store the string.
 		```
 		+-----+---------------+--------+
 		| key | string length | string |

@@ -160,6 +160,7 @@ End
 		  Dim compiler As New EXS.Expressions.Compiler
 		  compiler.Compile expr
 		  Dim str1 As String= compiler.BinaryCode.Disassemble
+		  'compiler.BinaryCode.Save SpecialFolder.Documents.Child("bytecode.bin")
 		  
 		  Dim dmb As New MemoryBlock(0)
 		  Dim dbs As New BinaryStream(dmb)
@@ -197,7 +198,6 @@ End
 		  'Dim bcode As EXS.Expressions.BinaryCode= compiler.BinaryCode
 		  'Dim str1 As String= bcode.Disassemble
 		  '
-		  ''bcode.Save SpecialFolder.Documents.Child("bytecode.bin")
 		  'Break
 		  
 		  

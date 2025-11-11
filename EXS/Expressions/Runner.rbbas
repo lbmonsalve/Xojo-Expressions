@@ -5,14 +5,12 @@ Protected Class Runner
 		  If bcode Is Nil Then Raise GetRuntimeExc("bcode Is Nil")
 		  
 		  mBinaryCode= bcode
-		  mDebugtrace= debugTrace
+		  mDebugTrace= debugTrace
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub DefineParamValues(values() As Variant)
-		  mParamValues= values
-		  
+		Private Sub DefineParams(paramValues() As Variant)
 		  Dim paramsExpr() As ParameterExpression
 		  Dim symbols() As Variant= mBinaryCode.Symbols
 		  
@@ -22,12 +20,12 @@ Protected Class Runner
 		    End If
 		  Next
 		  
-		  If Not paramsExpr.MatchTypeWith(mParamValues) Then _
+		  If Not paramsExpr.MatchTypeWith(paramValues) Then _
 		  Raise GetRuntimeExc("Not paramsExpr.MatchTypeWith(mParamValues)")
 		  
 		  For i As Integer= 0 To paramsExpr.LastIdx
 		    Dim paramExpr As EXS.Expressions.ParameterExpression= paramsExpr(i)
-		    mEnv.Define paramExpr.Name, mParamValues(i)
+		    mEnv.Define paramExpr.Name, paramValues(i)
 		  Next
 		End Sub
 	#tag EndMethod
@@ -35,7 +33,7 @@ Protected Class Runner
 	#tag Method, Flags = &h0
 		Function Run(ParamArray values As Variant) As Variant
 		  mEnv= New Env
-		  DefineParamValues values
+		  DefineParams values
 		  
 		  mBinaryCode.InstructionsBS.Position= 0
 		  
@@ -234,10 +232,6 @@ Protected Class Runner
 
 	#tag Property, Flags = &h21
 		Private mEnv As Env
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mParamValues() As Variant
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
