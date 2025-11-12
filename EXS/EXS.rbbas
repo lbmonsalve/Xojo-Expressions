@@ -1188,6 +1188,12 @@ Protected Module EXS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub WriteLn(Extends value As Writeable, s As String)
+		  value.Write s+ EndOfLine.UNIX
+		End Sub
+	#tag EndMethod
+
 
 	#tag Constant, Name = kSize1Byte, Type = Double, Dynamic = False, Default = \"&b10000000", Scope = Private
 	#tag EndConstant

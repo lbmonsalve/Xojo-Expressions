@@ -58,15 +58,17 @@ Protected Class Runner
 		  
 		  Dim symbols() As Variant= mBinaryCode.Symbols
 		  
+		  Const kFidx= "\[#\]"
+		  
 		  Select Case opCode
 		  Case OpCodes.Nop // do nothing
-		    If debug Then Trace(instruction.OpCodesToString+ EndOfLine.UNIX)
+		    If debug Then Trace(instruction.OpCodesToString)
 		    
 		  Case OpCodes.Ret
 		    Dim idx As Integer= GetVUInt(bs)
 		    mStack.Append symbols(idx)
 		    
-		    If debug Then Trace("Ret "+ Str(idx)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Ret "+ Str(idx, kFidx))
 		    
 		  Case OpCodes.Load
 		    Dim idx As Integer= GetVUInt(bs)
@@ -77,129 +79,129 @@ Protected Class Runner
 		    End If
 		    mStack.Append value
 		    
-		    If debug Then Trace("Load "+ Str(idx)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Load "+ Str(idx, kFidx))
 		    
 		  Case OpCodes.And_
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left And right
 		    
-		    If debug Then Trace("And "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# And "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Or_
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left Or right
 		    
-		    If debug Then Trace("Or "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Or "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.ExclusiveOr
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left Xor right
 		    
-		    If debug Then Trace("Xor "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Xor "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.LeftShift
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append Bitwise.ShiftLeft(left, right)
 		    
-		    If debug Then Trace("LeftShift "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# LeftShift "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.RightShift
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append Bitwise.ShiftRight(left, right)
 		    
-		    If debug Then Trace("RightShift "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# RightShift "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Greater
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left> right
 		    
-		    If debug Then Trace("Greater "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Greater "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.GreaterOrEqual
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left>= right
 		    
-		    If debug Then Trace("GreaterOrEqual "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# GreaterOrEqual "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Less
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left< right
 		    
-		    If debug Then Trace("Less "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Less "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.LessOrEqual
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left<= right
 		    
-		    If debug Then Trace("LessOrEqual "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# LessOrEqual "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Equal
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left= right
 		    
-		    If debug Then Trace("Equal "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Equal "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.NotEqual
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left<> right
 		    
-		    If debug Then Trace("NotEqual "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# NotEqual "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Add
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left+ right
 		    
-		    If debug Then Trace("Add "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Add "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Subtract
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left- right
 		    
-		    If debug Then Trace("Subtract "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Subtract "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Multiply
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left* right
 		    
-		    If debug Then Trace("Multiply "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Multiply "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Divide
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left/ right
 		    
-		    If debug Then Trace("Divide "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Divide "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Modulo
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left Mod right
 		    
-		    If debug Then Trace("Modulo "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Modulo "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Power
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
 		    mStack.Append left^ right
 		    
-		    If debug Then Trace("Power "+ Str(left)+ " "+ Str(right)+ EndOfLine.UNIX)
+		    If debug Then Trace("# Power "+ Str(left)+ " "+ Str(right))
 		    
 		  Case Else
-		    Raise GetRuntimeExc("Unknown opcode 0x"+ Hex(instruction))
+		    Raise GetRuntimeExc("# Unknown opcode 0x"+ Hex(instruction))
 		    
 		  End Select
 		  
@@ -209,14 +211,14 @@ Protected Class Runner
 
 	#tag Method, Flags = &h21
 		Private Sub Trace(s As String)
-		  mDebugTrace.Write s
+		  mDebugTrace.Write s+ EndOfLine.UNIX
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Sub TraceStack()
 		  For i As Integer= mStack.LastIdxEXS To 0 Step -1
-		    mDebugTrace.Write "["+ Str(i, "0000")+ "] "+ mStack(i).ToStringVart+ EndOfLine.UNIX
+		    mDebugTrace.Write Str(i, "00000")+ " "+ mStack(i).ToStringVart+ EndOfLine.UNIX
 		  Next
 		End Sub
 	#tag EndMethod

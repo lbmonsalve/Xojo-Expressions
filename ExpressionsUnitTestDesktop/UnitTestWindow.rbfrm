@@ -112,6 +112,52 @@ Begin Window UnitTestWindow
          Visible         =   True
          Width           =   80
       End
+      Begin TextAreaWriter TextAreaWriter1
+         AcceptTabs      =   ""
+         Alignment       =   0
+         AutoDeactivate  =   True
+         AutomaticallyCheckSpelling=   False
+         BackColor       =   &hFFFFFF
+         Bold            =   ""
+         Border          =   True
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Format          =   ""
+         Height          =   484
+         HelpTag         =   ""
+         HideSelection   =   True
+         Index           =   -2147483648
+         InitialParent   =   "TabPanel1"
+         Italic          =   ""
+         Left            =   20
+         LimitText       =   0
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   True
+         LockTop         =   True
+         Mask            =   ""
+         Multiline       =   True
+         ReadOnly        =   ""
+         Scope           =   0
+         ScrollbarHorizontal=   ""
+         ScrollbarVertical=   True
+         Styled          =   False
+         TabIndex        =   1
+         TabPanelIndex   =   2
+         TabStop         =   True
+         Text            =   ""
+         TextColor       =   &h000000
+         TextFont        =   "System"
+         TextSize        =   16
+         TextUnit        =   0
+         Top             =   96
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   760
+      End
    End
 End
 #tag EndWindow
@@ -155,20 +201,21 @@ End
 		  'expr= expr.Constant("hello")
 		  'expr= expr.Parameter(EXS.GetType("Integer"), "a")
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "b")
-		  expr= expr.Lambda(expr.Add(expr.Multiply(paramExpr, expr.Constant(2)), expr.Constant(3)), paramExpr)
+		  expr= expr.Lambda(expr.Add(expr.Multiply(paramExpr, expr.Constant(-2)), expr.Constant(3)), paramExpr)
 		  
 		  Dim compiler As New EXS.Expressions.Compiler
 		  compiler.Compile expr
-		  Dim str1 As String= compiler.BinaryCode.Disassemble
+		  
+		  compiler.BinaryCode.Disassemble TextAreaWriter1
 		  'compiler.BinaryCode.Save SpecialFolder.Documents.Child("bytecode.bin")
 		  
-		  Dim dmb As New MemoryBlock(0)
-		  Dim dbs As New BinaryStream(dmb)
+		  TextAreaWriter1.AppendText EndOfLine+ EndOfLine
 		  
-		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, dbs)
+		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
 		  Dim result As Variant= runner.Run(2)
-		  Dim str2 As String= DefineEncoding(dmb, Encodings.UTF8)
-		  Dim str3 As String= expr.ToString
+		  
+		  TextAreaWriter1.AppendText EndOfLine+ EndOfLine
+		  TextAreaWriter1.AppendText expr.ToString
 		  Break
 		  
 		  
@@ -496,6 +543,15 @@ End
 		  'Dim var3 As Variant= var1/ var2
 		  'Dim var4 As Variant= sqrt(var1)
 		  'Break
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events TextAreaWriter1
+	#tag Event
+		Sub Open()
+		  #if TargetWin32
+		    Me.TextFont= "Courier"
+		  #endif
 		End Sub
 	#tag EndEvent
 #tag EndEvents
