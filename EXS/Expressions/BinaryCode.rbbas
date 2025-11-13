@@ -385,7 +385,7 @@ Protected Class BinaryCode
 		    mHeaderBS.WriteUInt8 Integer(SymbolType.String)
 		    mHeaderBS.WriteUInt8 lng
 		  ElseIf lng< &hFFFF Then
-		    mHeaderBS.WriteUInt8 Bitwise.ShiftLeft(1, 5) Or 14
+		    mHeaderBS.WriteUInt8 Bitwise.ShiftLeft(1, 5) Or Integer(SymbolType.String)
 		    mHeaderBS.WriteUInt16 lng
 		  Else
 		    Raise GetRuntimeExc("length of string greater than 0xFFFF")

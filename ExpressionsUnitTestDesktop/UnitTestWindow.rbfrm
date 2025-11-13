@@ -215,8 +215,9 @@ End
 		  Dim result As Variant= runner.Run(2)
 		  
 		  TextAreaWriter1.AppendText EndOfLine+ EndOfLine
-		  TextAreaWriter1.AppendText expr.ToString
-		  Break
+		  TextAreaWriter1.AppendText expr.ToString+ EndOfLine
+		  TextAreaWriter1.AppendText "result: "+ result.StringValue
+		  'Break
 		  
 		  
 		  // runner

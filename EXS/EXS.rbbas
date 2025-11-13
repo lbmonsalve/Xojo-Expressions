@@ -1188,6 +1188,12 @@ Protected Module EXS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function Version() As String
+		  Return Str(kVersionMayor)+ "."+ Str(kVersionMinor)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub WriteLn(Extends value As Writeable, s As String)
 		  value.Write s+ EndOfLine.UNIX

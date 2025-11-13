@@ -49,7 +49,7 @@ Protected Class Runner
 
 	#tag Method, Flags = &h21
 		Private Sub RunInstruction()
-		  Static debug As Boolean= Not (mDebugTrace Is Nil)
+		  Dim debug As Boolean= Not (mDebugTrace Is Nil)
 		  
 		  Dim bs As BinaryStream= mBinaryCode.InstructionsBS
 		  Dim offset As UInt64= bs.Position

@@ -24,7 +24,7 @@ Protected Class System
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		 Shared Function FontAt(index As Integer) As String
 		  Return Font(index)
 		End Function
@@ -36,7 +36,7 @@ Protected Class System
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
+	#tag Method, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		 Shared Sub GotoURL(url As String)
 		  ShowURL url
 		End Sub
@@ -85,50 +85,13 @@ Protected Class System
 		Shared CommandLine As String
 	#tag EndComputedProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  Return System.Cursors
-			  
-			End Get
-		#tag EndGetter
-		Shared Cursors As _Cursors
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
+	#tag ComputedProperty, Flags = &h0, CompatibilityFlags = TargetHasGUI
 		#tag Getter
 			Get
 			  Return FontCount
 			End Get
 		#tag EndGetter
 		Shared FontCount As Integer
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  Return System.MouseDown
-			End Get
-		#tag EndGetter
-		Shared MouseDown As Boolean
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  Return System.MouseX
-			End Get
-		#tag EndGetter
-		Shared MouseX As Integer
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  Return System.MouseY
-			End Get
-		#tag EndGetter
-		Shared MouseY As Integer
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
