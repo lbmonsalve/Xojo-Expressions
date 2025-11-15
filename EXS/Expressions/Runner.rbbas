@@ -81,6 +81,12 @@ Protected Class Runner
 		    
 		    If debug Then Trace("# Load "+ Str(idx, kFidx))
 		    
+		  Case OpCodes.Not_
+		    Dim value As Boolean= mStack.Pop.BooleanValue
+		    mStack.Append Not value
+		    
+		    If debug Then Trace("# Not "+ Str(value))
+		    
 		  Case OpCodes.And_
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop

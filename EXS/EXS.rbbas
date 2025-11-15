@@ -591,6 +591,8 @@ Protected Module EXS
 		    Return "Equal"
 		  Case &h3B
 		    Return "NotEqual"
+		  Case &h3C
+		    Return "Not"
 		    
 		  Case Else
 		    Raise GetRuntimeExc("cant decode ""OpCodes""")
@@ -674,6 +676,8 @@ Protected Module EXS
 		    Return "Equal"
 		  Case &h3B
 		    Return "NotEqual"
+		  Case &h3C
+		    Return "Negate"
 		    
 		  Case Else
 		    Raise GetRuntimeExc("cant decode ""OpCodes""")
@@ -746,45 +750,48 @@ Protected Module EXS
 	#tag Method, Flags = &h0
 		Function ToInstructionCode(Extends value As EXS.ExpressionType) As EXS.OpCodes
 		  Select Case value
-		  Case EXS.ExpressionType.Add
+		  Case ExpressionType.Add
 		    Return OpCodes.Add
-		  Case EXS.ExpressionType.Subtract
+		  Case ExpressionType.Subtract
 		    Return OpCodes.Subtract
-		  Case EXS.ExpressionType.Multiply
+		  Case ExpressionType.Multiply
 		    Return OpCodes.Multiply
-		  Case EXS.ExpressionType.Divide
+		  Case ExpressionType.Divide
 		    Return OpCodes.Divide
-		  Case EXS.ExpressionType.Modulo
+		  Case ExpressionType.Modulo
 		    Return OpCodes.Modulo
-		  Case EXS.ExpressionType.Power
+		  Case ExpressionType.Power
 		    Return OpCodes.Power
 		    
-		  Case EXS.ExpressionType.And_
+		  Case ExpressionType.And_
 		    Return OpCodes.And_
-		  Case EXS.ExpressionType.Or_
+		  Case ExpressionType.Or_
 		    Return OpCodes.Or_
-		  Case EXS.ExpressionType.ExclusiveOr
+		  Case ExpressionType.ExclusiveOr
 		    Return OpCodes.ExclusiveOr
-		  Case EXS.ExpressionType.LeftShift
+		  Case ExpressionType.LeftShift
 		    Return OpCodes.LeftShift
-		  Case EXS.ExpressionType.RightShift
+		  Case ExpressionType.RightShift
 		    Return OpCodes.RightShift
-		  Case EXS.ExpressionType.Convert
+		  Case ExpressionType.Convert
 		    Return OpCodes.Convert
 		    
-		  Case EXS.ExpressionType.GreaterThan
+		  Case ExpressionType.GreaterThan
 		    Return OpCodes.Greater
-		  Case EXS.ExpressionType.GreaterThanOrEqual
+		  Case ExpressionType.GreaterThanOrEqual
 		    Return OpCodes.GreaterOrEqual
-		  Case EXS.ExpressionType.LessThan
+		  Case ExpressionType.LessThan
 		    Return OpCodes.Less
-		  Case EXS.ExpressionType.LessThanOrEqual
+		  Case ExpressionType.LessThanOrEqual
 		    Return OpCodes.LessOrEqual
 		    
-		  Case EXS.ExpressionType.Equal
+		  Case ExpressionType.Equal
 		    Return OpCodes.Equal
-		  Case EXS.ExpressionType.NotEqual
+		  Case ExpressionType.NotEqual
 		    Return OpCodes.NotEqual
+		    
+		  Case ExpressionType.Not_
+		    Return OpCodes.Not_
 		    
 		  Case Else
 		    Raise GetRuntimeExc("ExpressionType not implemented!")
@@ -875,6 +882,8 @@ Protected Module EXS
 		    Return OpCodes.Equal
 		  Case &h3B
 		    Return OpCodes.NotEqual
+		  Case &h3C
+		    Return OpCodes.Not_
 		    
 		  Case Else
 		    Raise GetRuntimeExc("can't convert value to ""OpCodes""")
@@ -988,44 +997,46 @@ Protected Module EXS
 	#tag Method, Flags = &h0
 		Function ToStringSymbol(Extends value As EXS.ExpressionType) As String
 		  Select Case value
-		  Case EXS.ExpressionType.Assign
+		  Case ExpressionType.Assign
 		    Return " = "
-		  Case EXS.ExpressionType.Add
+		  Case ExpressionType.Add
 		    Return " + "
-		  Case EXS.ExpressionType.Subtract
+		  Case ExpressionType.Subtract
 		    Return " - "
-		  Case EXS.ExpressionType.Multiply
+		  Case ExpressionType.Multiply
 		    Return " * "
-		  Case EXS.ExpressionType.Divide
+		  Case ExpressionType.Divide
 		    Return " / "
-		  Case EXS.ExpressionType.Modulo
+		  Case ExpressionType.Modulo
 		    Return " % "
-		  Case EXS.ExpressionType.Power
+		  Case ExpressionType.Power
 		    Return " ^ "
-		  Case EXS.ExpressionType.And_
+		  Case ExpressionType.And_
 		    Return " & "
-		  Case EXS.ExpressionType.Or_
+		  Case ExpressionType.Or_
 		    Return " | "
-		  Case EXS.ExpressionType.ExclusiveOr
+		  Case ExpressionType.ExclusiveOr
 		    Return " ¿ "
-		  Case EXS.ExpressionType.LeftShift
+		  Case ExpressionType.LeftShift
 		    Return " << "
-		  Case EXS.ExpressionType.RightShift
+		  Case ExpressionType.RightShift
 		    Return " >> "
-		  Case EXS.ExpressionType.ArrayIndex
+		  Case ExpressionType.ArrayIndex
 		    Return "(idx)"
-		  Case EXS.ExpressionType.Convert
+		  Case ExpressionType.Convert
 		    Return " -> "
-		  Case EXS.ExpressionType.LessThan
+		  Case ExpressionType.LessThan
 		    Return " < "
-		  Case EXS.ExpressionType.LessThanOrEqual
+		  Case ExpressionType.LessThanOrEqual
 		    Return " <= "
-		  Case EXS.ExpressionType.GreaterThan
+		  Case ExpressionType.GreaterThan
 		    Return " > "
-		  Case EXS.ExpressionType.GreaterThanOrEqual
+		  Case ExpressionType.GreaterThanOrEqual
 		    Return " >= "
-		  Case EXS.ExpressionType.While_
+		  Case ExpressionType.While_
 		    Return " while "
+		  Case ExpressionType.Not_
+		    Return "Not "
 		  Case Else
 		    Break
 		  End Select
@@ -1363,7 +1374,8 @@ Protected Module EXS
 		  Less= &h2C
 		  LessOrEqual= &h2D
 		  Equal= &h3A
-		NotEqual= &h3B
+		  NotEqual= &h3B
+		Not_=&h3C
 	#tag EndEnum
 
 	#tag Enum, Name = SymbolType, Type = Integer, Flags = &h0

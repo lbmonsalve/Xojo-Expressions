@@ -196,27 +196,43 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // parameter store header
+		  // not:
 		  Dim expr As EXS.Expressions.Expression
-		  'expr= expr.Constant("hello")
-		  'expr= expr.Parameter(EXS.GetType("Integer"), "a")
-		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "b")
-		  expr= expr.Lambda(expr.Add(expr.Multiply(paramExpr, expr.Constant(-2)), expr.Constant(3)), paramExpr)
+		  expr= New EXS.Expressions.UnaryExpression(EXS.ExpressionType.Not_, expr.Constant(True), EXS.GetType("Boolean"), Nil)
 		  
-		  Dim compiler As New EXS.Expressions.Compiler
-		  compiler.Compile expr
-		  
+		  Dim compiler As New EXS.Expressions.Compiler(expr)
 		  compiler.BinaryCode.Disassemble TextAreaWriter1
-		  'compiler.BinaryCode.Save SpecialFolder.Documents.Child("bytecode.bin")
 		  
 		  TextAreaWriter1.AppendText EndOfLine+ EndOfLine
 		  
 		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  Dim result As Variant= runner.Run(2)
-		  
+		  Dim result As Variant= runner.Run
 		  TextAreaWriter1.AppendText EndOfLine+ EndOfLine
 		  TextAreaWriter1.AppendText expr.ToString+ EndOfLine
 		  TextAreaWriter1.AppendText "result: "+ result.StringValue
+		  'Break
+		  
+		  
+		  // parameter store header
+		  'Dim expr As EXS.Expressions.Expression
+		  ''expr= expr.Constant("hello")
+		  ''expr= expr.Parameter(EXS.GetType("Integer"), "a")
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "b")
+		  'expr= expr.Lambda(expr.Add(expr.Multiply(paramExpr, expr.Constant(-2)), expr.Constant(3)), paramExpr)
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  '
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  ''compiler.BinaryCode.Save SpecialFolder.Documents.Child("bytecode.bin")
+		  '
+		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim result As Variant= runner.Run(2)
+		  '
+		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
+		  'TextAreaWriter1.AppendText expr.ToString+ EndOfLine
+		  'TextAreaWriter1.AppendText "result: "+ result.StringValue
 		  'Break
 		  
 		  

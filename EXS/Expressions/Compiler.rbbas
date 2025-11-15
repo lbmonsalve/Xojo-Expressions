@@ -2,7 +2,7 @@
 Protected Class Compiler
 Implements IVisitor
 	#tag Method, Flags = &h0
-		Sub Compile(expr As EXS.Expressions.Expression)
+		Sub Compile(expr As Expression)
 		  Call expr.Accept(Self)
 		End Sub
 	#tag EndMethod
@@ -10,6 +10,13 @@ Implements IVisitor
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  mBinaryCode= New BinaryCode
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(expr As Expression)
+		  Constructor
+		  Compile expr
 		End Sub
 	#tag EndMethod
 
@@ -81,7 +88,15 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitUnary(expr As EXS.Expressions.UnaryExpression) As Variant
+		  Compile expr.Operand
 		  
+		  If expr.NodeType= ExpressionType.Not_ Then
+		    mBinaryCode.EmitCode OpCodes.Not_
+		    Return Nil
+		  End If
+		  
+		  // convert:
+		  Break
 		End Function
 	#tag EndMethod
 

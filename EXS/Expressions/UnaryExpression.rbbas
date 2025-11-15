@@ -22,11 +22,14 @@ Inherits EXS.Expressions.Expression
 	#tag Method, Flags = &h0
 		Function ToString() As String
 		  Select Case mNodeType
-		  Case ExpressionType.Convert
-		    Return "("+ mOperand.ToString+ mNodeType.ToStringsymbol+ mType.Name+ ")"
-		    'Return mType.Name+ "("+ mOperand.ToString+ ")"
-		    'Return "CType("+ mOperand.ToString+ ", "+ mType.Name+ ")"
+		  Case ExpressionType.Not_
+		    Return "Not "+ mOperand.ToString
+		    
 		  End Select
+		  
+		  Return "("+ mOperand.ToString+ mNodeType.ToStringsymbol+ mType.Name+ ")"
+		  'Return mType.Name+ "("+ mOperand.ToString+ ")"
+		  'Return "CType("+ mOperand.ToString+ ", "+ mType.Name+ ")"
 		End Function
 	#tag EndMethod
 

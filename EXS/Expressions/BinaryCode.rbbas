@@ -127,7 +127,7 @@ Protected Class BinaryCode
 		  Dim opCode As OpCodes= instruction.ToOpCodes
 		  
 		  Select Case opCode
-		  Case OpCodes.Nop
+		  Case OpCodes.Nop, OpCodes.Not_
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString
 		    
 		  Case OpCodes.Ret
@@ -246,7 +246,7 @@ Protected Class BinaryCode
 
 	#tag Method, Flags = &h0
 		Sub EmitCode(code As OpCodes)
-		  mInstructionsBS.WriteUInt8 code.ToInteger
+		  mInstructionsBS.WriteUInt8 Integer(code)
 		End Sub
 	#tag EndMethod
 
