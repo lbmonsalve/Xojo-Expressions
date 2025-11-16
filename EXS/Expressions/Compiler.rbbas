@@ -79,10 +79,28 @@ Implements IVisitor
 	#tag Method, Flags = &h0
 		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
 		  Compile expr.Left
+		  
 		  // TODO: short-circuit
+		  
 		  Compile expr.Right
 		  
-		  mBinaryCode.EmitCode expr.NodeType.ToInstructionCode
+		  Select Case expr.NodeType
+		  Case ExpressionType.NotEqual
+		    mBinaryCode.EmitCode OpCodes.Equal
+		    mBinaryCode.EmitCode OpCodes.Not_
+		    
+		  Case ExpressionType.GreaterThanOrEqual
+		    mBinaryCode.EmitCode OpCodes.Less
+		    mBinaryCode.EmitCode OpCodes.Not_
+		    
+		  Case ExpressionType.LessThanOrEqual
+		    mBinaryCode.EmitCode OpCodes.Greater
+		    mBinaryCode.EmitCode OpCodes.Not_
+		    
+		  Case Else
+		    mBinaryCode.EmitCode expr.NodeType.ToInstructionCode
+		    
+		  End Select
 		End Function
 	#tag EndMethod
 

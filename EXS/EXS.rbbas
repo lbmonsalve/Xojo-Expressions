@@ -579,19 +579,12 @@ Protected Module EXS
 		    Return "Convert"
 		    
 		  Case &h2A
-		    Return "Greater"
+		    Return "Equal"
 		  Case &h2B
-		    Return "GreaterOrEqual"
+		    Return "Greater"
 		  Case &h2C
 		    Return "Less"
 		  Case &h2D
-		    Return "LessOrEqual"
-		    
-		  Case &h3A
-		    Return "Equal"
-		  Case &h3B
-		    Return "NotEqual"
-		  Case &h3C
 		    Return "Not"
 		    
 		  Case Else
@@ -664,19 +657,12 @@ Protected Module EXS
 		    Return "Convert"
 		    
 		  Case &h2A
-		    Return "Greater"
+		    Return "Equal"
 		  Case &h2B
-		    Return "GreaterOrEqual"
+		    Return "Greater"
 		  Case &h2C
 		    Return "Less"
 		  Case &h2D
-		    Return "LessOrEqual"
-		    
-		  Case &h3A
-		    Return "Equal"
-		  Case &h3B
-		    Return "NotEqual"
-		  Case &h3C
 		    Return "Negate"
 		    
 		  Case Else
@@ -776,19 +762,12 @@ Protected Module EXS
 		  Case ExpressionType.Convert
 		    Return OpCodes.Convert
 		    
-		  Case ExpressionType.GreaterThan
-		    Return OpCodes.Greater
-		  Case ExpressionType.GreaterThanOrEqual
-		    Return OpCodes.GreaterOrEqual
-		  Case ExpressionType.LessThan
-		    Return OpCodes.Less
-		  Case ExpressionType.LessThanOrEqual
-		    Return OpCodes.LessOrEqual
-		    
 		  Case ExpressionType.Equal
 		    Return OpCodes.Equal
-		  Case ExpressionType.NotEqual
-		    Return OpCodes.NotEqual
+		  Case ExpressionType.GreaterThan
+		    Return OpCodes.Greater
+		  Case ExpressionType.LessThan
+		    Return OpCodes.Less
 		    
 		  Case ExpressionType.Not_
 		    Return OpCodes.Not_
@@ -870,19 +849,12 @@ Protected Module EXS
 		    Return OpCodes.Convert
 		    
 		  Case &h2A
-		    Return OpCodes.Greater
+		    Return OpCodes.Equal
 		  Case &h2B
-		    Return OpCodes.GreaterOrEqual
+		    Return OpCodes.Greater
 		  Case &h2C
 		    Return OpCodes.Less
 		  Case &h2D
-		    Return OpCodes.LessOrEqual
-		    
-		  Case &h3A
-		    Return OpCodes.Equal
-		  Case &h3B
-		    Return OpCodes.NotEqual
-		  Case &h3C
 		    Return OpCodes.Not_
 		    
 		  Case Else
@@ -1025,6 +997,10 @@ Protected Module EXS
 		    Return "(idx)"
 		  Case ExpressionType.Convert
 		    Return " -> "
+		  Case ExpressionType.Equal
+		    Return " == "
+		  Case ExpressionType.NotEqual
+		    Return " <> "
 		  Case ExpressionType.LessThan
 		    Return " < "
 		  Case ExpressionType.LessThanOrEqual
@@ -1369,13 +1345,10 @@ Protected Module EXS
 		  JumpLess= &h1B
 		  JumpLessOrEqual= &h1C
 		  Convert= &h1D
-		  Greater= &h2A
-		  GreaterOrEqual= &h2B
+		  Equal= &h2A
+		  Greater= &h2B
 		  Less= &h2C
-		  LessOrEqual= &h2D
-		  Equal= &h3A
-		  NotEqual= &h3B
-		Not_=&h3C
+		Not_=&h2D
 	#tag EndEnum
 
 	#tag Enum, Name = SymbolType, Type = Integer, Flags = &h0

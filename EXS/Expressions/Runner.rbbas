@@ -85,7 +85,28 @@ Protected Class Runner
 		    Dim value As Boolean= mStack.Pop.BooleanValue
 		    mStack.Append Not value
 		    
-		    If debug Then Trace("# Not "+ Str(value))
+		    If debug Then Trace("# Negate "+ Str(value))
+		    
+		  Case OpCodes.Equal
+		    Dim right As Variant= mStack.Pop
+		    Dim left As Variant= mStack.Pop
+		    mStack.Append left= right
+		    
+		    If debug Then Trace("# Equal "+ Str(left)+ " "+ Str(right))
+		    
+		  Case OpCodes.Greater
+		    Dim right As Variant= mStack.Pop
+		    Dim left As Variant= mStack.Pop
+		    mStack.Append left> right
+		    
+		    If debug Then Trace("# Greater "+ Str(left)+ " "+ Str(right))
+		    
+		  Case OpCodes.Less
+		    Dim right As Variant= mStack.Pop
+		    Dim left As Variant= mStack.Pop
+		    mStack.Append left< right
+		    
+		    If debug Then Trace("# Less "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.And_
 		    Dim right As Variant= mStack.Pop
@@ -121,48 +142,6 @@ Protected Class Runner
 		    mStack.Append Bitwise.ShiftRight(left, right)
 		    
 		    If debug Then Trace("# RightShift "+ Str(left)+ " "+ Str(right))
-		    
-		  Case OpCodes.Greater
-		    Dim right As Variant= mStack.Pop
-		    Dim left As Variant= mStack.Pop
-		    mStack.Append left> right
-		    
-		    If debug Then Trace("# Greater "+ Str(left)+ " "+ Str(right))
-		    
-		  Case OpCodes.GreaterOrEqual
-		    Dim right As Variant= mStack.Pop
-		    Dim left As Variant= mStack.Pop
-		    mStack.Append left>= right
-		    
-		    If debug Then Trace("# GreaterOrEqual "+ Str(left)+ " "+ Str(right))
-		    
-		  Case OpCodes.Less
-		    Dim right As Variant= mStack.Pop
-		    Dim left As Variant= mStack.Pop
-		    mStack.Append left< right
-		    
-		    If debug Then Trace("# Less "+ Str(left)+ " "+ Str(right))
-		    
-		  Case OpCodes.LessOrEqual
-		    Dim right As Variant= mStack.Pop
-		    Dim left As Variant= mStack.Pop
-		    mStack.Append left<= right
-		    
-		    If debug Then Trace("# LessOrEqual "+ Str(left)+ " "+ Str(right))
-		    
-		  Case OpCodes.Equal
-		    Dim right As Variant= mStack.Pop
-		    Dim left As Variant= mStack.Pop
-		    mStack.Append left= right
-		    
-		    If debug Then Trace("# Equal "+ Str(left)+ " "+ Str(right))
-		    
-		  Case OpCodes.NotEqual
-		    Dim right As Variant= mStack.Pop
-		    Dim left As Variant= mStack.Pop
-		    mStack.Append left<> right
-		    
-		    If debug Then Trace("# NotEqual "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Add
 		    Dim right As Variant= mStack.Pop

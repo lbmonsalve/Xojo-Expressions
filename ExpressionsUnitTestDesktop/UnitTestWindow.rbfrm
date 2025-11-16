@@ -196,9 +196,16 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // not:
+		  // not equal, gratherOrEqual, lessOrEqual:
 		  Dim expr As EXS.Expressions.Expression
-		  expr= New EXS.Expressions.UnaryExpression(EXS.ExpressionType.Not_, expr.Constant(True), EXS.GetType("Boolean"), Nil)
+		  'expr= expr.NotEqual(expr.Constant(1), expr.Constant(2))
+		  'expr= expr.NotEqual(expr.Constant(1), expr.Constant(1))
+		  'expr= expr.GreaterThanOrEqual(expr.Constant(2), expr.Constant(1))
+		  'expr= expr.GreaterThanOrEqual(expr.Constant(2), expr.Constant(2))
+		  'expr= expr.GreaterThanOrEqual(expr.Constant(1), expr.Constant(2))
+		  'expr= expr.LessThanOrEqual(expr.Constant(1), expr.Constant(2))
+		  'expr= expr.LessThanOrEqual(expr.Constant(1), expr.Constant(1))
+		  expr= expr.LessThanOrEqual(expr.Constant(2), expr.Constant(1))
 		  
 		  Dim compiler As New EXS.Expressions.Compiler(expr)
 		  compiler.BinaryCode.Disassemble TextAreaWriter1
@@ -210,6 +217,23 @@ End
 		  TextAreaWriter1.AppendText EndOfLine+ EndOfLine
 		  TextAreaWriter1.AppendText expr.ToString+ EndOfLine
 		  TextAreaWriter1.AppendText "result: "+ result.StringValue
+		  'Break
+		  
+		  
+		  // not:
+		  'Dim expr As EXS.Expressions.Expression
+		  'expr= New EXS.Expressions.UnaryExpression(EXS.ExpressionType.Not_, expr.Constant(True), EXS.GetType("Boolean"), Nil)
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  '
+		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim result As Variant= runner.Run
+		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
+		  'TextAreaWriter1.AppendText expr.ToString+ EndOfLine
+		  'TextAreaWriter1.AppendText "result: "+ result.StringValue
 		  'Break
 		  
 		  

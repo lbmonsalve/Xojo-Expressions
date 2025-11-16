@@ -143,8 +143,7 @@ Protected Class BinaryCode
 		    " "+ Str(idx, kFidx)
 		    
 		  Case OpCodes.And_, OpCodes.Or_, OpCodes.ExclusiveOr, OpCodes.LeftShift, _
-		    OpCodes.RightShift, OpCodes.Greater, OpCodes.GreaterOrEqual, _
-		    OpCodes.Less, OpCodes.LessOrEqual, OpCodes.Equal, OpCodes.NotEqual, _
+		    OpCodes.RightShift, OpCodes.Equal, OpCodes.Greater, OpCodes.Less, _
 		    OpCodes.Add, OpCodes.Subtract, OpCodes.Multiply, OpCodes.Divide, _
 		    OpCodes.Modulo, OpCodes.Power
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString
