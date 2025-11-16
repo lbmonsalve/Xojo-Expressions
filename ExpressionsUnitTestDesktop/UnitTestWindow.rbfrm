@@ -196,27 +196,37 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // not equal, gratherOrEqual, lessOrEqual:
+		  // u32, u64:
 		  Dim expr As EXS.Expressions.Expression
-		  'expr= expr.NotEqual(expr.Constant(1), expr.Constant(2))
-		  'expr= expr.NotEqual(expr.Constant(1), expr.Constant(1))
-		  'expr= expr.GreaterThanOrEqual(expr.Constant(2), expr.Constant(1))
-		  'expr= expr.GreaterThanOrEqual(expr.Constant(2), expr.Constant(2))
-		  'expr= expr.GreaterThanOrEqual(expr.Constant(1), expr.Constant(2))
-		  'expr= expr.LessThanOrEqual(expr.Constant(1), expr.Constant(2))
-		  'expr= expr.LessThanOrEqual(expr.Constant(1), expr.Constant(1))
-		  expr= expr.LessThanOrEqual(expr.Constant(2), expr.Constant(1))
+		  'expr= expr.Constant(&hFFFFFFFF)
+		  expr= expr.Constant(&hFFFFFFFFFFFFFFFF)
 		  
 		  Dim compiler As New EXS.Expressions.Compiler(expr)
 		  compiler.BinaryCode.Disassemble TextAreaWriter1
+		  'Break
 		  
-		  TextAreaWriter1.AppendText EndOfLine+ EndOfLine
 		  
-		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  Dim result As Variant= runner.Run
-		  TextAreaWriter1.AppendText EndOfLine+ EndOfLine
-		  TextAreaWriter1.AppendText expr.ToString+ EndOfLine
-		  TextAreaWriter1.AppendText "result: "+ result.StringValue
+		  // not equal, gratherOrEqual, lessOrEqual:
+		  'Dim expr As EXS.Expressions.Expression
+		  ''expr= expr.NotEqual(expr.Constant(1), expr.Constant(2))
+		  ''expr= expr.NotEqual(expr.Constant(1), expr.Constant(1))
+		  ''expr= expr.GreaterThanOrEqual(expr.Constant(2), expr.Constant(1))
+		  ''expr= expr.GreaterThanOrEqual(expr.Constant(2), expr.Constant(2))
+		  ''expr= expr.GreaterThanOrEqual(expr.Constant(1), expr.Constant(2))
+		  ''expr= expr.LessThanOrEqual(expr.Constant(1), expr.Constant(2))
+		  ''expr= expr.LessThanOrEqual(expr.Constant(1), expr.Constant(1))
+		  'expr= expr.LessThanOrEqual(expr.Constant(2), expr.Constant(1))
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  '
+		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim result As Variant= runner.Run
+		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
+		  'TextAreaWriter1.AppendText expr.ToString+ EndOfLine
+		  'TextAreaWriter1.AppendText "result: "+ result.StringValue
 		  'Break
 		  
 		  
@@ -575,6 +585,24 @@ End
 		  'Dim vtype As Integer= v1.Type
 		  'v1= u8
 		  'vtype= v1.Type
+		  'Break
+		  
+		  
+		  'Dim v1 As Variant= &hFFFFFFFFFFFFFFFF
+		  'Dim vtype As Integer= v1.Type
+		  'If v1.DoubleValue> &h7FFFFFFFFFFFFFFF Then
+		  'Dim u64 As UInt64= v1.UInt64Value
+		  'Dim i64 As Int64= u64
+		  'Dim v2 As Variant= u64
+		  'Dim vtype2 As Integer= v2.Type
+		  'Break
+		  'End If
+		  '
+		  'Dim mb As New MemoryBlock(8)
+		  'mb.LittleEndian= False
+		  'mb.UInt64Value(0)= v1.UInt64Value
+		  '
+		  'Dim v2 As UInt64= mb.UInt64Value(0)
 		  'Break
 		  
 		  

@@ -1226,93 +1226,92 @@ Protected Module EXS
 
 
 	#tag Enum, Name = ExpressionType, Flags = &h0
-		Add = 0
-		  AddChecked = 1
-		  And_ = 2
-		  AndAlso = 3
-		  ArrayLength = 4
-		  ArrayIndex = 5
-		  Call_ = 6
-		  Coalesce = 7
-		  Conditional = 8
-		  Constant = 9
-		  Convert = 10
-		  ConvertChecked = 11
-		  Divide = 12
-		  Equal = 13
-		  ExclusiveOr = 14
-		  GreaterThan = 15
-		  GreaterThanOrEqual = 16
-		  Invoke = 17
-		  Lambda = 18
-		  LeftShift = 19
-		  LessThan = 20
-		  LessThanOrEqual = 21
-		  ListInit = 22
-		  MemberAccess = 23
-		  MemberInit = 24
-		  Modulo = 25
-		  Multiply = 26
-		  MultiplyChecked = 27
-		  Negate = 28
-		  UnaryPlus = 29
-		  NegateChecked = 30
-		  New_ = 31
-		  NewArrayInit = 32
-		  NewArrayBounds = 33
-		  Not_ = 34
-		  NotEqual = 35
-		  Or_ = 36
-		  OrElse = 37
-		  Parameter = 38
-		  Power = 39
-		  Quote = 40
-		  RightShift = 41
-		  Subtract = 42
-		  SubtractChecked = 43
-		  TypeAs = 44
-		  TypeIs = 45
-		  Assign = 46
-		  Block = 47
-		  DebugInfo = 48
-		  Decrement = 49
-		  Dynamic = 50
-		  Default = 51
-		  Extension = 52
-		  Goto_ = 53
-		  Increment = 54
-		  Index = 55
-		  Label = 56
-		  RuntimeVariables = 57
-		  Loop_ = 58
-		  Switch = 59
-		  Throw = 60
-		  Try_ = 61
-		  Unbox = 62
-		  AddAssign = 63
-		  AndAssign = 64
-		  DivideAssign = 65
-		  ExclusiveOrAssign = 66
-		  LeftShiftAssign = 67
-		  ModuloAssign = 68
-		  MultiplyAssign = 69
-		  OrAssign = 70
-		  PowerAssign = 71
-		  RightShiftAssign = 72
-		  SubtractAssign = 73
-		  AddAssignChecked = 74
-		  MultiplyAssignChecked = 75
-		  SubtractAssignChecked = 76
-		  PreIncrementAssign = 77
-		  PreDecrementAssign = 78
-		  PostIncrementAssign = 79
-		  PostDecrementAssign = 80
-		  TypeEqual = 81
-		  OnesComplement = 82
-		  IsTrue = 83
-		  IsFalse = 84
-		  Ret = 85
-		While_=86
+		Add
+		  AddChecked
+		  And_
+		  AndAlso
+		  ArrayLength
+		  ArrayIndex
+		  Call_
+		  Coalesce
+		  Conditional
+		  Constant
+		  Convert
+		  ConvertChecked
+		  Divide
+		  Equal
+		  ExclusiveOr
+		  GreaterThan
+		  GreaterThanOrEqual
+		  Invoke
+		  Lambda
+		  LeftShift
+		  LessThan
+		  LessThanOrEqual
+		  ListInit
+		  MemberAccess
+		  MemberInit
+		  Modulo
+		  Multiply
+		  MultiplyChecked
+		  UnaryPlus
+		  NegateChecked
+		  New_
+		  NewArrayInit
+		  NewArrayBounds
+		  Not_
+		  NotEqual
+		  Or_
+		  OrElse
+		  Parameter
+		  Power
+		  Quote
+		  RightShift
+		  Subtract
+		  SubtractChecked
+		  TypeAs
+		  TypeIs
+		  Assign
+		  Block
+		  DebugInfo
+		  Decrement
+		  Dynamic
+		  Default
+		  Extension
+		  Goto_
+		  Increment
+		  Index
+		  Label
+		  RuntimeVariables
+		  Loop_
+		  Switch
+		  Throw
+		  Try_
+		  Unbox
+		  AddAssign
+		  AndAssign
+		  DivideAssign
+		  ExclusiveOrAssign
+		  LeftShiftAssign
+		  ModuloAssign
+		  MultiplyAssign
+		  OrAssign
+		  PowerAssign
+		  RightShiftAssign
+		  SubtractAssign
+		  AddAssignChecked
+		  MultiplyAssignChecked
+		  SubtractAssignChecked
+		  PreIncrementAssign
+		  PreDecrementAssign
+		  PostIncrementAssign
+		  PostDecrementAssign
+		  TypeEqual
+		  OnesComplement
+		  IsTrue
+		  IsFalse
+		  Ret
+		While_
 	#tag EndEnum
 
 	#tag Enum, Name = OpCodes, Flags = &h0

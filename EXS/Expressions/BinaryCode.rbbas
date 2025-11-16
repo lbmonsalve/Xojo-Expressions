@@ -117,6 +117,8 @@ Protected Class BinaryCode
 		  While Not bs.EndFileEXS
 		    debugTrace.WriteLn DisassembleInstruction(bs)
 		  Wend
+		  
+		  debugTrace.WriteLn "# Bytes: "+ Str(mHeaderBS.Length+ mInstructionsBS.Length)
 		End Sub
 	#tag EndMethod
 
@@ -297,27 +299,35 @@ Protected Class BinaryCode
 		  
 		  Select Case valueType
 		  Case 2 // integer Int32
-		    Dim i32 As Integer= value.IntegerValue
-		    If i32>= 0 And i32<= &hFF Then // u8
+		    Dim i64 As Int64= value.Int64Value
+		    If i64>= 0 And i64<= &hFF Then // u8
 		      mHeaderBS.WriteUInt8 Integer(SymbolType.U8)
-		      mHeaderBS.WriteUInt8 i32
-		    ElseIf i32> -128 And i32< 127 Then // i8
+		      mHeaderBS.WriteUInt8 i64
+		    ElseIf i64> -128 And i64< 127 Then // i8
 		      mHeaderBS.WriteUInt8 Integer(SymbolType.I8)
-		      mHeaderBS.WriteInt8 i32
-		    ElseIf i32>= 0 And i32<= &hFFFF Then
+		      mHeaderBS.WriteInt8 i64
+		    ElseIf i64>= 0 And i64<= &hFFFF Then // u16
 		      mHeaderBS.WriteUInt8 Integer(SymbolType.U16)
-		      mHeaderBS.WriteUInt16 i32
-		    ElseIf i32> -32768  And i32< 32767  Then // i16
+		      mHeaderBS.WriteUInt16 i64
+		    ElseIf i64> -32768  And i64< 32767  Then // i16
 		      mHeaderBS.WriteUInt8 Integer(SymbolType.I16)
-		      mHeaderBS.WriteInt16 i32
+		      mHeaderBS.WriteInt16 i64
+		    ElseIf i64> &h7FFFFFFF Then // u32
+		      mHeaderBS.WriteUInt8 Integer(SymbolType.U32)
+		      mHeaderBS.WriteUInt32 i64
 		    Else // i32
 		      mHeaderBS.WriteUInt8 Integer(SymbolType.I32)
-		      mHeaderBS.WriteInt32 i32
+		      mHeaderBS.WriteInt32 i64
 		    End If
 		    
 		  Case 3 // long Int64
-		    mHeaderBS.WriteUInt8 Integer(SymbolType.I64)
-		    mHeaderBS.WriteInt64 value.Int64Value
+		    If value.DoubleValue> &h7FFFFFFFFFFFFFFF Then // u64
+		      mHeaderBS.WriteUInt8 Integer(SymbolType.U64)
+		      mHeaderBS.WriteUInt64 value.UInt64Value
+		    Else // i64
+		      mHeaderBS.WriteUInt8 Integer(SymbolType.I64)
+		      mHeaderBS.WriteInt64 value.Int64Value
+		    End If
 		    
 		  Case 4 // single
 		    mHeaderBS.WriteUInt8 Integer(SymbolType.Float)
