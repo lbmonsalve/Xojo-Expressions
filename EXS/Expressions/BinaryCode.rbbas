@@ -129,7 +129,7 @@ Protected Class BinaryCode
 		  Dim opCode As OpCodes= instruction.ToOpCodes
 		  
 		  Select Case opCode
-		  Case OpCodes.Nop, OpCodes.Not_
+		  Case OpCodes.Nop, OpCodes.Not_, OpCodes.Pop
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString
 		    
 		  Case OpCodes.Ret
@@ -138,7 +138,7 @@ Protected Class BinaryCode
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
 		    " "+ Str(idx, kFidx)
 		    
-		  Case OpCodes.Load
+		  Case OpCodes.Load, OpCodes.Store
 		    Dim idx As Integer= GetVUInt(mInstructionsBS)
 		    
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
@@ -187,9 +187,17 @@ Protected Class BinaryCode
 		    Dim value As Int16= bs.ReadInt16
 		    Return Str(offset, kFoff)+ "   i16"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
 		    
+		  Case Integer(SymbolType.U32) // UInt32
+		    Dim value As UInt32= bs.ReadUInt32
+		    Return Str(offset, kFoff)+ "   u32"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    
 		  Case Integer(SymbolType.I32) // Int32
 		    Dim value As Int32= bs.ReadInt32
 		    Return Str(offset, kFoff)+ "   i32"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    
+		  Case Integer(SymbolType.U64) // UInt64
+		    Dim value As UInt64= bs.ReadUInt64
+		    Return Str(offset, kFoff)+ "   u64"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
 		    
 		  Case Integer(SymbolType.I64) // Int64
 		    Dim value As Int64= bs.ReadInt64
@@ -228,16 +236,6 @@ Protected Class BinaryCode
 		    
 		    Return Str(offset, kFoff)+ " param"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ _
 		    Str(idxName, kFidx)+ Str(idxType, kFidx)
-		    
-		    // apparently not reach here
-		  Case Integer(SymbolType.U32) // UInt32
-		    Dim value As UInt32= bs.ReadUInt32
-		    Return Str(offset, kFoff)+ "   u32"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
-		    
-		  Case Integer(SymbolType.U64) // UInt64
-		    Dim value As UInt64= bs.ReadUInt64
-		    Return Str(offset, kFoff)+ "   u64"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
-		    // apparently not reach here
 		    
 		  Case Else
 		    Raise GetRuntimeExc("Unknown type symbol"+ Str(typ))

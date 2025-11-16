@@ -61,15 +61,6 @@ Protected Class Runner
 		  Const kFidx= "\[#\]"
 		  
 		  Select Case opCode
-		  Case OpCodes.Nop // do nothing
-		    If debug Then Trace(instruction.OpCodesToString)
-		    
-		  Case OpCodes.Ret
-		    Dim idx As Integer= GetVUInt(bs)
-		    mStack.Append symbols(idx)
-		    
-		    If debug Then Trace("# Ret "+ Str(idx, kFidx))
-		    
 		  Case OpCodes.Load
 		    Dim idx As Integer= GetVUInt(bs)
 		    Dim value As Variant= symbols(idx)
@@ -80,6 +71,17 @@ Protected Class Runner
 		    mStack.Append value
 		    
 		    If debug Then Trace("# Load "+ Str(idx, kFidx))
+		    
+		  Case OpCodes.Store
+		    Dim idx As Integer= GetVUInt(bs)
+		    Dim symbol As Variant= symbols(idx)
+		    If symbol IsA ParameterExpression Then
+		      mEnv.Assign ParameterExpression(symbol).Name, mStack.Pop
+		    Else
+		      Raise GetRuntimeExc("Not symbol IsA ParameterExpression")
+		    End If
+		    
+		    If debug Then Trace("# Store "+ Str(idx, kFidx))
 		    
 		  Case OpCodes.Not_
 		    Dim value As Boolean= mStack.Pop.BooleanValue
@@ -121,27 +123,6 @@ Protected Class Runner
 		    mStack.Append left Or right
 		    
 		    If debug Then Trace("# Or "+ Str(left)+ " "+ Str(right))
-		    
-		  Case OpCodes.ExclusiveOr
-		    Dim right As Variant= mStack.Pop
-		    Dim left As Variant= mStack.Pop
-		    mStack.Append left Xor right
-		    
-		    If debug Then Trace("# Xor "+ Str(left)+ " "+ Str(right))
-		    
-		  Case OpCodes.LeftShift
-		    Dim right As Variant= mStack.Pop
-		    Dim left As Variant= mStack.Pop
-		    mStack.Append Bitwise.ShiftLeft(left, right)
-		    
-		    If debug Then Trace("# LeftShift "+ Str(left)+ " "+ Str(right))
-		    
-		  Case OpCodes.RightShift
-		    Dim right As Variant= mStack.Pop
-		    Dim left As Variant= mStack.Pop
-		    mStack.Append Bitwise.ShiftRight(left, right)
-		    
-		    If debug Then Trace("# RightShift "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Add
 		    Dim right As Variant= mStack.Pop
@@ -185,8 +166,43 @@ Protected Class Runner
 		    
 		    If debug Then Trace("# Power "+ Str(left)+ " "+ Str(right))
 		    
+		  Case OpCodes.Ret
+		    Dim idx As Integer= GetVUInt(bs)
+		    mStack.Append symbols(idx)
+		    
+		    If debug Then Trace("# Ret "+ Str(idx, kFidx))
+		    
+		  Case OpCodes.Pop
+		    Dim value As Variant= mStack.Pop
+		    
+		    If debug Then Trace("# Pop "+ Str(value))
+		    
+		  Case OpCodes.LeftShift
+		    Dim right As Variant= mStack.Pop
+		    Dim left As Variant= mStack.Pop
+		    mStack.Append Bitwise.ShiftLeft(left, right)
+		    
+		    If debug Then Trace("# LeftShift "+ Str(left)+ " "+ Str(right))
+		    
+		  Case OpCodes.RightShift
+		    Dim right As Variant= mStack.Pop
+		    Dim left As Variant= mStack.Pop
+		    mStack.Append Bitwise.ShiftRight(left, right)
+		    
+		    If debug Then Trace("# RightShift "+ Str(left)+ " "+ Str(right))
+		    
+		  Case OpCodes.ExclusiveOr
+		    Dim right As Variant= mStack.Pop
+		    Dim left As Variant= mStack.Pop
+		    mStack.Append left Xor right
+		    
+		    If debug Then Trace("# Xor "+ Str(left)+ " "+ Str(right))
+		    
+		  Case OpCodes.Nop // do nothing
+		    If debug Then Trace(instruction.OpCodesToString)
+		    
 		  Case Else
-		    Raise GetRuntimeExc("# Unknown opcode 0x"+ Hex(instruction))
+		    Raise GetRuntimeExc("Unknown opcode 0x"+ Hex(instruction))
 		    
 		  End Select
 		  

@@ -196,13 +196,32 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // u32, u64:
+		  // assign:
 		  Dim expr As EXS.Expressions.Expression
-		  'expr= expr.Constant(&hFFFFFFFF)
-		  expr= expr.Constant(&hFFFFFFFFFFFFFFFF)
+		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s")
+		  'expr= expr.Assign(paramExpr, expr.Constant("world"))
+		  expr= expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
 		  
 		  Dim compiler As New EXS.Expressions.Compiler(expr)
 		  compiler.BinaryCode.Disassemble TextAreaWriter1
+		  
+		  TextAreaWriter1.AppendText EndOfLine+ EndOfLine
+		  
+		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  Dim result As Variant= runner.Run("hallo")
+		  TextAreaWriter1.AppendText EndOfLine+ EndOfLine
+		  TextAreaWriter1.AppendText expr.ToString+ EndOfLine
+		  TextAreaWriter1.AppendText "result: "+ result.StringValue
+		  'Break
+		  
+		  
+		  // u32, u64:
+		  'Dim expr As EXS.Expressions.Expression
+		  ''expr= expr.Constant(&hFFFFFFFF)
+		  'expr= expr.Constant(&hFFFFFFFFFFFFFFFF)
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
 		  'Break
 		  
 		  

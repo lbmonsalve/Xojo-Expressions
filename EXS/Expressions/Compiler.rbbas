@@ -22,7 +22,10 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitAssign(expr As EXS.Expressions.AssignExpression) As Variant
+		  Compile expr.Right
 		  
+		  mBinaryCode.EmitCode OpCodes.Store
+		  mBinaryCode.EmitValue mBinaryCode.StoreSymbol(ParameterExpression(expr.Left))
 		End Function
 	#tag EndMethod
 

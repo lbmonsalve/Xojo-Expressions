@@ -664,6 +664,8 @@ Protected Module EXS
 		    Return "Less"
 		  Case &h2D
 		    Return "Negate"
+		  Case &h2E
+		    Return "Pop"
 		    
 		  Case Else
 		    Raise GetRuntimeExc("cant decode ""OpCodes""")
@@ -856,6 +858,8 @@ Protected Module EXS
 		    Return OpCodes.Less
 		  Case &h2D
 		    Return OpCodes.Not_
+		  Case &h2E
+		    Return OpCodes.Pop
 		    
 		  Case Else
 		    Raise GetRuntimeExc("can't convert value to ""OpCodes""")
@@ -1347,7 +1351,8 @@ Protected Module EXS
 		  Equal= &h2A
 		  Greater= &h2B
 		  Less= &h2C
-		Not_=&h2D
+		  Not_= &h2D
+		Pop= &h2E
 	#tag EndEnum
 
 	#tag Enum, Name = SymbolType, Type = Integer, Flags = &h0
