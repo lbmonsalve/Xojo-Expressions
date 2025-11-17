@@ -68,7 +68,14 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitMethodCall(expr As EXS.Expressions.MethodCallExpression) As Variant
+		  Dim args() As Expression= expr.Arguments
 		  
+		  For i As Integer= 0 To args.LastIdx
+		    Compile args(i)
+		  Next
+		  
+		  mBinaryCode.EmitCode OpCodes.Call_
+		  mBinaryCode.EmitValue mBinaryCode.StoreSymbol(expr)
 		End Function
 	#tag EndMethod
 

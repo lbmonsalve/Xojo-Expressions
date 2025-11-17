@@ -89,6 +89,17 @@ Protected Class Runner
 		    
 		    If debug Then Trace("# Negate "+ Str(value))
 		    
+		  Case OpCodes.Call_
+		    Dim idx As Integer= GetVUInt(bs)
+		    Dim symbol As Variant= symbols(idx)
+		    If symbol IsA MethodCallExpression Then
+		      RunMethod symbol
+		    Else
+		      Raise GetRuntimeExc("Not symbol IsA MethodCallExpression")
+		    End If
+		    
+		    If debug Then Trace("# Call "+ Str(idx, kFidx))
+		    
 		  Case OpCodes.Equal
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
@@ -207,6 +218,32 @@ Protected Class Runner
 		  End Select
 		  
 		  If debug Then TraceStack
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub RunMethod(method As EXS.Expressions.MethodCallExpression)
+		  Dim tiObj As Introspection.TypeInfo= GetType(method.Type.FullName)
+		  If tiObj Is Nil Then Raise GetRuntimeExc("tiObj Is Nil")
+		  
+		  Dim methodInfo As Introspection.MethodInfo= method.Method
+		  If methodInfo Is Nil Then Raise GetRuntimeExc("methodInfo Is Nil")
+		  
+		  Dim params() As Introspection.ParameterInfo= methodInfo.GetParameters
+		  Dim methodParams() As Variant
+		  For i As Integer= 0 To params.LastIdxEXS
+		    methodParams.Append mStack.Pop
+		  Next
+		  
+		  Dim retValue As Variant
+		  
+		  If methodInfo.ReturnType Is Nil Then
+		    methodInfo.Invoke Nil, methodParams
+		  Else
+		    retValue= methodInfo.Invoke(Nil, methodParams)
+		  End If
+		  
+		  If Not (retValue Is Nil) Then mStack.Append(retValue)
 		End Sub
 	#tag EndMethod
 

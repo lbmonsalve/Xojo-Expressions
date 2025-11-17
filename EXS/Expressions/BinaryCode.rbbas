@@ -138,7 +138,7 @@ Protected Class BinaryCode
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
 		    " "+ Str(idx, kFidx)
 		    
-		  Case OpCodes.Load, OpCodes.Store
+		  Case OpCodes.Load, OpCodes.Store, OpCodes.Call_
 		    Dim idx As Integer= GetVUInt(mInstructionsBS)
 		    
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
@@ -229,6 +229,12 @@ Protected Class BinaryCode
 		      Raise GetRuntimeExc("length of string greater than 0xFFFF")
 		    End If
 		    Return Str(offset, kFoff)+ "   str"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ """"+ value+ """"
+		    
+		  Case Integer(SymbolType.Method)
+		    Dim idxName As Integer= GetVUInt(bs)
+		    
+		    Return Str(offset, kFoff)+ " methd"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ _
+		    Str(idxName, kFidx)
 		    
 		  Case Integer(SymbolType.Parameter)
 		    Dim idxName As Integer= GetVUInt(bs)
@@ -363,6 +369,25 @@ Protected Class BinaryCode
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function StoreSymbol(expr As MethodCallExpression) As Integer
+		  If mSymbolCache.HasKey(expr) Then Return mSymbolCache.Value(expr).IntegerValue
+		  
+		  Dim method As Introspection.MethodInfo= expr.Method
+		  Dim name As Integer= StoreSymbol(expr.Type.FullName+ "@"+ method.Name)
+		  
+		  mHeaderBS.WriteUInt8 Integer(SymbolType.Method)
+		  mHeaderBS.Write GetVUInt64(name)
+		  
+		  mHeaderMB.UInt16Value(mHeaderFirstInstruction)= mHeaderBS.Length
+		  
+		  mSymbols.Append expr
+		  mSymbolCache.Value(expr)= mSymbols.LastIdxEXS
+		  
+		  Return mSymbols.LastIdxEXS
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function StoreSymbol(expr As ParameterExpression) As Integer
 		  If mSymbolCache.HasKey(expr) Then Return mSymbolCache.Value(expr).IntegerValue
 		  
@@ -480,7 +505,7 @@ Protected Class BinaryCode
 		11 = Double  
 		12 = Bool  
 		13 = String  
-		14 = Object  
+		14 = Method  
 		15 = Parameter  
 		
 		the type determine the length of value: i8, u8: 1byte; i16, u16: 2Bytes;...
@@ -490,6 +515,20 @@ Protected Class BinaryCode
 		+-----+---------------+--------+
 		| key | string length | string |
 		+-----+---------------+--------+
+		```
+		
+		When the type are 14 idx name is vuint of method full name.
+		```
+		+-----+----------+
+		| key | idx name |
+		+-----+----------+
+		```
+		
+		When the type are 15 idx name is vuint of param name, idx type is type name.
+		```
+		+-----+----------+----------+
+		| key | idx name | idx type |
+		+-----+----------+----------+
 		```
 		
 		Code:

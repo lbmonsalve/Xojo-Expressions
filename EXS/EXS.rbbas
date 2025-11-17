@@ -1368,7 +1368,7 @@ Protected Module EXS
 		  Double= 11
 		  Bool= 12
 		  String= 13
-		  Object= 14
+		  Method= 14
 		Parameter= 15
 	#tag EndEnum
 
