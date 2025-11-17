@@ -25,14 +25,14 @@ Protected Class Runner
 		  
 		  For i As Integer= 0 To paramsExpr.LastIdx
 		    Dim paramExpr As EXS.Expressions.ParameterExpression= paramsExpr(i)
-		    mEnv.Define paramExpr.Name, paramValues(i)
+		    mLocals.Value(paramExpr.Name)= paramValues(i)
 		  Next
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Run(ParamArray values As Variant) As Variant
-		  mEnv= New Env
+		  mLocals= New Dictionary
 		  DefineParams values
 		  
 		  mBinaryCode.InstructionsBS.Position= 0
@@ -66,7 +66,7 @@ Protected Class Runner
 		    Dim value As Variant= symbols(idx)
 		    If value IsA ParameterExpression Then
 		      Dim param As ParameterExpression= ParameterExpression(value)
-		      value= mEnv.Get(param.Name)
+		      value= mLocals.Value(param.Name)
 		    End If
 		    mStack.Append value
 		    
@@ -76,12 +76,19 @@ Protected Class Runner
 		    Dim idx As Integer= GetVUInt(bs)
 		    Dim symbol As Variant= symbols(idx)
 		    If symbol IsA ParameterExpression Then
-		      mEnv.Assign ParameterExpression(symbol).Name, mStack.Pop
-		    Else
-		      Raise GetRuntimeExc("Not symbol IsA ParameterExpression")
+		      mLocals.Value(ParameterExpression(symbol).Name)= mStack.Pop
+		    Else // local
+		      mLocals.Value(symbol.StringValue)= mStack.Pop
 		    End If
 		    
 		    If debug Then Trace("# Store "+ Str(idx, kFidx))
+		    
+		  Case OpCodes.StoreLocal
+		    Dim idx As Integer= GetVUInt(bs)
+		    Dim name As String= mStack.Pop.StringValue
+		    'mLocals.Value(name+ Str(idx))= idx
+		    
+		    If debug Then Trace("# StoreLocal "+ name+ "= stack"+ Str(idx, kFidx))
 		    
 		  Case OpCodes.Not_
 		    Dim value As Boolean= mStack.Pop.BooleanValue
@@ -271,7 +278,7 @@ Protected Class Runner
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mEnv As Env
+		Private mLocals As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

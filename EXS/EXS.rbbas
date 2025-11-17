@@ -656,16 +656,21 @@ Protected Module EXS
 		  Case &h1D
 		    Return "Convert"
 		    
-		  Case &h2A
+		  Case &h20
 		    Return "Equal"
-		  Case &h2B
+		  Case &h21
 		    Return "Greater"
-		  Case &h2C
+		  Case &h22
 		    Return "Less"
-		  Case &h2D
+		  Case &h23
 		    Return "Negate"
-		  Case &h2E
+		  Case &h24
 		    Return "Pop"
+		    
+		  Case &h25
+		    Return "Local"
+		  Case &h26
+		    Return "StoreLocal"
 		    
 		  Case Else
 		    Raise GetRuntimeExc("cant decode ""OpCodes""")
@@ -850,16 +855,21 @@ Protected Module EXS
 		  Case &h1D
 		    Return OpCodes.Convert
 		    
-		  Case &h2A
+		  Case &h20
 		    Return OpCodes.Equal
-		  Case &h2B
+		  Case &h21
 		    Return OpCodes.Greater
-		  Case &h2C
+		  Case &h22
 		    Return OpCodes.Less
-		  Case &h2D
+		  Case &h23
 		    Return OpCodes.Not_
-		  Case &h2E
+		  Case &h24
 		    Return OpCodes.Pop
+		    
+		  Case &h25
+		    Return OpCodes.Local
+		  Case &h26
+		    Return OpCodes.StoreLocal
 		    
 		  Case Else
 		    Raise GetRuntimeExc("can't convert value to ""OpCodes""")
@@ -1348,11 +1358,13 @@ Protected Module EXS
 		  JumpLess= &h1B
 		  JumpLessOrEqual= &h1C
 		  Convert= &h1D
-		  Equal= &h2A
-		  Greater= &h2B
-		  Less= &h2C
-		  Not_= &h2D
-		Pop= &h2E
+		  Equal= &h20
+		  Greater= &h21
+		  Less= &h22
+		  Not_= &h23
+		  Pop= &h24
+		  Local= &h25
+		StoreLocal= &h26
 	#tag EndEnum
 
 	#tag Enum, Name = SymbolType, Type = Integer, Flags = &h0

@@ -23,15 +23,29 @@ Implements IVisitor
 	#tag Method, Flags = &h0
 		Function VisitAssign(expr As EXS.Expressions.AssignExpression) As Variant
 		  Compile expr.Right
+		  Compile expr.Left
 		  
-		  mBinaryCode.EmitCode OpCodes.Store
-		  mBinaryCode.EmitValue mBinaryCode.StoreSymbol(ParameterExpression(expr.Left))
+		  mLocals= mLocals+ 1
+		  
+		  mBinaryCode.EmitCode OpCodes.StoreLocal
+		  mBinaryCode.EmitValue mLocals
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function VisitBlock(expr As EXS.Expressions.BlockExpression) As Variant
+		  Dim before As Integer= mLocals
+		  Dim exprs() As Expression= expr.Expressions
 		  
+		  For i As Integer= 0 To exprs.LastIdxEXS
+		    Compile exprs(i)
+		  Next
+		  
+		  // pop locals vars
+		  While mLocals> before
+		    mBinaryCode.EmitCode OpCodes.Pop
+		    mLocals= mLocals- 1
+		  Wend
 		End Function
 	#tag EndMethod
 
@@ -146,6 +160,10 @@ Implements IVisitor
 
 	#tag Property, Flags = &h21
 		Private mBinaryCode As BinaryCode
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mLocals As Integer = -1
 	#tag EndProperty
 
 

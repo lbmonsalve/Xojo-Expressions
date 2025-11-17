@@ -38,10 +38,12 @@ Inherits EXS.Expressions.Expression
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Compile() As LambdaDelegate
+		Function Compile(Optional compiler As ILambdaCompiler) As LambdaDelegate
 		  mBody= ChkReturnExpression(mBody)
 		  
-		  mCompiler= New LambdaCompiler(Self)
+		  If compiler Is Nil Then compiler= New LambdaResolver(Self)
+		  
+		  mCompiler= compiler
 		  mCompiler.EmitLambdaBody
 		  
 		  Return WeakAddressOf Run

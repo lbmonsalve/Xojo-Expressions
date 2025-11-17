@@ -2,9 +2,15 @@
 Protected Class Resolver
 Implements EXS.Expressions.IVisitor
 	#tag Method, Flags = &h0
-		Sub Constructor(ParamArray paramValues As Variant)
+		Sub Constructor(paramValues() As Variant)
 		  mParamValues= paramValues
 		  mEnv= New Env
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(ParamArray params As Variant)
+		  Constructor params
 		End Sub
 	#tag EndMethod
 
@@ -71,8 +77,6 @@ Implements EXS.Expressions.IVisitor
 		  ElseIf Not (expr.IfFalse Is Nil) Then
 		    Return Resolve(expr.IfFalse)
 		  End If
-		  
-		  Return Nil
 		End Function
 	#tag EndMethod
 
@@ -212,8 +216,6 @@ Implements EXS.Expressions.IVisitor
 		    Return left^ right
 		    
 		  End Select
-		  
-		  Return Nil
 		End Function
 	#tag EndMethod
 
@@ -230,8 +232,6 @@ Implements EXS.Expressions.IVisitor
 		  While Resolve(expr.Left)
 		    Call Resolve(expr.Right)
 		  Wend
-		  
-		  Return Nil
 		End Function
 	#tag EndMethod
 

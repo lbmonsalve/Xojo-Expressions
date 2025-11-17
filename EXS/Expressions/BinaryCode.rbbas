@@ -138,7 +138,8 @@ Protected Class BinaryCode
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
 		    " "+ Str(idx, kFidx)
 		    
-		  Case OpCodes.Load, OpCodes.Store, OpCodes.Call_
+		  Case OpCodes.Load, OpCodes.Store, OpCodes.Local, OpCodes.StoreLocal, _
+		    OpCodes.Call_
 		    Dim idx As Integer= GetVUInt(mInstructionsBS)
 		    
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _

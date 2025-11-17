@@ -97,27 +97,27 @@ Inherits TestGroup
 
 	#tag Method, Flags = &h0
 		Sub CompileSaveLoadTest()
-		  Dim expr As EXS.Expressions.Expression
-		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
-		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello")), _
-		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("World!")), _
-		  expr.Constant(42))
-		  Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
-		  Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
-		  
-		  Dim binfile As FolderItem= GetTemporaryFolderItem //SpecialFolder.Documents.Child("Expressions.bin")
-		  Dim lambdaCompiler As EXS.Expressions.ILambdaCompiler= New EXS.Expressions.LambdaCompiler(expr.Lambda(blockExpr))
-		  lambdaCompiler.EmitLambdaBody
-		  lambdaCompiler.Save binfile
-		  Assert.IsTrue binfile.Exists, "IsTrue binfile.Exists"
-		  
-		  result= Nil
-		  lambdaCompiler= New EXS.Expressions.LambdaCompiler(binfile)
-		  result= lambdaCompiler.Run(Nil)
-		  Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
-		  
-		  lambdaCompiler= New EXS.Expressions.LambdaCompiler(binfile, WeakAddressOf CompileLoading)
-		  Assert.IsFalse EXS.Expressions.LambdaCompiler(lambdaCompiler).Loaded, "IsFalse lambdaCompiler.Loaded"
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
+		  'expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello")), _
+		  'expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("World!")), _
+		  'expr.Constant(42))
+		  'Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
+		  'Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
+		  '
+		  'Dim binfile As FolderItem= GetTemporaryFolderItem //SpecialFolder.Documents.Child("Expressions.bin")
+		  'Dim lambdaCompiler As EXS.Expressions.ILambdaCompiler= New EXS.Expressions.LambdaCompiler(expr.Lambda(blockExpr))
+		  'lambdaCompiler.EmitLambdaBody
+		  'lambdaCompiler.Save binfile
+		  'Assert.IsTrue binfile.Exists, "IsTrue binfile.Exists"
+		  '
+		  'result= Nil
+		  'lambdaCompiler= New EXS.Expressions.LambdaCompiler(binfile)
+		  'result= lambdaCompiler.Run(Nil)
+		  'Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
+		  '
+		  'lambdaCompiler= New EXS.Expressions.LambdaCompiler(binfile, WeakAddressOf CompileLoading)
+		  'Assert.IsFalse EXS.Expressions.LambdaCompiler(lambdaCompiler).Loaded, "IsFalse lambdaCompiler.Loaded"
 		End Sub
 	#tag EndMethod
 

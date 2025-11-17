@@ -1,57 +1,35 @@
 #tag Class
-Protected Class Env
+Protected Class LambdaResolver
+Implements ILambdaCompiler
 	#tag Method, Flags = &h0
-		Sub Assign(name As String, value As Variant)
-		  If mLocals.HasKey(name) Then
-		    mLocals.Value(name)= value
-		    Return
-		  End If
-		  
-		  If Not (mEnclosing Is Nil) Then
-		    mEnclosing.Assign name, value
-		    Return
-		  End If
-		  
-		  Raise GetRuntimeExc("undefined variable """+ name+ """")
+		Sub Constructor(expr As LambdaExpression)
+		  mExpr= expr
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor()
-		  mLocals= New Dictionary
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Constructor(enclosing As Env)
-		  Constructor
+		Sub EmitLambdaBody()
 		  
-		  mEnclosing= enclosing
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Define(name As String, value As Variant)
-		  mLocals.Value(name)= value
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function Get(name As String) As Variant
-		  If mLocals.HasKey(name) Then Return mLocals.Value(name)
-		  If Not (mEnclosing Is Nil) Then Return mEnclosing.Get(name)
+		Function Run(values() As Variant) As Variant
+		  Dim resolver As New EXS.Misc.Resolver(values)
 		  
-		  Raise GetRuntimeExc("undefined variable """+ name+ """")
+		  Return resolver.Resolve(mExpr)
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub Save(file As FolderItem)
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h21
-		Private mEnclosing As Env
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mLocals As Dictionary
+		Private mExpr As LambdaExpression
 	#tag EndProperty
 
 
