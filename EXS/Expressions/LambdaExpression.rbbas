@@ -7,40 +7,8 @@ Inherits EXS.Expressions.Expression
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Shared Function ChkReturnExpression(body As Expression) As Expression
-		  Select Case body
-		  Case IsA ParameterExpression, IsA ConstantExpression
-		    Return New ReturnExpression(body)
-		  Case IsA ConditionalExpression
-		    Dim cond As ConditionalExpression= ConditionalExpression(body)
-		    cond.IfTrue= ChkReturnExpression(cond.IfTrue)
-		    cond.IfFalse= ChkReturnExpression(cond.IfFalse)
-		  Case IsA UnaryExpression // add oper
-		    Dim unar As UnaryExpression= UnaryExpression(body)
-		    Dim blockExpr As BlockExpression= Expression.Block(unar,_
-		    New ReturnExpression(unar.Operand))
-		    Return blockExpr
-		  Case IsA AssignExpression
-		    Dim assi As AssignExpression= AssignExpression(body)
-		    Dim blockExpr As BlockExpression= Expression.Block(assi,_
-		    New ReturnExpression(assi.Left))
-		    Return blockExpr
-		  Case IsA BlockExpression
-		    Dim block As BlockExpression= BlockExpression(body)
-		    Dim exprs() As Expression= block.Expressions
-		    Dim lastIdx As Integer= exprs.LastIdx
-		    exprs(lastIdx)= ChkReturnExpression(exprs(lastIdx))
-		  End Select
-		  
-		  Return body
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Function Compile(Optional compiler As ILambdaCompiler) As LambdaDelegate
-		  mBody= ChkReturnExpression(mBody)
-		  
 		  If compiler Is Nil Then compiler= New LambdaResolver(Self)
 		  
 		  mCompiler= compiler

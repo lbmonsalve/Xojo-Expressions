@@ -213,7 +213,7 @@ Implements EXS.Expressions.IVisitor
 		    Return left Mod right
 		    
 		  Case EXS.ExpressionType.Power
-		    Return left^ right
+		    Return left.DoubleValue^ right.DoubleValue
 		    
 		  End Select
 		End Function

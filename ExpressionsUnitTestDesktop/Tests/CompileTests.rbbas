@@ -73,7 +73,10 @@ Inherits TestGroup
 		  Dim assignExpr1 As EXS.Expressions.BinaryExpression= expr.Assign(p1, expr.Constant("hello"))
 		  
 		  Dim blockExpr As EXS.Expressions.Expression= expr.Block(assignExpr1, p1)
-		  Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
+		  
+		  Dim params() As Variant
+		  params.Append "world"
+		  Dim result As Variant= expr.Lambda(blockExpr, p1).Compile.Invoke(params)
 		  
 		  Assert.AreSame "hello", result.StringValue, "AreSame ""hello"", result.StringValue"
 		  
@@ -81,7 +84,9 @@ Inherits TestGroup
 		  Dim assignExpr2 As EXS.Expressions.BinaryExpression= expr.Assign(p2, p1)
 		  
 		  blockExpr= expr.Block(assignExpr1, assignExpr2, p2)
-		  result= expr.Lambda(blockExpr).Compile.Invoke(Nil)
+		  
+		  params.Append "w"
+		  result= expr.Lambda(blockExpr, p1, p2).Compile.Invoke(params)
 		  
 		  Assert.AreSame "hello", result.StringValue, "AreSame ""hello"", result.StringValue"
 		End Sub
