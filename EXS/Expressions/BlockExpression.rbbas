@@ -15,9 +15,9 @@ Inherits EXS.Expressions.Expression
 		  mNodeType= ExpressionType.Block
 		  mExpressions= expressions
 		  
-		  If mExpressions.LastIdx= -1 Then Return
+		  If mExpressions.LastIdxEXS= -1 Then Return
 		  
-		  Dim expr As Expression= mExpressions(mExpressions.LastIdx)
+		  Dim expr As Expression= mExpressions(mExpressions.LastIdxEXS)
 		  mType= expr.Type
 		  mResult= expr
 		End Sub
@@ -42,9 +42,9 @@ Inherits EXS.Expressions.Expression
 		  Dim bs As New BinaryStream(New MemoryBlock(0))
 		  
 		  bs.Write "{"
-		  For i As Integer= 0 To mExpressions.LastIdx
+		  For i As Integer= 0 To mExpressions.LastIdxEXS
 		    bs.Write mExpressions(i).ToString
-		    If i< mExpressions.LastIdx Then bs.Write EndOfLine
+		    If i< mExpressions.LastIdxEXS Then bs.Write EndOfLine
 		  Next
 		  bs.Write "}"
 		  

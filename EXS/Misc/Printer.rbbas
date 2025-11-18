@@ -37,9 +37,9 @@ Implements EXS.Expressions.IVisitor
 		  Dim sb() As String
 		  
 		  sb.Append "{"
-		  For i As Integer= 0 To expressions.LastIdx
+		  For i As Integer= 0 To expressions.LastIdxEXS
 		    sb.Append Print(expressions(i))
-		    If i< expressions.LastIdx Then sb.Append "; "
+		    If i< expressions.LastIdxEXS Then sb.Append "; "
 		  Next
 		  sb.Append "}"
 		  
@@ -67,9 +67,9 @@ Implements EXS.Expressions.IVisitor
 		  Dim sb() As String
 		  
 		  sb.Append "("
-		  For i As Integer= 0 To params.LastIdx
+		  For i As Integer= 0 To params.LastIdxEXS
 		    sb.Append params(i).ToString
-		    If i< params.LastIdx Then sb.Append ", "
+		    If i< params.LastIdxEXS Then sb.Append ", "
 		  Next
 		  sb.Append ") => "
 		  

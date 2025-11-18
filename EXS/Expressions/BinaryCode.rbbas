@@ -138,8 +138,7 @@ Protected Class BinaryCode
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
 		    " "+ Str(idx, kFidx)
 		    
-		  Case OpCodes.Load, OpCodes.Store, OpCodes.Local, OpCodes.StoreLocal, _
-		    OpCodes.Call_
+		  Case OpCodes.Load, OpCodes.Store, OpCodes.Local, OpCodes.Call_
 		    Dim idx As Integer= GetVUInt(mInstructionsBS)
 		    
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
@@ -579,29 +578,29 @@ Protected Class BinaryCode
 		Nop= &h00
 		
 		Load= &h01
-		LoadParam= &h02
+		Store= &h02
+		Local= &h03
+		Call_= &h04
 		
-		Store= &h03
-		StoreParam= &h04
+		Add= &h05
+		Subtract= &h06
+		Multiply= &h07
+		Divide= &h08
+		Modulo= &h09
+		Power= &h0A
 		
-		Call_= &h05
-		CallVirt= &h06
+		And_= &h0B
+		Or_= &h0C
+		ExclusiveOr= &h0D
+		LeftShift= &h0E
+		RightShift= &h0F
 		
-		Ret= &h07
-		RetParam= &h08
+		Equal= &h10
+		Greater= &h11
+		Less= &h12
 		
-		Add= &h09
-		Subtract= &h0A
-		Multiply= &h0B
-		Divide= &h0C
-		Modulo= &h0D
-		Power= &h0E
-		
-		And_= &h10
-		Or_= &h11
-		ExclusiveOr= &h12
-		LeftShift= &h13
-		RightShift= &h14
+		Not_= &h13
+		Convert= &h14
 		
 		Jump= &h15
 		JumpTrue= &h16
@@ -612,7 +611,8 @@ Protected Class BinaryCode
 		JumpLess= &h1B
 		JumpLessOrEqual= &h1C
 		
-		Convert= &h1D
+		Pop= &h1D
+		Ret= &h1E
 	#tag EndNote
 
 

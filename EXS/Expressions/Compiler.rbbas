@@ -25,26 +25,31 @@ Implements IVisitor
 		  Compile expr.Right
 		  Compile expr.Left
 		  
-		  mLocals= mLocals+ 1
+		  Dim name As String
 		  
-		  mBinaryCode.EmitCode OpCodes.StoreLocal
-		  mBinaryCode.EmitValue mLocals
+		  If expr.Left IsA ConstantExpression Then
+		    name= ConstantExpression(expr.Left).Value.StringValue
+		  ElseIf expr.Left IsA ParameterExpression Then
+		    name= ParameterExpression(expr.Left).Name
+		  End If
+		  
+		  mBinaryCode.EmitCode OpCodes.Store
+		  mBinaryCode.EmitValue mLocal.IndexOrAppend(name)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function VisitBlock(expr As EXS.Expressions.BlockExpression) As Variant
-		  Dim before As Integer= mLocals
+		  Dim before As Integer= mLocal.LastIdxEXS
 		  Dim exprs() As Expression= expr.Expressions
 		  
 		  For i As Integer= 0 To exprs.LastIdxEXS
 		    Compile exprs(i)
 		  Next
 		  
-		  // pop locals vars
-		  While mLocals> before
+		  While mLocal.LastIdxEXS> before // pop locals vars
 		    mBinaryCode.EmitCode OpCodes.Pop
-		    mLocals= mLocals- 1
+		    Call mLocal.Pop
 		  Wend
 		End Function
 	#tag EndMethod
@@ -66,7 +71,7 @@ Implements IVisitor
 		Function VisitLambda(expr As EXS.Expressions.LambdaExpression) As Variant
 		  Dim params() As ParameterExpression= expr.Parameters
 		  
-		  For i As Integer= 0 To params.LastIdx
+		  For i As Integer= 0 To params.LastIdxEXS
 		    Call mBinaryCode.StoreSymbol params(i)
 		  Next
 		  
@@ -84,7 +89,7 @@ Implements IVisitor
 		Function VisitMethodCall(expr As EXS.Expressions.MethodCallExpression) As Variant
 		  Dim args() As Expression= expr.Arguments
 		  
-		  For i As Integer= 0 To args.LastIdx
+		  For i As Integer= 0 To args.LastIdxEXS
 		    Compile args(i)
 		  Next
 		  
@@ -122,7 +127,7 @@ Implements IVisitor
 		    mBinaryCode.EmitCode OpCodes.Not_
 		    
 		  Case Else
-		    mBinaryCode.EmitCode expr.NodeType.ToInstructionCode
+		    mBinaryCode.EmitCode expr.NodeType.ToOpCode
 		    
 		  End Select
 		End Function
@@ -137,7 +142,7 @@ Implements IVisitor
 		    Return Nil
 		  End If
 		  
-		  // convert:
+		  // TODO: convert
 		  Break
 		End Function
 	#tag EndMethod
@@ -163,7 +168,7 @@ Implements IVisitor
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mLocals As Integer = -1
+		Private mLocal() As String
 	#tag EndProperty
 
 

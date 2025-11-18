@@ -23,7 +23,7 @@ Protected Class Runner
 		  If Not paramsExpr.MatchTypeWith(paramValues) Then _
 		  Raise GetRuntimeExc("Not paramsExpr.MatchTypeWith(mParamValues)")
 		  
-		  For i As Integer= 0 To paramsExpr.LastIdx
+		  For i As Integer= 0 To paramsExpr.LastIdxEXS
 		    Dim paramExpr As EXS.Expressions.ParameterExpression= paramsExpr(i)
 		    mLocals.Value(paramExpr.Name)= paramValues(i)
 		  Next
@@ -74,21 +74,17 @@ Protected Class Runner
 		    
 		  Case OpCodes.Store
 		    Dim idx As Integer= GetVUInt(bs)
-		    Dim symbol As Variant= symbols(idx)
-		    If symbol IsA ParameterExpression Then
-		      mLocals.Value(ParameterExpression(symbol).Name)= mStack.Pop
-		    Else // local
-		      mLocals.Value(symbol.StringValue)= mStack.Pop
-		    End If
+		    Dim name As String= mStack.Pop.StringValue
+		    mLocals.Value(idx)= mStack(idx)
 		    
 		    If debug Then Trace("# Store "+ Str(idx, kFidx))
 		    
-		  Case OpCodes.StoreLocal
+		  Case OpCodes.Local
 		    Dim idx As Integer= GetVUInt(bs)
 		    Dim name As String= mStack.Pop.StringValue
 		    'mLocals.Value(name+ Str(idx))= idx
 		    
-		    If debug Then Trace("# StoreLocal "+ name+ "= stack"+ Str(idx, kFidx))
+		    If debug Then Trace("# Local "+ name+ "= stack"+ Str(idx, kFidx))
 		    
 		  Case OpCodes.Not_
 		    Dim value As Boolean= mStack.Pop.BooleanValue

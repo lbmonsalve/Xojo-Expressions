@@ -69,7 +69,7 @@ Protected Module EXS
 	#tag Method, Flags = &h0
 		Function GetLastExpression(Extends block As EXS.Expressions.BlockExpression) As EXS.Expressions.Expression
 		  Dim exprs() As EXS.Expressions.Expression= block.Expressions
-		  Dim expr As EXS.Expressions.Expression= exprs(exprs.LastIdx)
+		  Dim expr As EXS.Expressions.Expression= exprs(exprs.LastIdxEXS)
 		  If expr IsA EXS.Expressions.BlockExpression Then
 		    Return EXS.Expressions.BlockExpression(expr).GetLastExpression
 		  End If
@@ -368,6 +368,19 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function IndexOrAppend(Extends values() As String, search As String) As Integer
+		  Dim last As Integer= values.LastIdxEXS
+		  
+		  For i As Integer= last To 0 Step -1
+		    If values(i)= search Then Return i
+		  Next
+		  values.Append search
+		  
+		  Return values.LastIdxEXS
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function IsAssignable(Extends value As Introspection.TypeInfo, rhs As Introspection.TypeInfo) As Boolean
 		  If value.Name= "Variant" Then Return True
 		  
@@ -452,13 +465,13 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As EXS.Expressions.Expression) As Integer
+		Function LastIdxEXS(Extends values() As EXS.Expressions.Expression) As Integer
 		  Return values.Ubound
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function LastIdx(Extends values() As EXS.Expressions.ParameterExpression) As Integer
+		Function LastIdxEXS(Extends values() As EXS.Expressions.ParameterExpression) As Integer
 		  Return values.Ubound
 		End Function
 	#tag EndMethod
@@ -494,6 +507,12 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function LastIdxEXS(Extends values() As String) As Integer
+		  Return values.Ubound
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function LastIdxEXS(Extends values() As Variant) As Integer
 		  Return values.Ubound
 		End Function
@@ -501,95 +520,17 @@ Protected Module EXS
 
 	#tag Method, Flags = &h0
 		Function MatchTypeWith(Extends values() As EXS.Expressions.ParameterExpression, varts() As Variant) As Boolean
-		  If values.LastIdx= -1 And varts Is Nil Then Return True
-		  If values.LastIdx= -1 And varts.LastIdxEXS= -1 Then Return True
-		  If values.LastIdx<> varts.LastIdxEXS Then Return False
+		  If values.LastIdxEXS= -1 And varts Is Nil Then Return True
+		  If values.LastIdxEXS= -1 And varts.LastIdxEXS= -1 Then Return True
+		  If values.LastIdxEXS<> varts.LastIdxEXS Then Return False
 		  
-		  For i As Integer= 0 To values.LastIdx
+		  For i As Integer= 0 To values.LastIdxEXS
 		    Dim valueType As Introspection.TypeInfo= values(i).Type
 		    Dim vartType As Introspection.TypeInfo= varts(i).ToTypeInfo
 		    If Not valueType.IsAssignable(vartType) Then Return False
 		  Next
 		  
 		  Return True
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function OpCodesAsString(code As Integer) As String
-		  Select Case code
-		  Case &h00
-		    Return "Nop"
-		  Case &h01
-		    Return "Load"
-		  Case &h02
-		    Return "LoadParam"
-		  Case &h03
-		    Return "Store"
-		  Case &h04
-		    Return "StoreParam"
-		  Case &h05
-		    Return "Call"
-		  Case &h06
-		    Return "CallVirt"
-		  Case &h07
-		    Return "Ret"
-		  Case &h08
-		    Return "RetParam"
-		  Case &h09
-		    Return "Add"
-		  Case &h0A
-		    Return "Subtract"
-		  Case &h0B
-		    Return "Multiply"
-		  Case &h0C
-		    Return "Divide"
-		  Case &h0D
-		    Return "Modulo"
-		  Case &h0E
-		    Return "Power"
-		    
-		  Case &h10
-		    Return "And"
-		  Case &h11
-		    Return "Or"
-		  Case &h12
-		    Return "ExclusiveOr"
-		  Case &h13
-		    Return "LeftShift"
-		  Case &h14
-		    Return "RightShift"
-		  Case &h15
-		    Return "Jump"
-		  Case &h16
-		    Return "JumpTrue"
-		  Case &h17
-		    Return "JumpFalse"
-		  Case &h18
-		    Return "JumpEqual"
-		  Case &h19
-		    Return "JumpGreater"
-		  Case &h1A
-		    Return "JumpGreaterOrEqual"
-		  Case &h1B
-		    Return "JumpLess"
-		  Case &h1C
-		    Return "JumpLessOrEqual"
-		  Case &h1D
-		    Return "Convert"
-		    
-		  Case &h2A
-		    Return "Equal"
-		  Case &h2B
-		    Return "Greater"
-		  Case &h2C
-		    Return "Less"
-		  Case &h2D
-		    Return "Not"
-		    
-		  Case Else
-		    Raise GetRuntimeExc("cant decode ""OpCodes""")
-		  End Select
 		End Function
 	#tag EndMethod
 
@@ -601,42 +542,47 @@ Protected Module EXS
 		  Case &h01
 		    Return "Load"
 		  Case &h02
-		    Return "LoadParam"
-		  Case &h03
 		    Return "Store"
+		  Case &h03
+		    Return "Local"
 		  Case &h04
-		    Return "StoreParam"
-		  Case &h05
 		    Return "Call"
-		  Case &h06
-		    Return "CallVirt"
-		  Case &h07
-		    Return "Ret"
-		  Case &h08
-		    Return "RetParam"
-		  Case &h09
+		    
+		  Case &h05
 		    Return "Add"
-		  Case &h0A
+		  Case &h06
 		    Return "Subtract"
-		  Case &h0B
+		  Case &h07
 		    Return "Multiply"
-		  Case &h0C
+		  Case &h08
 		    Return "Divide"
-		  Case &h0D
+		  Case &h09
 		    Return "Modulo"
-		  Case &h0E
+		  Case &h0A
 		    Return "Power"
 		    
-		  Case &h10
+		  Case &h0B
 		    Return "And"
-		  Case &h11
+		  Case &h0C
 		    Return "Or"
-		  Case &h12
+		  Case &h0D
 		    Return "ExclusiveOr"
-		  Case &h13
+		  Case &h0E
 		    Return "LeftShift"
-		  Case &h14
+		  Case &h0F
 		    Return "RightShift"
+		    
+		  Case &h10
+		    Return "Equal"
+		  Case &h11
+		    Return "Greater"
+		  Case &h12
+		    Return "Less"
+		  Case &h13
+		    Return "Negate"
+		  Case &h14
+		    Return "Convert"
+		    
 		  Case &h15
 		    Return "Jump"
 		  Case &h16
@@ -653,24 +599,11 @@ Protected Module EXS
 		    Return "JumpLess"
 		  Case &h1C
 		    Return "JumpLessOrEqual"
+		    
 		  Case &h1D
-		    Return "Convert"
-		    
-		  Case &h20
-		    Return "Equal"
-		  Case &h21
-		    Return "Greater"
-		  Case &h22
-		    Return "Less"
-		  Case &h23
-		    Return "Negate"
-		  Case &h24
 		    Return "Pop"
-		    
-		  Case &h25
-		    Return "Local"
-		  Case &h26
-		    Return "StoreLocal"
+		  Case &h1E
+		    Return "Ret"
 		    
 		  Case Else
 		    Raise GetRuntimeExc("cant decode ""OpCodes""")
@@ -741,7 +674,13 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToInstructionCode(Extends value As EXS.ExpressionType) As EXS.OpCodes
+		Function ToInteger(Extends value As EXS.OpCodes) As Integer
+		  Return Integer(value)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ToOpCode(Extends value As EXS.ExpressionType) As EXS.OpCodes
 		  Select Case value
 		  Case ExpressionType.Add
 		    Return OpCodes.Add
@@ -786,12 +725,6 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ToInteger(Extends value As EXS.OpCodes) As Integer
-		  Return Integer(value)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function ToOpCodes(Extends value As UInt8) As OpCodes
 		  Select Case value
 		  Case &h00
@@ -799,42 +732,47 @@ Protected Module EXS
 		  Case &h01
 		    Return OpCodes.Load
 		  Case &h02
-		    Return OpCodes.LoadParam
-		  Case &h03
 		    Return OpCodes.Store
+		  Case &h03
+		    Return OpCodes.Local
 		  Case &h04
-		    Return OpCodes.StoreParam
-		  Case &h05
 		    Return OpCodes.Call_
-		  Case &h06
-		    Return OpCodes.CallVirt
-		  Case &h07
-		    Return OpCodes.Ret
-		  Case &h08
-		    Return OpCodes.RetParam
-		  Case &h09
+		    
+		  Case &h05
 		    Return OpCodes.Add
-		  Case &h0A
+		  Case &h06
 		    Return OpCodes.Subtract
-		  Case &h0B
+		  Case &h07
 		    Return OpCodes.Multiply
-		  Case &h0C
+		  Case &h08
 		    Return OpCodes.Divide
-		  Case &h0D
+		  Case &h09
 		    Return OpCodes.Modulo
-		  Case &h0E
+		  Case &h0A
 		    Return OpCodes.Power
 		    
-		  Case &h10
+		  Case &h0B
 		    Return OpCodes.And_
-		  Case &h11
+		  Case &h0C
 		    Return OpCodes.Or_
-		  Case &h12
+		  Case &h0D
 		    Return OpCodes.ExclusiveOr
-		  Case &h13
+		  Case &h0E
 		    Return OpCodes.LeftShift
-		  Case &h14
+		  Case &h0F
 		    Return OpCodes.RightShift
+		    
+		  Case &h10
+		    Return OpCodes.Equal
+		  Case &h11
+		    Return OpCodes.Greater
+		  Case &h12
+		    Return OpCodes.Less
+		  Case &h13
+		    Return OpCodes.Not_
+		  Case &h14
+		    Return OpCodes.Convert
+		    
 		  Case &h15
 		    Return OpCodes.Jump
 		  Case &h16
@@ -845,31 +783,17 @@ Protected Module EXS
 		    Return OpCodes.JumpEqual
 		  Case &h19
 		    Return OpCodes.JumpGreater
-		    
 		  Case &h1A
 		    Return OpCodes.JumpGreaterOrEqual
 		  Case &h1B
 		    Return OpCodes.JumpLess
 		  Case &h1C
 		    Return OpCodes.JumpLessOrEqual
+		    
 		  Case &h1D
-		    Return OpCodes.Convert
-		    
-		  Case &h20
-		    Return OpCodes.Equal
-		  Case &h21
-		    Return OpCodes.Greater
-		  Case &h22
-		    Return OpCodes.Less
-		  Case &h23
-		    Return OpCodes.Not_
-		  Case &h24
 		    Return OpCodes.Pop
-		    
-		  Case &h25
-		    Return OpCodes.Local
-		  Case &h26
-		    Return OpCodes.StoreLocal
+		  Case &h1E
+		    Return OpCodes.Ret
 		    
 		  Case Else
 		    Raise GetRuntimeExc("can't convert value to ""OpCodes""")
@@ -1331,24 +1255,25 @@ Protected Module EXS
 	#tag Enum, Name = OpCodes, Flags = &h0
 		Nop= &h00
 		  Load= &h01
-		  LoadParam= &h02
-		  Store= &h03
-		  StoreParam= &h04
-		  Call_= &h05
-		  CallVirt= &h06
-		  Ret= &h07
-		  RetParam= &h08
-		  Add= &h09
-		  Subtract= &h0A
-		  Multiply= &h0B
-		  Divide= &h0C
-		  Modulo= &h0D
-		  Power= &h0E
-		  And_= &h10
-		  Or_= &h11
-		  ExclusiveOr= &h12
-		  LeftShift= &h13
-		  RightShift= &h14
+		  Store= &h02
+		  Local= &h03
+		  Call_= &h04
+		  Add= &h05
+		  Subtract= &h06
+		  Multiply= &h07
+		  Divide= &h08
+		  Modulo= &h09
+		  Power= &h0A
+		  And_= &h0B
+		  Or_= &h0C
+		  ExclusiveOr= &h0D
+		  LeftShift= &h0E
+		  RightShift= &h0F
+		  Equal= &h10
+		  Greater= &h11
+		  Less= &h12
+		  Not_= &h13
+		  Convert= &h14
 		  Jump= &h15
 		  JumpTrue= &h16
 		  JumpFalse= &h17
@@ -1357,14 +1282,8 @@ Protected Module EXS
 		  JumpGreaterOrEqual= &h1A
 		  JumpLess= &h1B
 		  JumpLessOrEqual= &h1C
-		  Convert= &h1D
-		  Equal= &h20
-		  Greater= &h21
-		  Less= &h22
-		  Not_= &h23
-		  Pop= &h24
-		  Local= &h25
-		StoreLocal= &h26
+		  Pop= &h1D
+		Ret= &h1E
 	#tag EndEnum
 
 	#tag Enum, Name = SymbolType, Type = Integer, Flags = &h0

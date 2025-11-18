@@ -144,7 +144,7 @@ Inherits TestGroup
 		  Assert.AreEqual "Int32", ti.Name, "AreEqual ""Int32"", ti.Name"
 		  
 		  Dim exprs() As EXS.Expressions.Expression= blockExpr.Expressions
-		  Assert.AreEqual 2, exprs.LastIdx, "AreEqual 2, exprs.LastIdx"
+		  Assert.AreEqual 2, exprs.LastIdxEXS, "AreEqual 2, exprs.LastIdx"
 		  
 		  str1= "{System.DebugLog(""hello"")"+ EndOfLine.Unix+ "System.DebugLog(""World!"")"+ _
 		  EndOfLine.Unix+ "42}"
@@ -363,7 +363,7 @@ Inherits TestGroup
 		  Assert.AreEqual "Log", methodInfo.Name, "AreEqual ""Log"", methodInfo.Name"
 		  
 		  Dim args() As EXS.Expressions.Expression= mc.Arguments
-		  Assert.AreEqual 1, args.LastIdx, "AreEqual 1, args.LastIdx"
+		  Assert.AreEqual 1, args.LastIdxEXS, "AreEqual 1, args.LastIdx"
 		  
 		  Dim expect As String= "System.Log(1,""Hello"")"
 		  Dim actual As String= mc.ToString

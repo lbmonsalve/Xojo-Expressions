@@ -38,11 +38,11 @@ Inherits EXS.Expressions.Expression
 		  Dim bs As New BinaryStream(New MemoryBlock(0))
 		  bs.Write mType.Name
 		  bs.Write "."+ mMethod.Name
-		  If mArguments.LastIdx> -1 Then
+		  If mArguments.LastIdxEXS> -1 Then
 		    bs.Write "("
-		    For i As Integer= 0 To mArguments.LastIdx
+		    For i As Integer= 0 To mArguments.LastIdxEXS
 		      bs.Write mArguments(i).ToString
-		      If i< mArguments.LastIdx Then bs.Write ","
+		      If i< mArguments.LastIdxEXS Then bs.Write ","
 		    Next
 		    bs.Write ")"
 		  End If

@@ -50,9 +50,9 @@ Inherits EXS.Expressions.Expression
 		  Dim bs As New BinaryStream(New MemoryBlock(0))
 		  
 		  bs.Write "("
-		  For i As Integer= 0 To mParameters.LastIdx
+		  For i As Integer= 0 To mParameters.LastIdxEXS
 		    bs.Write mParameters(i).ToString
-		    If i< mParameters.LastIdx Then bs.Write ", "
+		    If i< mParameters.LastIdxEXS Then bs.Write ", "
 		  Next
 		  bs.Write ") => "
 		  

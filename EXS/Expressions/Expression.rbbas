@@ -103,7 +103,7 @@ Protected Class Expression
 		 Shared Function CallExpr(instance As Object, typeExpr As Introspection.TypeInfo, methodName As String, ParamArray arguments As Expression) As MethodCallExpression
 		  Dim typeArguments() As Introspection.TypeInfo
 		  
-		  For i As Integer= 0 To arguments.LastIdx
+		  For i As Integer= 0 To arguments.LastIdxEXS
 		    Dim argument As Expression= arguments(i)
 		    typeArguments.Append argument.Type
 		  Next

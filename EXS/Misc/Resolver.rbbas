@@ -19,7 +19,7 @@ Implements EXS.Expressions.IVisitor
 		  If Not paramsExpr.MatchTypeWith(mParamValues) Then _
 		  Raise GetRuntimeExc("Not paramsExpr.MatchTypeWith(mParamValues)")
 		  
-		  For i As Integer= 0 To paramsExpr.LastIdx
+		  For i As Integer= 0 To paramsExpr.LastIdxEXS
 		    Dim paramExpr As EXS.Expressions.ParameterExpression= paramsExpr(i)
 		    mEnv.Define paramExpr.Name, mParamValues(i)
 		  Next
@@ -41,7 +41,7 @@ Implements EXS.Expressions.IVisitor
 		    #pragma BreakOnExceptions Off
 		    mEnv= newEnv
 		    
-		    For i As Integer= 0 To expressions.LastIdx
+		    For i As Integer= 0 To expressions.LastIdxEXS
 		      mRetValue= Resolve(expressions(i))
 		    Next
 		    #pragma BreakOnExceptions Default
@@ -115,7 +115,7 @@ Implements EXS.Expressions.IVisitor
 		  Dim methodParams() As Variant
 		  Dim args() As EXS.Expressions.Expression= expr.Arguments
 		  
-		  For i As Integer= 0 To args.LastIdx
+		  For i As Integer= 0 To args.LastIdxEXS
 		    Dim arg As Variant= Resolve(args(i))
 		    methodParams.Append arg
 		  Next

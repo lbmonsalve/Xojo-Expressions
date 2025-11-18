@@ -196,23 +196,6 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // call:
-		  'Dim expr As EXS.Expressions.Expression
-		  'expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!"))
-		  '
-		  'Dim compiler As New EXS.Expressions.Compiler(expr)
-		  'compiler.BinaryCode.Disassemble TextAreaWriter1
-		  '
-		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
-		  '
-		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  'Dim result As Variant= runner.Run
-		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
-		  'TextAreaWriter1.AppendText expr.ToString+ EndOfLine
-		  'TextAreaWriter1.AppendText "result: "+ result.StringValue
-		  'Break
-		  
-		  
 		  // assign:
 		  Dim expr As EXS.Expressions.Expression
 		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s")
@@ -231,6 +214,23 @@ End
 		  TextAreaWriter1.AppendText EndOfLine+ EndOfLine
 		  TextAreaWriter1.AppendText expr.ToString+ EndOfLine
 		  TextAreaWriter1.AppendText "result: "+ result.StringValue
+		  'Break
+		  
+		  
+		  // call:
+		  'Dim expr As EXS.Expressions.Expression
+		  'expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!"))
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  '
+		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim result As Variant= runner.Run
+		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
+		  'TextAreaWriter1.AppendText expr.ToString+ EndOfLine
+		  'TextAreaWriter1.AppendText "result: "+ result.StringValue
 		  'Break
 		  
 		  
