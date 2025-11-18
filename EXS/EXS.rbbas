@@ -368,21 +368,9 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IndexOrAppend(Extends values() As String, search As String) As Integer
-		  Dim last As Integer= values.LastIdxEXS
-		  
-		  For i As Integer= last To 0 Step -1
-		    If values(i)= search Then Return i
-		  Next
-		  values.Append search
-		  
-		  Return values.LastIdxEXS
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function IsAssignable(Extends value As Introspection.TypeInfo, rhs As Introspection.TypeInfo) As Boolean
 		  If value.Name= "Variant" Then Return True
+		  If value.Name= "String" Then Return True
 		  
 		  If value= rhs Then Return True
 		  If value.FullName= rhs.FullName Then Return True
@@ -466,6 +454,12 @@ Protected Module EXS
 
 	#tag Method, Flags = &h0
 		Function LastIdxEXS(Extends values() As EXS.Expressions.Expression) As Integer
+		  Return values.Ubound
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function LastIdxEXS(Extends values() As EXS.Expressions.Local) As Integer
 		  Return values.Ubound
 		End Function
 	#tag EndMethod
@@ -663,6 +657,31 @@ Protected Module EXS
 		Protected Sub Release()
 		  EXS.TypesUtils.Release
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ReverseScopeLookup(Extends values() As EXS.Expressions.Local, search As String, scope As Integer) As Integer
+		  Dim last As Integer= values.LastIdxEXS
+		  
+		  For i As Integer= last To 0 Step -1
+		    Dim loc As EXS.Expressions.Local= values(i)
+		    If scope> loc.Scope Then Exit
+		    If loc.Name= search And loc.Scope= scope Then Return i
+		  Next
+		  
+		  Return -1
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ReverseScopeLookupOrAppend(Extends values() As EXS.Expressions.Local, search As String, scope As Integer) As Integer
+		  Dim idx As Integer= values.ReverseScopeLookup(search, scope)
+		  If idx<> -1 Then Return idx
+		  
+		  values.Append New EXS.Expressions.Local(search, scope)
+		  
+		  Return values.LastIdxEXS
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0

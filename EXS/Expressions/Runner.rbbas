@@ -81,10 +81,9 @@ Protected Class Runner
 		    
 		  Case OpCodes.Local
 		    Dim idx As Integer= GetVUInt(bs)
-		    Dim name As String= mStack.Pop.StringValue
-		    'mLocals.Value(name+ Str(idx))= idx
+		    mStack.Append mLocals.Value(idx)
 		    
-		    If debug Then Trace("# Local "+ name+ "= stack"+ Str(idx, kFidx))
+		    If debug Then Trace("# Local "+ Str(idx, kFidx))
 		    
 		  Case OpCodes.Not_
 		    Dim value As Boolean= mStack.Pop.BooleanValue

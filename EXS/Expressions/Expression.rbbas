@@ -71,6 +71,12 @@ Protected Class Expression
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Function Block(expressions() As Expression) As BlockExpression
+		  Return New BlockExpression(expressions)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function Block(ParamArray expressions As Expression) As BlockExpression
 		  Return New BlockExpression(expressions)
 		End Function

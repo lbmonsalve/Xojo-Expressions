@@ -20,6 +20,25 @@ Implements IVisitor
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Sub ScopeBegin()
+		  mScope= mScope+ 1
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub ScopeEnd()
+		  mScope= mScope- 1
+		  
+		  // pop locals vars
+		  While mLocals(mLocals.LastIdxEXS).Scope> mScope
+		    mBinaryCode.EmitCode OpCodes.Pop
+		    Call mLocals.Pop
+		    If mLocals.LastIdxEXS= -1 Then Exit
+		  Wend
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function VisitAssign(expr As EXS.Expressions.AssignExpression) As Variant
 		  Compile expr.Right
@@ -34,23 +53,20 @@ Implements IVisitor
 		  End If
 		  
 		  mBinaryCode.EmitCode OpCodes.Store
-		  mBinaryCode.EmitValue mLocal.IndexOrAppend(name)
+		  mBinaryCode.EmitValue mLocals.ReverseScopeLookupOrAppend(name, mScope)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function VisitBlock(expr As EXS.Expressions.BlockExpression) As Variant
-		  Dim before As Integer= mLocal.LastIdxEXS
-		  Dim exprs() As Expression= expr.Expressions
+		  ScopeBegin
 		  
+		  Dim exprs() As Expression= expr.Expressions
 		  For i As Integer= 0 To exprs.LastIdxEXS
 		    Compile exprs(i)
 		  Next
 		  
-		  While mLocal.LastIdxEXS> before // pop locals vars
-		    mBinaryCode.EmitCode OpCodes.Pop
-		    Call mLocal.Pop
-		  Wend
+		  ScopeEnd
 		End Function
 	#tag EndMethod
 
@@ -62,8 +78,15 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitConstant(expr As EXS.Expressions.ConstantExpression) As Variant
-		  mBinaryCode.EmitCode OpCodes.Load
-		  mBinaryCode.EmitValue mBinaryCode.StoreSymbol(expr)
+		  Dim idx As Integer= mLocals.ReverseScopeLookup(expr.Value.StringValue, mScope)
+		  
+		  If idx= -1 Then
+		    mBinaryCode.EmitCode OpCodes.Load
+		    mBinaryCode.EmitValue mBinaryCode.StoreSymbol(expr)
+		  Else
+		    mBinaryCode.EmitCode OpCodes.Local
+		    mBinaryCode.EmitValue idx
+		  End If
 		End Function
 	#tag EndMethod
 
@@ -100,8 +123,15 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitParameter(expr As EXS.Expressions.ParameterExpression) As Variant
-		  mBinaryCode.EmitCode OpCodes.Load
-		  mBinaryCode.EmitValue mBinaryCode.StoreSymbol(expr)
+		  Dim idx As Integer= mLocals.ReverseScopeLookup(expr.Name, mScope)
+		  
+		  If idx= -1 Then
+		    mBinaryCode.EmitCode OpCodes.Load
+		    mBinaryCode.EmitValue mBinaryCode.StoreSymbol(expr)
+		  Else
+		    mBinaryCode.EmitCode OpCodes.Local
+		    mBinaryCode.EmitValue idx
+		  End If
 		End Function
 	#tag EndMethod
 
@@ -168,7 +198,11 @@ Implements IVisitor
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mLocal() As String
+		Private mLocals() As Local
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mScope As Integer
 	#tag EndProperty
 
 

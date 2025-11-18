@@ -370,18 +370,18 @@ Protected Class BinaryCode
 
 	#tag Method, Flags = &h0
 		Function StoreSymbol(expr As MethodCallExpression) As Integer
-		  If mSymbolCache.HasKey(expr) Then Return mSymbolCache.Value(expr).IntegerValue
+		  Dim name As String= expr.Type.FullName+ "."+ expr.Method.Name
+		  If mSymbolCache.HasKey(name) Then Return mSymbolCache.Value(name).IntegerValue
 		  
-		  Dim method As Introspection.MethodInfo= expr.Method
-		  Dim name As Integer= StoreSymbol(expr.Type.FullName+ "@"+ method.Name)
+		  Dim idx As Integer= StoreSymbol(name)
 		  
 		  mHeaderBS.WriteUInt8 Integer(SymbolType.Method)
-		  mHeaderBS.Write GetVUInt64(name)
+		  mHeaderBS.Write GetVUInt64(idx)
 		  
 		  mHeaderMB.UInt16Value(mHeaderFirstInstruction)= mHeaderBS.Length
 		  
 		  mSymbols.Append expr
-		  mSymbolCache.Value(expr)= mSymbols.LastIdxEXS
+		  mSymbolCache.Value(name)= mSymbols.LastIdxEXS
 		  
 		  Return mSymbols.LastIdxEXS
 		End Function
