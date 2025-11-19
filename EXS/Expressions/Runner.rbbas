@@ -31,7 +31,7 @@ Protected Class Runner
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Run(ParamArray values As Variant) As Variant
+		Function Run(values() As Variant) As Variant
 		  mLocals= New Dictionary
 		  DefineParams values
 		  
@@ -44,6 +44,12 @@ Protected Class Runner
 		  If mStack.LastIdxEXS= -1 Then Return Nil
 		  
 		  Return mStack.Pop
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function Run(ParamArray values As Variant) As Variant
+		  Return Run(values)
 		End Function
 	#tag EndMethod
 
@@ -175,7 +181,7 @@ Protected Class Runner
 		  Case OpCodes.Power
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
-		    mStack.Append left^ right
+		    mStack.Append left.DoubleValue^ right.DoubleValue
 		    
 		    If debug Then Trace("# Power "+ Str(left)+ " "+ Str(right))
 		    

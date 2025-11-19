@@ -31,10 +31,9 @@ Implements IVisitor
 		  mScope= mScope- 1
 		  
 		  // pop locals vars
-		  While mLocals(mLocals.LastIdxEXS).Scope> mScope
+		  While mLocals.LastIdxEXS<> -1 And mLocals(mLocals.LastIdxEXS).Scope> mScope
 		    mBinaryCode.EmitCode OpCodes.Pop
 		    Call mLocals.Pop
-		    If mLocals.LastIdxEXS= -1 Then Exit
 		  Wend
 		End Sub
 	#tag EndMethod

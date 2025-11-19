@@ -47,6 +47,24 @@ Protected Module EXS
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function EncodePrintable(value As String, nonPrintable As String = "º") As String
+		  Dim result() As String
+		  
+		  For i As Integer= 1 To value.LenB
+		    Dim chr As String= value.MidB(i, 1)
+		    Dim achr As Integer= Asc(chr)
+		    If achr> 32 And achr< 127 Then
+		      result.Append chr
+		    Else
+		      result.Append nonPrintable
+		    End If
+		  Next
+		  
+		  Return Join(result, "")
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function EndFileEXS(Extends value As BinaryStream) As Boolean
 		  #if RBVersion< 2019.02
@@ -659,6 +677,18 @@ Protected Module EXS
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function Repeat(num As Integer, chars As String = " ") As String
+		  Dim result() As String
+		  
+		  For i As Integer= 1 To num
+		    result.Append chars
+		  Next
+		  
+		  Return Join(result, "")
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function ReverseScopeLookup(Extends values() As EXS.Expressions.Local, search As String, scope As Integer) As Integer
 		  Dim last As Integer= values.LastIdxEXS
@@ -1143,6 +1173,16 @@ Protected Module EXS
 		  value.Write s+ EndOfLine.UNIX
 		End Sub
 	#tag EndMethod
+
+
+	#tag Note, Name = Readme
+		
+		# Xojo-Expressions
+		Implementation of [MS lambda expression.]
+		(https://learn.microsoft.com/es-es/dotnet/api/system.linq.expressions)  
+		
+		code expressions to be represented as objects in the form of expression trees.
+	#tag EndNote
 
 
 	#tag Constant, Name = kSize1Byte, Type = Double, Dynamic = False, Default = \"&b10000000", Scope = Private

@@ -7,7 +7,7 @@ Protected Class BinaryCode
 		  mHeaderMB= New MemoryBlock(kStreamMinSize) // 10bytes
 		  mHeaderMB.LittleEndian= False // bigEndian
 		  mHeaderBS= New BinaryStream(mHeaderMB)
-		  mHeaderBS.LittleEndian= False // bigEndian
+		  'mHeaderBS.LittleEndian= False // bigEndian
 		  
 		  mHeaderBS.WriteUInt32 kStreamMagicHeader // 4bytes
 		  mHeaderBS.Write GetVersion // 3bytes
@@ -18,7 +18,7 @@ Protected Class BinaryCode
 		  mInstructionsMB= New MemoryBlock(2) // twoBytes -> ret zero
 		  mInstructionsMB.LittleEndian= False // bigEndian
 		  mInstructionsBS= New BinaryStream(mInstructionsMB)
-		  mInstructionsBS.LittleEndian= False // bigEndian
+		  'mInstructionsBS.LittleEndian= False // bigEndian
 		  
 		  Init
 		End Sub
@@ -31,7 +31,7 @@ Protected Class BinaryCode
 		  If file Is Nil Then Raise GetRuntimeExc("file Is Nil")
 		  
 		  Dim bs As BinaryStream= BinaryStream.Open(file)
-		  bs.LittleEndian= False
+		  'bs.LittleEndian= False
 		  If bs.Length< kStreamMinSize Then Raise GetRuntimeExc("bs.Length< kStreamMinSize")
 		  
 		  Dim magic As UInt32= bs.ReadUInt32
@@ -56,12 +56,12 @@ Protected Class BinaryCode
 		  mHeaderMB= bs.Read(instructionsPosition)
 		  mHeaderMB.LittleEndian= False
 		  mHeaderBS= New BinaryStream(mHeaderMB)
-		  mHeaderBS.LittleEndian= False
+		  'mHeaderBS.LittleEndian= False
 		  
 		  mInstructionsMB= bs.Read(bs.Length- instructionsPosition)
 		  mInstructionsMB.LittleEndian= False
 		  mInstructionsBS= New BinaryStream(mInstructionsMB)
-		  mInstructionsBS.LittleEndian= False
+		  'mInstructionsBS.LittleEndian= False
 		  
 		  Init
 		  
@@ -73,6 +73,9 @@ Protected Class BinaryCode
 	#tag Method, Flags = &h0
 		Sub Disassemble(debugTrace As Writeable)
 		  If debugTrace Is Nil Then Raise GetRuntimeExc("debugTrace Is Nil")
+		  
+		  Dim headerPosition As UInt64= mHeaderBS.Position
+		  Dim instructionsPosition As UInt64= mInstructionsBS.Position
 		  
 		  Dim bs As BinaryStream= mHeaderBS
 		  bs.Position= 0
@@ -98,6 +101,7 @@ Protected Class BinaryCode
 		  debugTrace.WriteLn kL06.Replace("%", Str(sizeByte)).Replace("$", Bin(flags))
 		  debugTrace.WriteLn kL07.Replace("%", Str(bs.Position)).Replace("$", Str(bs.ReadUInt16))
 		  
+		  // symbols
 		  Dim idx As UInt32
 		  
 		  debugTrace.WriteLn "# Symbols"
@@ -108,6 +112,7 @@ Protected Class BinaryCode
 		    idx= idx+ 1
 		  Wend
 		  
+		  // instructions
 		  bs= mInstructionsBS
 		  bs.Position= 0
 		  
@@ -118,7 +123,31 @@ Protected Class BinaryCode
 		    debugTrace.WriteLn DisassembleInstruction(bs)
 		  Wend
 		  
-		  debugTrace.WriteLn "# Bytes: "+ Str(mHeaderBS.Length+ mInstructionsBS.Length)
+		  // HEX view
+		  mHeaderBS.Position= 0
+		  mInstructionsBS.Position= 0
+		  
+		  bs= BinaryStream.Create(GetTemporaryFolderItem, True)
+		  'bs.LittleEndian= False
+		  bs.Write mHeaderBS.Read(mHeaderBS.Length)
+		  bs.Write mInstructionsBS.Read(mInstructionsBS.Length)
+		  bs.Position= 0
+		  
+		  debugTrace.WriteLn "# HEX view "+ Str(bs.Length)+ " Bytes"
+		  debugTrace.WriteLn "address 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  dump"
+		  
+		  While Not bs.EndFileEXS
+		    Dim pos As String= Hex(bs.Position)
+		    debugTrace.Write Repeat(7- pos.Len, "0")+ pos+ " "
+		    Dim dump As String= bs.Read(16)
+		    Dim line As String= EncodeHex(dump, True)
+		    debugTrace.WriteLn line+ Repeat(48- line.Len)+ EncodePrintable(dump)
+		  Wend
+		  
+		  bs.Close
+		  
+		  mHeaderBS.Position= headerPosition
+		  mInstructionsBS.Position= instructionsPosition
 		End Sub
 	#tag EndMethod
 
@@ -370,7 +399,7 @@ Protected Class BinaryCode
 
 	#tag Method, Flags = &h0
 		Function StoreSymbol(expr As MethodCallExpression) As Integer
-		  Dim name As String= expr.Type.FullName+ "."+ expr.Method.Name
+		  Dim name As String= expr.Type.FullName+ "@"+ expr.Method.Name
 		  If mSymbolCache.HasKey(name) Then Return mSymbolCache.Value(name).IntegerValue
 		  
 		  Dim idx As Integer= StoreSymbol(name)
@@ -447,8 +476,7 @@ Protected Class BinaryCode
 		use vUInts to encode unsigned integers [VLQ](https://en.wikipedia.org/wiki/Variable-length_quantity)  
 		
 		# Binary format
-		
-		'''
+		```
 		+--------------+
 		| Header       |
 		+--------------+
@@ -456,9 +484,10 @@ Protected Class BinaryCode
 		+--------------+
 		| Instructions |
 		+--------------+
-		'''
+		```
 		
-		'''
+		## Header
+		```
 		+--------+------+---------------------+
 		| offset | size | description         |
 		+--------+------+---------------------+
@@ -470,9 +499,9 @@ Protected Class BinaryCode
 		| 10     | n    | symbols             |
 		| 10+n   | m    | instructions        |
 		+--------+------+---------------------+
-		'''
+		```
 		
-		# Symbols
+		## Symbols
 		The symbols are encoded in binary format as a key-value pairs:
 		
 		```
@@ -559,11 +588,12 @@ Protected Class BinaryCode
 		  Dim example3 As String= "0x"+ Hex(key)
 		```
 		
-		# Instructions
+		## Instructions
 		instructions are variable-length in size  
 		instruction begin with 1byte as opCode follows by variable operands  
 		operands are coded in vUint format  
 		
+		```
 		+---------+-------+---------------------+
 		| offset  | size  | description         |
 		+---------+-------+---------------------+
@@ -572,46 +602,47 @@ Protected Class BinaryCode
 		| 1       | vUint | operands            |
 		| ...     | vUint | operands            |
 		+---------+-------+---------------------+
+		```
 		
-		## Opcode instructions
+		### Opcode instructions
 		
 		Nop= &h00
 		
-		Load= &h01
-		Store= &h02
-		Local= &h03
-		Call_= &h04
+		Load= &h01  
+		Store= &h02  
+		Local= &h03  
+		Call_= &h04  
 		
-		Add= &h05
-		Subtract= &h06
-		Multiply= &h07
-		Divide= &h08
-		Modulo= &h09
-		Power= &h0A
+		Add= &h05  
+		Subtract= &h06  
+		Multiply= &h07  
+		Divide= &h08  
+		Modulo= &h09  
+		Power= &h0A  
 		
-		And_= &h0B
-		Or_= &h0C
-		ExclusiveOr= &h0D
-		LeftShift= &h0E
-		RightShift= &h0F
+		And_= &h0B  
+		Or_= &h0C  
+		ExclusiveOr= &h0D  
+		LeftShift= &h0E  
+		RightShift= &h0F  
 		
-		Equal= &h10
-		Greater= &h11
-		Less= &h12
+		Equal= &h10  
+		Greater= &h11  
+		Less= &h12  
 		
-		Not_= &h13
-		Convert= &h14
+		Not_= &h13  
+		Convert= &h14  
 		
-		Jump= &h15
-		JumpTrue= &h16
-		JumpFalse= &h17
-		JumpEqual= &h18
-		JumpGreater= &h19
-		JumpGreaterOrEqual= &h1A
-		JumpLess= &h1B
-		JumpLessOrEqual= &h1C
+		Jump= &h15  
+		JumpTrue= &h16  
+		JumpFalse= &h17  
+		JumpEqual= &h18  
+		JumpGreater= &h19  
+		JumpGreaterOrEqual= &h1A  
+		JumpLess= &h1B  
+		JumpLessOrEqual= &h1C  
 		
-		Pop= &h1D
+		Pop= &h1D  
 		Ret= &h1E
 	#tag EndNote
 

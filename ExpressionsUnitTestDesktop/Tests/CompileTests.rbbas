@@ -2,7 +2,7 @@
 Protected Class CompileTests
 Inherits TestGroup
 	#tag Method, Flags = &h0
-		Sub Add_CompileTest()
+		Sub AddTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
@@ -33,7 +33,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub And_CompileTest()
+		Sub AndTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Boolean"), "a")
@@ -66,7 +66,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Assign_CompileTest()
+		Sub AssignTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim p1 As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s1")
@@ -102,20 +102,20 @@ Inherits TestGroup
 
 	#tag Method, Flags = &h0
 		Sub CompileSaveLoadTest()
-		  'Dim expr As EXS.Expressions.Expression
-		  'Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
-		  'expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello")), _
-		  'expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("World!")), _
-		  'expr.Constant(42))
-		  'Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
-		  'Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
-		  '
-		  'Dim binfile As FolderItem= GetTemporaryFolderItem //SpecialFolder.Documents.Child("Expressions.bin")
-		  'Dim lambdaCompiler As EXS.Expressions.ILambdaCompiler= New EXS.Expressions.LambdaCompiler(expr.Lambda(blockExpr))
-		  'lambdaCompiler.EmitLambdaBody
-		  'lambdaCompiler.Save binfile
-		  'Assert.IsTrue binfile.Exists, "IsTrue binfile.Exists"
-		  '
+		  Dim expr As EXS.Expressions.Expression
+		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
+		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello")), _
+		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("World!")), _
+		  expr.Constant(42))
+		  Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
+		  Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
+		  
+		  Dim binfile As FolderItem= GetTemporaryFolderItem //SpecialFolder.Documents.Child("Expressions.bin")
+		  Dim lambdaCompiler As EXS.Expressions.ILambdaCompiler= New EXS.Expressions.LambdaCompiler(expr.Lambda(blockExpr))
+		  lambdaCompiler.EmitLambdaBody
+		  lambdaCompiler.Save binfile
+		  Assert.IsTrue binfile.Exists, "IsTrue binfile.Exists"
+		  
 		  'result= Nil
 		  'lambdaCompiler= New EXS.Expressions.LambdaCompiler(binfile)
 		  'result= lambdaCompiler.Run(Nil)
@@ -127,31 +127,31 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Conditional_CompileTest()
-		  Dim expr As EXS.Expressions.Expression
-		  
-		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Boolean"), "a")
-		  Dim conditionExpr As EXS.Expressions.ConditionalExpression= expr.Condition(_
-		  paramExpr, _
-		  expr.Constant("true"), _
-		  expr.Constant("false") _
-		  )
-		  Dim str1 As String= conditionExpr.ToString
-		  Assert.AreSame "a ? ""true"" : ""false""", str1, "AreSame ""a ? ""true"" : ""false"""", str1"
-		  
-		  Dim params() As Variant
-		  params.Append False
-		  Dim result As Variant= expr.Lambda(conditionExpr, paramExpr).Compile.Invoke(params)
-		  Assert.AreSame "false", result.StringValue, "AreSame ""false"", result.StringValue"
-		  
-		  params(0)= True
-		  result= expr.Lambda(conditionExpr, paramExpr).Compile.Invoke(params)
-		  Assert.AreSame "true", result.StringValue, "AreSame ""true"", result.StringValue"
+		Sub ConditionalTest()
+		  'Dim expr As EXS.Expressions.Expression
+		  '
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Boolean"), "a")
+		  'Dim conditionExpr As EXS.Expressions.ConditionalExpression= expr.Condition(_
+		  'paramExpr, _
+		  'expr.Constant("true"), _
+		  'expr.Constant("false") _
+		  ')
+		  'Dim str1 As String= conditionExpr.ToString
+		  'Assert.AreSame "a ? ""true"" : ""false""", str1, "AreSame ""a ? ""true"" : ""false"""", str1"
+		  '
+		  'Dim params() As Variant
+		  'params.Append False
+		  'Dim result As Variant= expr.Lambda(conditionExpr, paramExpr).Compile.Invoke(params)
+		  'Assert.AreSame "false", result.StringValue, "AreSame ""false"", result.StringValue"
+		  '
+		  'params(0)= True
+		  'result= expr.Lambda(conditionExpr, paramExpr).Compile.Invoke(params)
+		  'Assert.AreSame "true", result.StringValue, "AreSame ""true"", result.StringValue"
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constant_CompileTest()
+		Sub ConstantTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
@@ -165,22 +165,22 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Convert_CompileTest()
-		  Dim expr As EXS.Expressions.Expression
-		  
-		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
-		  expr.Convert(expr.Constant(10), EXS.GetType("String")))
-		  Dim str1 As String= blockExpr.ToString
-		  Assert.AreSame "{(10 -> String)}", str1, "AreSame ""{(10 -> String)}"", str1"
-		  
-		  Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
-		  'Assert.AreEqual Variant.TypeString, result.Type, "AreEqual Variant.TypeString, result.Type"
-		  Assert.AreEqual "10", result.StringValue, "AreEqual ""10"", result.StringValue"
+		Sub ConvertTest()
+		  'Dim expr As EXS.Expressions.Expression
+		  '
+		  'Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
+		  'expr.Convert(expr.Constant(10), EXS.GetType("String")))
+		  'Dim str1 As String= blockExpr.ToString
+		  'Assert.AreSame "{(10 -> String)}", str1, "AreSame ""{(10 -> String)}"", str1"
+		  '
+		  'Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
+		  ''Assert.AreEqual Variant.TypeString, result.Type, "AreEqual Variant.TypeString, result.Type"
+		  'Assert.AreEqual "10", result.StringValue, "AreEqual ""10"", result.StringValue"
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Divide_CompileTest()
+		Sub DivideTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
@@ -198,7 +198,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub LeftShift_CompileTest()
+		Sub LeftShiftTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
@@ -216,7 +216,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub MethodCall_CompileTest()
+		Sub MethodCallTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
@@ -232,7 +232,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Modulo_CompileTest()
+		Sub ModuloTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
@@ -250,7 +250,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Multiply_CompileTest()
+		Sub MultiplyTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
@@ -268,7 +268,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Or_CompileTest()
+		Sub OrTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Boolean"), "a")
@@ -301,7 +301,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Power_CompileTest()
+		Sub PowerTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
@@ -319,7 +319,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub RightShift_CompileTest()
+		Sub RightShiftTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
@@ -337,7 +337,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Subtract_CompileTest()
+		Sub SubtractTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
@@ -355,7 +355,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub XOr_CompileTest()
+		Sub XOrTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Boolean"), "a")

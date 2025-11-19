@@ -1,8 +1,8 @@
 #tag Class
 Protected Class LambdaResolver
-Implements ILambdaCompiler
+Implements EXS.Expressions.ILambdaCompiler
 	#tag Method, Flags = &h0
-		Sub Constructor(expr As LambdaExpression)
+		Sub Constructor(expr As EXS.Expressions.LambdaExpression)
 		  mExpr= expr
 		End Sub
 	#tag EndMethod
@@ -29,7 +29,7 @@ Implements ILambdaCompiler
 
 
 	#tag Property, Flags = &h21
-		Private mExpr As LambdaExpression
+		Private mExpr As EXS.Expressions.LambdaExpression
 	#tag EndProperty
 
 
