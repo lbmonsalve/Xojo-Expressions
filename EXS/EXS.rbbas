@@ -48,7 +48,7 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function EncodePrintable(value As String, nonPrintable As String = "º") As String
+		Protected Function EncodePrintable(Extends value As String, nonPrintable As String = "º") As String
 		  Dim result() As String
 		  
 		  For i As Integer= 1 To value.LenB
@@ -551,6 +551,7 @@ Protected Module EXS
 		  Select Case code
 		  Case &h00
 		    Return "Nop"
+		    
 		  Case &h01
 		    Return "Load"
 		  Case &h02
@@ -559,61 +560,63 @@ Protected Module EXS
 		    Return "Local"
 		  Case &h04
 		    Return "Call"
-		    
 		  Case &h05
-		    Return "Add"
+		    Return "Pop"
+		    
 		  Case &h06
-		    Return "Subtract"
+		    Return "Negate"
 		  Case &h07
-		    Return "Multiply"
+		    Return "Equal"
 		  Case &h08
-		    Return "Divide"
+		    Return "Greater"
 		  Case &h09
-		    Return "Modulo"
+		    Return "Less"
+		    
 		  Case &h0A
+		    Return "And"
+		  Case &h0B
+		    Return "Or"
+		  Case &h0C
+		    Return "ExclusiveOr"
+		    
+		  Case &h0D
+		    Return "Add"
+		  Case &h0E
+		    Return "Subtract"
+		  Case &h0F
+		    Return "Multiply"
+		  Case &h10
+		    Return "Divide"
+		  Case &h11
+		    Return "Modulo"
+		  Case &h12
 		    Return "Power"
 		    
-		  Case &h0B
-		    Return "And"
-		  Case &h0C
-		    Return "Or"
-		  Case &h0D
-		    Return "ExclusiveOr"
-		  Case &h0E
+		  Case &h13
 		    Return "LeftShift"
-		  Case &h0F
+		  Case &h14
 		    Return "RightShift"
 		    
-		  Case &h10
-		    Return "Equal"
-		  Case &h11
-		    Return "Greater"
-		  Case &h12
-		    Return "Less"
-		  Case &h13
-		    Return "Negate"
-		  Case &h14
+		  Case &h15
 		    Return "Convert"
 		    
-		  Case &h15
-		    Return "Jump"
 		  Case &h16
-		    Return "JumpTrue"
+		    Return "Jump"
 		  Case &h17
-		    Return "JumpFalse"
+		    Return "JumpTrue"
 		  Case &h18
-		    Return "JumpEqual"
+		    Return "JumpFalse"
 		  Case &h19
-		    Return "JumpGreater"
+		    Return "JumpEqual"
 		  Case &h1A
-		    Return "JumpGreaterOrEqual"
+		    Return "JumpGreater"
 		  Case &h1B
-		    Return "JumpLess"
+		    Return "JumpGreaterOrEqual"
 		  Case &h1C
+		    Return "JumpLess"
+		  Case &h1D
 		    Return "JumpLessOrEqual"
 		    
-		  Case &h1D
-		    Return "Pop"
 		  Case &h1E
 		    Return "Ret"
 		    
@@ -778,6 +781,7 @@ Protected Module EXS
 		  Select Case value
 		  Case &h00
 		    Return OpCodes.Nop
+		    
 		  Case &h01
 		    Return OpCodes.Load
 		  Case &h02
@@ -786,61 +790,63 @@ Protected Module EXS
 		    Return OpCodes.Local
 		  Case &h04
 		    Return OpCodes.Call_
-		    
 		  Case &h05
-		    Return OpCodes.Add
+		    Return OpCodes.Pop
+		    
 		  Case &h06
-		    Return OpCodes.Subtract
+		    Return OpCodes.Not_
 		  Case &h07
-		    Return OpCodes.Multiply
+		    Return OpCodes.Equal
 		  Case &h08
-		    Return OpCodes.Divide
+		    Return OpCodes.Greater
 		  Case &h09
-		    Return OpCodes.Modulo
+		    Return OpCodes.Less
+		    
 		  Case &h0A
+		    Return OpCodes.And_
+		  Case &h0B
+		    Return OpCodes.Or_
+		  Case &h0C
+		    Return OpCodes.ExclusiveOr
+		    
+		  Case &h0D
+		    Return OpCodes.Add
+		  Case &h0E
+		    Return OpCodes.Subtract
+		  Case &h0F
+		    Return OpCodes.Multiply
+		  Case &h10
+		    Return OpCodes.Divide
+		  Case &h11
+		    Return OpCodes.Modulo
+		  Case &h12
 		    Return OpCodes.Power
 		    
-		  Case &h0B
-		    Return OpCodes.And_
-		  Case &h0C
-		    Return OpCodes.Or_
-		  Case &h0D
-		    Return OpCodes.ExclusiveOr
-		  Case &h0E
+		  Case &h13
 		    Return OpCodes.LeftShift
-		  Case &h0F
+		  Case &h14
 		    Return OpCodes.RightShift
 		    
-		  Case &h10
-		    Return OpCodes.Equal
-		  Case &h11
-		    Return OpCodes.Greater
-		  Case &h12
-		    Return OpCodes.Less
-		  Case &h13
-		    Return OpCodes.Not_
-		  Case &h14
+		  Case &h15
 		    Return OpCodes.Convert
 		    
-		  Case &h15
-		    Return OpCodes.Jump
 		  Case &h16
-		    Return OpCodes.JumpTrue
+		    Return OpCodes.Jump
 		  Case &h17
-		    Return OpCodes.JumpFalse
+		    Return OpCodes.JumpTrue
 		  Case &h18
-		    Return OpCodes.JumpEqual
+		    Return OpCodes.JumpFalse
 		  Case &h19
-		    Return OpCodes.JumpGreater
+		    Return OpCodes.JumpEqual
 		  Case &h1A
-		    Return OpCodes.JumpGreaterOrEqual
+		    Return OpCodes.JumpGreater
 		  Case &h1B
-		    Return OpCodes.JumpLess
+		    Return OpCodes.JumpGreaterOrEqual
 		  Case &h1C
+		    Return OpCodes.JumpLess
+		  Case &h1D
 		    Return OpCodes.JumpLessOrEqual
 		    
-		  Case &h1D
-		    Return OpCodes.Pop
 		  Case &h1E
 		    Return OpCodes.Ret
 		    
@@ -1317,31 +1323,31 @@ Protected Module EXS
 		  Store= &h02
 		  Local= &h03
 		  Call_= &h04
-		  Add= &h05
-		  Subtract= &h06
-		  Multiply= &h07
-		  Divide= &h08
-		  Modulo= &h09
-		  Power= &h0A
-		  And_= &h0B
-		  Or_= &h0C
-		  ExclusiveOr= &h0D
-		  LeftShift= &h0E
-		  RightShift= &h0F
-		  Equal= &h10
-		  Greater= &h11
-		  Less= &h12
-		  Not_= &h13
-		  Convert= &h14
-		  Jump= &h15
-		  JumpTrue= &h16
-		  JumpFalse= &h17
-		  JumpEqual= &h18
-		  JumpGreater= &h19
-		  JumpGreaterOrEqual= &h1A
-		  JumpLess= &h1B
-		  JumpLessOrEqual= &h1C
-		  Pop= &h1D
+		  Pop= &h05
+		  Not_= &h06
+		  Equal= &h07
+		  Greater= &h08
+		  Less= &h09
+		  And_= &h0A
+		  Or_= &h0B
+		  ExclusiveOr= &h0C
+		  Add= &h0D
+		  Subtract= &h0E
+		  Multiply= &h0F
+		  Divide= &h10
+		  Modulo= &h11
+		  Power= &h12
+		  LeftShift= &h13
+		  RightShift= &h14
+		  Convert= &h15
+		  Jump= &h16
+		  JumpTrue= &h17
+		  JumpFalse= &h18
+		  JumpEqual= &h19
+		  JumpGreater= &h1A
+		  JumpGreaterOrEqual= &h1B
+		  JumpLess= &h1C
+		  JumpLessOrEqual= &h1D
 		Ret= &h1E
 	#tag EndEnum
 

@@ -22,13 +22,13 @@ Inherits ConsoleApplication
 		  Dim compiler As New EXS.Expressions.Compiler(expr)
 		  compiler.BinaryCode.Disassemble stdout
 		  
-		  stdout.Write EndOfLine+ EndOfLine
+		  stdout.WriteLn EndOfLine
 		  
 		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, stdout)
 		  Dim result As Variant= runner.Run("hello")
-		  stdout.Write EndOfLine+ EndOfLine
-		  stdout.Write expr.ToString+ EndOfLine
-		  stdout.WriteLine "result: "+ result.StringValue
+		  stdout.WriteLn EndOfLine
+		  stdout.WriteLn expr.ToString
+		  stdout.WriteLn "result: "+ result.StringValue
 		  Call Input
 		  
 		  

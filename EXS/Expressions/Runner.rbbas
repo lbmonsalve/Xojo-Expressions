@@ -91,12 +91,6 @@ Protected Class Runner
 		    
 		    If debug Then Trace("# Local "+ Str(idx, kFidx))
 		    
-		  Case OpCodes.Not_
-		    Dim value As Boolean= mStack.Pop.BooleanValue
-		    mStack.Append Not value
-		    
-		    If debug Then Trace("# Negate "+ Str(value))
-		    
 		  Case OpCodes.Call_
 		    Dim idx As Integer= GetVUInt(bs)
 		    Dim symbol As Variant= symbols(idx)
@@ -107,6 +101,17 @@ Protected Class Runner
 		    End If
 		    
 		    If debug Then Trace("# Call "+ Str(idx, kFidx))
+		    
+		  Case OpCodes.Pop
+		    Dim value As Variant= mStack.Pop
+		    
+		    If debug Then Trace("# Pop "+ Str(value))
+		    
+		  Case OpCodes.Not_
+		    Dim value As Boolean= mStack.Pop.BooleanValue
+		    mStack.Append Not value
+		    
+		    If debug Then Trace("# Negate "+ Str(value))
 		    
 		  Case OpCodes.Equal
 		    Dim right As Variant= mStack.Pop
@@ -142,6 +147,13 @@ Protected Class Runner
 		    mStack.Append left Or right
 		    
 		    If debug Then Trace("# Or "+ Str(left)+ " "+ Str(right))
+		    
+		  Case OpCodes.ExclusiveOr
+		    Dim right As Variant= mStack.Pop
+		    Dim left As Variant= mStack.Pop
+		    mStack.Append left Xor right
+		    
+		    If debug Then Trace("# Xor "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Add
 		    Dim right As Variant= mStack.Pop
@@ -185,17 +197,6 @@ Protected Class Runner
 		    
 		    If debug Then Trace("# Power "+ Str(left)+ " "+ Str(right))
 		    
-		  Case OpCodes.Ret
-		    Dim idx As Integer= GetVUInt(bs)
-		    mStack.Append symbols(idx)
-		    
-		    If debug Then Trace("# Ret "+ Str(idx, kFidx))
-		    
-		  Case OpCodes.Pop
-		    Dim value As Variant= mStack.Pop
-		    
-		    If debug Then Trace("# Pop "+ Str(value))
-		    
 		  Case OpCodes.LeftShift
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
@@ -210,12 +211,11 @@ Protected Class Runner
 		    
 		    If debug Then Trace("# RightShift "+ Str(left)+ " "+ Str(right))
 		    
-		  Case OpCodes.ExclusiveOr
-		    Dim right As Variant= mStack.Pop
-		    Dim left As Variant= mStack.Pop
-		    mStack.Append left Xor right
+		  Case OpCodes.Ret
+		    Dim idx As Integer= GetVUInt(bs)
+		    mStack.Append symbols(idx)
 		    
-		    If debug Then Trace("# Xor "+ Str(left)+ " "+ Str(right))
+		    If debug Then Trace("# Ret "+ Str(idx, kFidx))
 		    
 		  Case OpCodes.Nop // do nothing
 		    If debug Then Trace(instruction.OpCodesToString)
@@ -257,14 +257,14 @@ Protected Class Runner
 
 	#tag Method, Flags = &h21
 		Private Sub Trace(s As String)
-		  mDebugTrace.Write s+ EndOfLine.UNIX
+		  mDebugTrace.WriteLn s
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Sub TraceStack()
 		  For i As Integer= mStack.LastIdxEXS To 0 Step -1
-		    mDebugTrace.Write Str(i, "00000")+ " "+ mStack(i).ToStringVart+ EndOfLine.UNIX
+		    mDebugTrace.WriteLn Str(i, "00000")+ " "+ mStack(i).ToStringVart
 		  Next
 		End Sub
 	#tag EndMethod

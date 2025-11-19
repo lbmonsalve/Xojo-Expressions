@@ -61,6 +61,16 @@ Protected Class System
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Sub Print(msg As String)
+		  #if TargetConsole
+		    StdOut.WriteLine msg
+		  #else
+		    MsgBox msg
+		  #endif
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function Random() As Random
 		  Static rnd As Random
 		  If rnd Is Nil Then rnd= New Random
@@ -85,7 +95,7 @@ Protected Class System
 		Shared CommandLine As String
 	#tag EndComputedProperty
 
-	#tag ComputedProperty, Flags = &h0, CompatibilityFlags =                           TargetHasGUI
+	#tag ComputedProperty, Flags = &h0, CompatibilityFlags =                             TargetHasGUI
 		#tag Getter
 			Get
 			  Return FontCount

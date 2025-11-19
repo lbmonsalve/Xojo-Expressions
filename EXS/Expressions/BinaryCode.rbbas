@@ -141,7 +141,7 @@ Protected Class BinaryCode
 		    debugTrace.Write Repeat(7- pos.Len, "0")+ pos+ " "
 		    Dim dump As String= bs.Read(16)
 		    Dim line As String= EncodeHex(dump, True)
-		    debugTrace.WriteLn line+ Repeat(48- line.Len)+ EncodePrintable(dump)
+		    debugTrace.WriteLn line+ Repeat(48- line.Len)+ dump.EncodePrintable
 		  Wend
 		  
 		  bs.Close
@@ -158,20 +158,14 @@ Protected Class BinaryCode
 		  Dim opCode As OpCodes= instruction.ToOpCodes
 		  
 		  Select Case opCode
-		  Case OpCodes.Nop, OpCodes.Not_, OpCodes.Pop
-		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString
-		    
-		  Case OpCodes.Ret
-		    Dim idx As Integer= GetVUInt(mInstructionsBS)
-		    
-		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
-		    " "+ Str(idx, kFidx)
-		    
 		  Case OpCodes.Load, OpCodes.Store, OpCodes.Local, OpCodes.Call_
 		    Dim idx As Integer= GetVUInt(mInstructionsBS)
 		    
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
 		    " "+ Str(idx, kFidx)
+		    
+		  Case OpCodes.Nop, OpCodes.Not_, OpCodes.Pop
+		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString
 		    
 		  Case OpCodes.And_, OpCodes.Or_, OpCodes.ExclusiveOr, OpCodes.LeftShift, _
 		    OpCodes.RightShift, OpCodes.Equal, OpCodes.Greater, OpCodes.Less, _
@@ -185,6 +179,12 @@ Protected Class BinaryCode
 		    
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
 		    " "+ Str(idx, kFidx)+ "idxType: "+ Str(idxType, kFidx)
+		    
+		  Case OpCodes.Ret
+		    Dim idx As Integer= GetVUInt(mInstructionsBS)
+		    
+		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
+		    " "+ Str(idx, kFidx)
 		    
 		  Case Else
 		    Return "Unknown opcode 0x"+ Hex(instruction)
@@ -314,6 +314,7 @@ Protected Class BinaryCode
 		  mInstructionsBS.Position= 0
 		  
 		  Dim bs As BinaryStream= BinaryStream.Create(file, True)
+		  'bs.LittleEndian= False
 		  bs.Write mHeaderBS.Read(mHeaderBS.Length)
 		  bs.Write mInstructionsBS.Read(mInstructionsBS.Length)
 		  bs.Close
@@ -612,37 +613,38 @@ Protected Class BinaryCode
 		Store= &h02  
 		Local= &h03  
 		Call_= &h04  
+		Pop= &h05  
 		
-		Add= &h05  
-		Subtract= &h06  
-		Multiply= &h07  
-		Divide= &h08  
-		Modulo= &h09  
-		Power= &h0A  
+		Not_= &h06  
+		Equal= &h07  
+		Greater= &h08  
+		Less= &h09  
 		
-		And_= &h0B  
-		Or_= &h0C  
-		ExclusiveOr= &h0D  
-		LeftShift= &h0E  
-		RightShift= &h0F  
+		And_= &h0A  
+		Or_= &h0B  
+		ExclusiveOr= &h0C  
 		
-		Equal= &h10  
-		Greater= &h11  
-		Less= &h12  
+		Add= &h0D  
+		Subtract= &h0E  
+		Multiply= &h0F  
+		Divide= &h10  
+		Modulo= &h11  
+		Power= &h12  
 		
-		Not_= &h13  
-		Convert= &h14  
+		LeftShift= &h13  
+		RightShift= &h14  
 		
-		Jump= &h15  
-		JumpTrue= &h16  
-		JumpFalse= &h17  
-		JumpEqual= &h18  
-		JumpGreater= &h19  
-		JumpGreaterOrEqual= &h1A  
-		JumpLess= &h1B  
-		JumpLessOrEqual= &h1C  
+		Convert= &h15  
 		
-		Pop= &h1D  
+		Jump= &h16  
+		JumpTrue= &h17  
+		JumpFalse= &h18  
+		JumpEqual= &h19  
+		JumpGreater= &h1A  
+		JumpGreaterOrEqual= &h1B  
+		JumpLess= &h1C  
+		JumpLessOrEqual= &h1D  
+		
 		Ret= &h1E
 	#tag EndNote
 
