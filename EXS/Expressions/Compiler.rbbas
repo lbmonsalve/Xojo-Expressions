@@ -41,15 +41,15 @@ Implements IVisitor
 	#tag Method, Flags = &h0
 		Function VisitAssign(expr As EXS.Expressions.AssignExpression) As Variant
 		  Compile expr.Right
-		  Compile expr.Left
 		  
 		  Dim name As String
-		  
 		  If expr.Left IsA ConstantExpression Then
 		    name= ConstantExpression(expr.Left).Value.StringValue
 		  ElseIf expr.Left IsA ParameterExpression Then
 		    name= ParameterExpression(expr.Left).Name
 		  End If
+		  
+		  'Compile expr.Left
 		  
 		  mBinaryCode.EmitCode OpCodes.Store
 		  mBinaryCode.EmitValue mLocals.ReverseScopeLookupOrAppend(name, mScope)
@@ -71,7 +71,16 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitConditional(expr As EXS.Expressions.ConditionalExpression) As Variant
+		  Compile expr.Test
 		  
+		  Dim thenJump As Integer= BinaryCode.EmitJump(OpCodes.JumpFalse)
+		  Compile expr.IfTrue
+		  
+		  Dim elseJump As Integer= BinaryCode.EmitJump(OpCodes.Jump)
+		  BinaryCode.PatchJump thenJump
+		  
+		  If Not (expr.IfFalse Is Nil) Then Compile(expr.IfFalse)
+		  BinaryCode.PatchJump elseJump
 		End Function
 	#tag EndMethod
 

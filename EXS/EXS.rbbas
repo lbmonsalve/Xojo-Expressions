@@ -48,7 +48,7 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function EncodePrintable(Extends value As String, nonPrintable As String = "º") As String
+		Protected Function EncodePrintable(Extends value As String, unPrintable As String = "º") As String
 		  Dim result() As String
 		  
 		  For i As Integer= 1 To value.LenB
@@ -57,7 +57,7 @@ Protected Module EXS
 		    If achr> 32 And achr< 127 Then
 		      result.Append chr
 		    Else
-		      result.Append nonPrintable
+		      result.Append unPrintable
 		    End If
 		  Next
 		  
@@ -664,6 +664,8 @@ Protected Module EXS
 		    #endif
 		  Next
 		  
+		  Register GetTypeInfo(EXS.System), "EXS.System"
+		  
 		  once= True
 		End Sub
 	#tag EndMethod
@@ -1082,6 +1084,44 @@ Protected Module EXS
 		    End Select
 		    Return kUnsupported
 		  End If
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ToSymbolType(Extends value As Integer) As SymbolType
+		  Select Case value
+		  Case 0
+		    Return SymbolType.I8
+		  Case 1
+		    Return SymbolType.U8
+		  Case 2
+		    Return SymbolType.I16
+		  Case 3
+		    Return SymbolType.U16
+		  Case 4
+		    Return SymbolType.I32
+		  Case 5
+		    Return SymbolType.U32
+		  Case 6
+		    Return SymbolType.I64
+		  Case 7
+		    Return SymbolType.U64
+		  Case 10
+		    Return SymbolType.Float
+		  Case 11
+		    Return SymbolType.Double
+		  Case 12
+		    Return SymbolType.Bool
+		  Case 13
+		    Return SymbolType.String
+		  Case 14
+		    Return SymbolType.Method
+		  Case 15
+		    Return SymbolType.Parameter
+		    
+		  Case Else
+		    Raise GetRuntimeExc("can't convert value to ""SymbolType""")
+		  End Select
 		End Function
 	#tag EndMethod
 

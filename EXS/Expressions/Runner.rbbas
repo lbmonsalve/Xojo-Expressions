@@ -58,15 +58,13 @@ Protected Class Runner
 		  Dim debug As Boolean= Not (mDebugTrace Is Nil)
 		  
 		  Dim bs As BinaryStream= mBinaryCode.InstructionsBS
-		  Dim offset As UInt64= bs.Position
 		  Dim instruction As UInt8= bs.ReadUInt8
-		  Dim opCode As OpCodes= instruction.ToOpCodes
-		  
 		  Dim symbols() As Variant= mBinaryCode.Symbols
 		  
 		  Const kFidx= "\[#\]"
+		  Const kFpos= "00000"
 		  
-		  Select Case opCode
+		  Select Case instruction.ToOpCodes
 		  Case OpCodes.Load
 		    Dim idx As Integer= GetVUInt(bs)
 		    Dim value As Variant= symbols(idx)
@@ -80,7 +78,9 @@ Protected Class Runner
 		    
 		  Case OpCodes.Store
 		    Dim idx As Integer= GetVUInt(bs)
-		    Dim name As String= mStack.Pop.StringValue
+		    If mStack.LastIdxEXS> 0 Then
+		      mStack(idx)= mStack.Pop
+		    End If
 		    mLocals.Value(idx)= mStack(idx)
 		    
 		    If debug Then Trace("# Store "+ Str(idx, kFidx))
@@ -210,6 +210,20 @@ Protected Class Runner
 		    mStack.Append Bitwise.ShiftRight(left, right)
 		    
 		    If debug Then Trace("# RightShift "+ Str(left)+ " "+ Str(right))
+		    
+		  Case OpCodes.Jump
+		    Dim pos As UInt64= bs.ReadUInt16
+		    bs.Position= pos
+		    
+		    If debug Then Trace("# Jump "+ Str(pos, kFpos))
+		    
+		  Case OpCodes.JumpFalse
+		    Dim pos As UInt64= bs.ReadUInt16
+		    Dim test As Variant= Not mStack.Pop
+		    
+		    If test.BooleanValue Then bs.Position= pos
+		    
+		    If debug Then Trace("# JumpFalse "+ Str(test)+ " "+ Str(pos, kFpos))
 		    
 		  Case OpCodes.Ret
 		    Dim idx As Integer= GetVUInt(bs)

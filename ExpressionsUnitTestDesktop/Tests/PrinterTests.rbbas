@@ -86,7 +86,7 @@ Inherits TestGroup
 		  
 		  Dim o1 As New ObjectWithBinaryExprMethod(10)
 		  Dim o2 As New ObjectWithBinaryExprMethod(20)
-		  Dim o3 As ObjectWithBinaryExprMethod= o1+ o2
+		  'Dim o3 As ObjectWithBinaryExprMethod= o1+ o2
 		  Dim methodAdd As Introspection.MethodInfo= Introspection.GetType(o1).GetMethodInfo("Operator_Add")
 		  expr= expr.Add(expr.Constant(o1), expr.Constant(o2), methodAdd)
 		  actual= printer.Print(expr)
