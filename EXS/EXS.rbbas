@@ -54,7 +54,7 @@ Protected Module EXS
 		  For i As Integer= 1 To value.LenB
 		    Dim chr As String= value.MidB(i, 1)
 		    Dim achr As Integer= Asc(chr)
-		    If achr> 32 And achr< 127 Then
+		    If achr> 31 And achr< 127 Then
 		      result.Append chr
 		    Else
 		      result.Append unPrintable

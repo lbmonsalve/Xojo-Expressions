@@ -73,14 +73,22 @@ Implements IVisitor
 		Function VisitConditional(expr As EXS.Expressions.ConditionalExpression) As Variant
 		  Compile expr.Test
 		  
-		  Dim thenJump As Integer= BinaryCode.EmitJump(OpCodes.JumpFalse)
+		  Dim thenJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
+		  mBinaryCode.EmitCode OpCodes.Pop
+		  
 		  Compile expr.IfTrue
 		  
-		  Dim elseJump As Integer= BinaryCode.EmitJump(OpCodes.Jump)
-		  BinaryCode.PatchJump thenJump
-		  
-		  If Not (expr.IfFalse Is Nil) Then Compile(expr.IfFalse)
-		  BinaryCode.PatchJump elseJump
+		  If Not (expr.IfFalse Is Nil) Then
+		    Dim elseJump As Integer= mBinaryCode.EmitJump(OpCodes.Jump)
+		    mBinaryCode.PatchJump thenJump
+		    mBinaryCode.EmitCode OpCodes.Pop
+		    
+		    Compile(expr.IfFalse)
+		    
+		    mBinaryCode.PatchJump elseJump
+		  Else
+		    mBinaryCode.PatchJump thenJump
+		  End If
 		End Function
 	#tag EndMethod
 
@@ -147,7 +155,16 @@ Implements IVisitor
 		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
 		  Compile expr.Left
 		  
-		  // TODO: short-circuit
+		  // short-circuit
+		  Dim endJump As Integer
+		  If expr.NodeType= ExpressionType.And_ Then
+		    endJump= mBinaryCode.EmitJump(OpCodes.JumpFalse)
+		  ElseIf expr.NodeType= ExpressionType.Or_ Then
+		    Dim elseJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
+		    endJump= mBinaryCode.EmitJump(OpCodes.Jump)
+		    
+		    mBinaryCode.PatchJump elseJump
+		  End If
 		  
 		  Compile expr.Right
 		  
@@ -168,6 +185,11 @@ Implements IVisitor
 		    mBinaryCode.EmitCode expr.NodeType.ToOpCode
 		    
 		  End Select
+		  
+		  // short-circuit
+		  If expr.NodeType= ExpressionType.And_ Or expr.NodeType= ExpressionType.Or_ Then
+		    mBinaryCode.PatchJump endJump
+		  End If
 		End Function
 	#tag EndMethod
 

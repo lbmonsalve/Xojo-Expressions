@@ -196,19 +196,14 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // jump:
+		  // boolean short-circuit
 		  Dim expr As EXS.Expressions.Expression
-		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
 		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
-		  exprs.Append expr.Condition(_
-		  expr.Constant(9> 10), _
-		  expr.Assign(paramExpr, expr.Constant("num > 10")), _
-		  expr.Assign(paramExpr, expr.Constant("num < 10")) _
-		  )
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  expr= expr.Lambda(expr.Block(exprs), paramExpr)
-		  
+		  'exprs.Append expr.And_(expr.Constant(True), expr.Constant(False))
+		  'exprs.Append expr.And_(expr.Constant(False), expr.Constant(False))
+		  'exprs.Append expr.Or_(expr.Constant(True), expr.Constant(False))
+		  exprs.Append expr.Or_(expr.Constant(False), expr.Constant(False))
+		  expr= expr.Lambda(expr.Block(exprs))
 		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
 		  
 		  Dim compiler As New EXS.Expressions.Compiler(expr)
@@ -217,10 +212,37 @@ End
 		  TextAreaWriter1.WriteLn EndOfLine
 		  
 		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  Dim result As Variant= runner.Run("hello")
+		  Dim result As Variant= runner.Run
 		  
 		  TextAreaWriter1.WriteLn EndOfLine
 		  TextAreaWriter1.WriteLn "result: "+ result.StringValue
+		  
+		  
+		  // jump:
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
+		  'Dim exprs() As EXS.Expressions.Expression
+		  'exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
+		  'exprs.Append expr.Condition(_
+		  'expr.Constant(9> 10), _
+		  'expr.Assign(paramExpr, expr.Constant("num > 10")), _
+		  'expr.Assign(paramExpr, expr.Constant("num < 10")) _
+		  ')
+		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  'expr= expr.Lambda(expr.Block(exprs), paramExpr)
+		  '
+		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  '
+		  'TextAreaWriter1.WriteLn EndOfLine
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim result As Variant= runner.Run("hello")
+		  '
+		  'TextAreaWriter1.WriteLn EndOfLine
+		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue
 		  
 		  
 		  // assign block:

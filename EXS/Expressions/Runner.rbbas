@@ -219,7 +219,7 @@ Protected Class Runner
 		    
 		  Case OpCodes.JumpFalse
 		    Dim pos As UInt64= bs.ReadUInt16
-		    Dim test As Variant= Not mStack.Pop
+		    Dim test As Variant= Not mStack(mStack.LastIdxEXS)
 		    
 		    If test.BooleanValue Then bs.Position= pos
 		    
