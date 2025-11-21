@@ -1254,7 +1254,7 @@ Protected Module EXS
 	#tag Constant, Name = kVersionMayor, Type = Double, Dynamic = False, Default = \"0", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = kVersionMinor, Type = Double, Dynamic = False, Default = \"0", Scope = Private
+	#tag Constant, Name = kVersionMinor, Type = Double, Dynamic = False, Default = \"1", Scope = Private
 	#tag EndConstant
 
 

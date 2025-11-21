@@ -66,6 +66,38 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub AssignBlockTest()
+		  Dim expr As EXS.Expressions.Expression
+		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
+		  Dim exprs() As EXS.Expressions.Expression
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs.Append expr.Assign(paramExpr, expr.Constant("world"))
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  
+		  Dim params() As Variant
+		  params.Append "hallo"
+		  Dim result As Variant= expr.Lambda(expr.Block(exprs), paramExpr).Compile.Invoke(params)
+		  Assert.AreSame "world", result.StringValue, "AreSame ""world"", result.StringValue"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub AssignConstantTest()
+		  Dim expr As EXS.Expressions.Expression
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s")
+		  'expr= expr.Assign(paramExpr, expr.Constant("world"))
+		  'expr= expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
+		  'expr= expr.Assign(paramExpr, paramExpr)
+		  expr= expr.Assign(expr.Constant("a"), expr.Constant(1))
+		  
+		  Dim result As Variant= expr.Lambda(expr).Compile.Invoke(Nil)
+		  Assert.AreEqual 1, result.IntegerValue, "AreEqual 1, result.IntegerValue"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub AssignTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
@@ -89,6 +121,41 @@ Inherits TestGroup
 		  result= expr.Lambda(blockExpr, p1, p2).Compile.Invoke(params)
 		  
 		  Assert.AreSame "hello", result.StringValue, "AreSame ""hello"", result.StringValue"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub BlockTest()
+		  Dim expr As EXS.Expressions.Expression
+		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
+		  Dim exprs() As EXS.Expressions.Expression
+		  exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  
+		  Dim exprs1() As EXS.Expressions.Expression
+		  exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs1.Append expr.Assign(paramExpr, expr.Constant("hallo"))
+		  exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs1.Append expr.Block(exprs)
+		  exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  
+		  expr= expr.Lambda(expr.Block(exprs1), paramExpr)
+		  
+		  Dim params() As Variant
+		  params.Append "hello"
+		  
+		  Dim result As Variant= expr.Lambda(expr).Compile.Invoke(params)
+		  Assert.AreEqual "helloworld", result.StringValue, "AreEqual ""helloworld"", result.StringValue"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub CallTest()
+		  Dim expr As EXS.Expressions.Expression
+		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!"))
+		  
+		  Dim result As Variant= expr.Lambda(expr.Block(expr)).Compile.Invoke(Nil)
+		  Assert.Pass "Pass"
 		End Sub
 	#tag EndMethod
 
@@ -116,37 +183,38 @@ Inherits TestGroup
 		  lambdaCompiler.Save binfile
 		  Assert.IsTrue binfile.Exists, "IsTrue binfile.Exists"
 		  
-		  'result= Nil
-		  'lambdaCompiler= New EXS.Expressions.LambdaCompiler(binfile)
-		  'result= lambdaCompiler.Run(Nil)
-		  'Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
-		  '
-		  'lambdaCompiler= New EXS.Expressions.LambdaCompiler(binfile, WeakAddressOf CompileLoading)
-		  'Assert.IsFalse EXS.Expressions.LambdaCompiler(lambdaCompiler).Loaded, "IsFalse lambdaCompiler.Loaded"
+		  result= Nil
+		  
+		  Dim bcode As New EXS.Expressions.BinaryCode(binfile)
+		  Dim runner As New EXS.Expressions.Runner(bcode)
+		  result= runner.Run
+		  Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
+		  
+		  bcode= New EXS.Expressions.BinaryCode(binfile, WeakAddressOf CompileLoading)
+		  Assert.IsFalse bcode.Loaded, "IsFalse bcode.Loaded"
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub ConditionalTest()
-		  'Dim expr As EXS.Expressions.Expression
-		  '
-		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Boolean"), "a")
-		  'Dim conditionExpr As EXS.Expressions.ConditionalExpression= expr.Condition(_
-		  'paramExpr, _
-		  'expr.Constant("true"), _
-		  'expr.Constant("false") _
-		  ')
-		  'Dim str1 As String= conditionExpr.ToString
-		  'Assert.AreSame "a ? ""true"" : ""false""", str1, "AreSame ""a ? ""true"" : ""false"""", str1"
-		  '
-		  'Dim params() As Variant
-		  'params.Append False
-		  'Dim result As Variant= expr.Lambda(conditionExpr, paramExpr).Compile.Invoke(params)
-		  'Assert.AreSame "false", result.StringValue, "AreSame ""false"", result.StringValue"
-		  '
-		  'params(0)= True
-		  'result= expr.Lambda(conditionExpr, paramExpr).Compile.Invoke(params)
-		  'Assert.AreSame "true", result.StringValue, "AreSame ""true"", result.StringValue"
+		  Dim expr As EXS.Expressions.Expression
+		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Boolean"), "a")
+		  Dim conditionExpr As EXS.Expressions.ConditionalExpression= expr.Condition(_
+		  paramExpr, _
+		  expr.Constant("true"), _
+		  expr.Constant("false") _
+		  )
+		  Dim str1 As String= conditionExpr.ToString
+		  Assert.AreSame "a ? ""true"" : ""false""", str1, "AreSame ""a ? ""true"" : ""false"""", str1"
+		  
+		  Dim params() As Variant
+		  params.Append False
+		  Dim result As Variant= expr.Lambda(conditionExpr, paramExpr).Compile.Invoke(params)
+		  Assert.AreSame "false", result.StringValue, "AreSame ""false"", result.StringValue"
+		  
+		  params(0)= True
+		  result= expr.Lambda(conditionExpr, paramExpr).Compile.Invoke(params)
+		  Assert.AreSame "true", result.StringValue, "AreSame ""true"", result.StringValue"
 		End Sub
 	#tag EndMethod
 
@@ -194,6 +262,44 @@ Inherits TestGroup
 		  params.Append 2
 		  Dim result As Variant= lambdaExpr.Compile.Invoke(params)
 		  Assert.AreEqual 1, result.IntegerValue, "AreEqual 1, result.IntegerValue"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub EqualsTest()
+		  Dim expr As EXS.Expressions.Expression
+		  expr= expr.NotEqual(expr.Constant(1), expr.Constant(2))
+		  
+		  Dim result As Variant= expr.Lambda(expr).Compile.Invoke(Nil)
+		  Assert.IsTrue result.BooleanValue, "IsTrue result.BooleanValue"
+		  
+		  expr= expr.NotEqual(expr.Constant(1), expr.Constant(1))
+		  result= expr.Lambda(expr).Compile.Invoke(Nil)
+		  Assert.IsFalse result.BooleanValue, "IsFalse result.BooleanValue"
+		  
+		  expr= expr.GreaterThanOrEqual(expr.Constant(2), expr.Constant(1))
+		  result= expr.Lambda(expr).Compile.Invoke(Nil)
+		  Assert.IsTrue result.BooleanValue, "IsTrue result.BooleanValue"
+		  
+		  expr= expr.GreaterThanOrEqual(expr.Constant(2), expr.Constant(2))
+		  result= expr.Lambda(expr).Compile.Invoke(Nil)
+		  Assert.IsTrue result.BooleanValue, "IsTrue result.BooleanValue"
+		  
+		  expr= expr.GreaterThanOrEqual(expr.Constant(1), expr.Constant(2))
+		  result= expr.Lambda(expr).Compile.Invoke(Nil)
+		  Assert.IsFalse result.BooleanValue, "IsFalse result.BooleanValue"
+		  
+		  expr= expr.LessThanOrEqual(expr.Constant(1), expr.Constant(2))
+		  result= expr.Lambda(expr).Compile.Invoke(Nil)
+		  Assert.IsTrue result.BooleanValue, "IsTrue result.BooleanValue"
+		  
+		  expr= expr.LessThanOrEqual(expr.Constant(1), expr.Constant(1))
+		  result= expr.Lambda(expr).Compile.Invoke(Nil)
+		  Assert.IsTrue result.BooleanValue, "IsTrue result.BooleanValue"
+		  
+		  expr= expr.LessThanOrEqual(expr.Constant(2), expr.Constant(1))
+		  result= expr.Lambda(expr).Compile.Invoke(Nil)
+		  Assert.IsFalse result.BooleanValue, "IsFalse result.BooleanValue"
 		End Sub
 	#tag EndMethod
 
@@ -319,6 +425,30 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub ReturnTest()
+		  Dim expr As EXS.Expressions.Expression
+		  Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
+		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
+		  
+		  Dim exprs() As EXS.Expressions.Expression
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
+		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
+		  exprs.Append expr.Condition(expr.Equal(paramI, expr.Constant(5)), expr.Ret(paramI), Nil)
+		  
+		  expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN)_
+		  , New EXS.Expressions.BlockExpression(exprs))_
+		  , paramI, paramN)
+		  
+		  Dim params() As Variant
+		  params.Append 1
+		  params.Append 10
+		  
+		  Dim result As Variant= expr.Lambda(expr).Compile.Invoke(params)
+		  Assert.AreEqual 5, result.IntegerValue, "AreEqual 5, result.IntegerValue"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub RightShiftTest()
 		  Dim expr As EXS.Expressions.Expression
 		  
@@ -351,6 +481,28 @@ Inherits TestGroup
 		  params.Append 1
 		  Dim result As Variant= lambdaExpr.Compile.Invoke(params)
 		  Assert.AreEqual 0, result.IntegerValue, "AreEqual 0, result.IntegerValue"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub WhileTest()
+		  Dim expr As EXS.Expressions.Expression
+		  Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
+		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
+		  
+		  Dim exprs() As EXS.Expressions.Expression
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
+		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
+		  
+		  expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN), expr.Block(exprs)), _
+		  paramI, paramN)
+		  
+		  Dim params() As Variant
+		  params.Append 1
+		  params.Append 10
+		  
+		  Dim result As Variant= expr.Lambda(expr).Compile.Invoke(params)
+		  Assert.AreEqual 10, result.IntegerValue, "AreEqual 10, result.IntegerValue"
 		End Sub
 	#tag EndMethod
 

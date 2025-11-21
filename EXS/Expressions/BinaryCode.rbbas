@@ -27,6 +27,7 @@ Protected Class BinaryCode
 	#tag Method, Flags = &h0
 		Sub Constructor(file As FolderItem, Optional loading As LoadingAction)
 		  mLoading= loading
+		  mLoaded= False
 		  
 		  If file Is Nil Then Raise GetRuntimeExc("file Is Nil")
 		  
@@ -74,6 +75,8 @@ Protected Class BinaryCode
 		  While Not mHeaderBS.EndFileEXS
 		    LoadSymbol mHeaderBS
 		  Wend
+		  
+		  mLoaded= True
 		End Sub
 	#tag EndMethod
 
@@ -829,6 +832,15 @@ Protected Class BinaryCode
 		InstructionsMB As MemoryBlock
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return mLoaded
+			End Get
+		#tag EndGetter
+		Loaded As Boolean
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private mHeaderBS As BinaryStream
 	#tag EndProperty
@@ -847,6 +859,10 @@ Protected Class BinaryCode
 
 	#tag Property, Flags = &h21
 		Private mInstructionsMB As MemoryBlock
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mLoaded As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

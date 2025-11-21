@@ -96,7 +96,7 @@ Begin Window UnitTestWindow
          Italic          =   ""
          Left            =   20
          LockBottom      =   ""
-         LockedInPosition=   False
+         LockedInPosition=   True
          LockLeft        =   True
          LockRight       =   ""
          LockTop         =   True
@@ -133,7 +133,7 @@ Begin Window UnitTestWindow
          Left            =   20
          LimitText       =   0
          LockBottom      =   True
-         LockedInPosition=   False
+         LockedInPosition=   True
          LockLeft        =   True
          LockRight       =   True
          LockTop         =   True
@@ -196,19 +196,18 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // return:
+		  // jump:
 		  Dim expr As EXS.Expressions.Expression
-		  Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
-		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
-		  
+		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
 		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
-		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
-		  exprs.Append expr.Condition(expr.Equal(paramI, expr.Constant(5)), expr.Ret(paramI), Nil)
-		  
-		  expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN)_
-		  , New EXS.Expressions.BlockExpression(exprs))_
-		  , paramI, paramN)
+		  exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
+		  exprs.Append expr.Condition(_
+		  expr.Constant(9> 10), _
+		  expr.Assign(paramExpr, expr.Constant("num > 10")), _
+		  expr.Assign(paramExpr, expr.Constant("num < 10")) _
+		  )
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  expr= expr.Lambda(expr.Block(exprs), paramExpr)
 		  
 		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
 		  
@@ -218,32 +217,31 @@ End
 		  TextAreaWriter1.WriteLn EndOfLine
 		  
 		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  Dim result As Variant= runner.Run(1, 10)
+		  Dim result As Variant= runner.Run("hello")
 		  
 		  TextAreaWriter1.WriteLn EndOfLine
 		  TextAreaWriter1.WriteLn "result: "+ result.StringValue
 		  
 		  
-		  // while:
-		  'Dim expr As EXS.Expressions.Expression
-		  'Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
-		  'Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
-		  '
-		  'Dim exprs() As EXS.Expressions.Expression
-		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
-		  'exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
-		  '
-		  'expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN), expr.Block(exprs)), _
-		  'paramI, paramN)
-		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
-		  '
-		  'Dim compiler As New EXS.Expressions.Compiler(expr)
-		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  '// binaryCode jump:
+		  ''Dim bcode As New EXS.Expressions.BinaryCode
+		  ''Dim theJump As Integer= bcode.EmitJump(EXS.OpCodes.Jump)
+		  ''bcode.Disassemble TextAreaWriter1
+		  ''
+		  ''TextAreaWriter1.WriteLn EndOfLine
+		  ''
+		  ''bcode.PatchJump theJump
+		  ''bcode.Disassemble TextAreaWriter1
+		  
+		  
+		  // binaryCode load:
+		  'Dim bcode As New EXS.Expressions.BinaryCode(SpecialFolder.Documents.Child("bytecode.bin"))
+		  'bcode.Disassemble TextAreaWriter1
 		  '
 		  'TextAreaWriter1.WriteLn EndOfLine
 		  '
-		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  'Dim result As Variant= runner.Run(1, 4)
+		  'Dim runner As New EXS.Expressions.Runner(bcode, TextAreaWriter1)
+		  'Dim result As Variant= runner.Run("hello")
 		  '
 		  'TextAreaWriter1.WriteLn EndOfLine
 		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue
@@ -271,147 +269,6 @@ End
 		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue
 		  
 		  
-		  // jump:
-		  'Dim expr As EXS.Expressions.Expression
-		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
-		  'Dim exprs() As EXS.Expressions.Expression
-		  'exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
-		  'exprs.Append expr.Condition(_
-		  'expr.Constant(9> 10), _
-		  'expr.Assign(paramExpr, expr.Constant("num > 10")), _
-		  'expr.Assign(paramExpr, expr.Constant("num < 10")) _
-		  ')
-		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  'expr= expr.Lambda(expr.Block(exprs), paramExpr)
-		  '
-		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
-		  '
-		  'Dim compiler As New EXS.Expressions.Compiler(expr)
-		  'compiler.BinaryCode.Disassemble TextAreaWriter1
-		  '
-		  'TextAreaWriter1.WriteLn EndOfLine
-		  '
-		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  'Dim result As Variant= runner.Run("hello")
-		  '
-		  'TextAreaWriter1.WriteLn EndOfLine
-		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue
-		  
-		  
-		  // assign block:
-		  'Dim expr As EXS.Expressions.Expression
-		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
-		  'Dim exprs() As EXS.Expressions.Expression
-		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  'exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
-		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  'exprs.Append expr.Assign(paramExpr, expr.Constant("world"))
-		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  'expr= expr.Lambda(expr.Block(exprs), paramExpr)
-		  '
-		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
-		  'Dim compiler As New EXS.Expressions.Compiler(expr)
-		  'compiler.BinaryCode.Disassemble TextAreaWriter1
-		  '
-		  'TextAreaWriter1.WriteLn EndOfLine
-		  '
-		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  'Dim result As Variant= runner.Run("hallo")
-		  '
-		  'TextAreaWriter1.WriteLn EndOfLine
-		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue
-		  
-		  
-		  '// binaryCode jump:
-		  ''Dim bcode As New EXS.Expressions.BinaryCode
-		  ''Dim theJump As Integer= bcode.EmitJump(EXS.OpCodes.Jump)
-		  ''bcode.Disassemble TextAreaWriter1
-		  ''
-		  ''TextAreaWriter1.WriteLn EndOfLine
-		  ''
-		  ''bcode.PatchJump theJump
-		  ''bcode.Disassemble TextAreaWriter1
-		  
-		  
-		  // binaryCode load:
-		  'Dim bcode As New EXS.Expressions.BinaryCode(SpecialFolder.Documents.Child("bytecode.bin"))
-		  'bcode.Disassemble TextAreaWriter1
-		  '
-		  'TextAreaWriter1.WriteLn EndOfLine
-		  '
-		  'Dim runner As New EXS.Expressions.Runner(bcode, TextAreaWriter1)
-		  'Dim result As Variant= runner.Run("hello")
-		  '
-		  'TextAreaWriter1.WriteLn EndOfLine
-		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue
-		  
-		  
-		  // block:
-		  'Dim expr As EXS.Expressions.Expression
-		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
-		  'Dim exprs() As EXS.Expressions.Expression
-		  'exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
-		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  '
-		  'Dim exprs1() As EXS.Expressions.Expression
-		  'exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  'exprs1.Append expr.Assign(paramExpr, expr.Constant("hallo"))
-		  'exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  'exprs1.Append expr.Block(exprs)
-		  'exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
-		  '
-		  'expr= expr.Lambda(expr.Block(exprs1), paramExpr)
-		  '
-		  'Dim compiler As New EXS.Expressions.Compiler(expr)
-		  'compiler.BinaryCode.Disassemble TextAreaWriter1
-		  ''compiler.BinaryCode.Save SpecialFolder.Documents.Child("bytecode.bin")
-		  '
-		  'TextAreaWriter1.WriteLn EndOfLine
-		  '
-		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  'Dim result As Variant= runner.Run("hello")
-		  'TextAreaWriter1.WriteLn EndOfLine
-		  'TextAreaWriter1.WriteLn expr.ToString
-		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue
-		  
-		  
-		  // assign:
-		  'Dim expr As EXS.Expressions.Expression
-		  ''Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s")
-		  ''expr= expr.Assign(paramExpr, expr.Constant("world"))
-		  ''expr= expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
-		  ''expr= expr.Assign(paramExpr, paramExpr)
-		  'expr= expr.Assign(expr.Constant("a"), expr.Constant(1))
-		  '
-		  'Dim compiler As New EXS.Expressions.Compiler(expr)
-		  'compiler.BinaryCode.Disassemble TextAreaWriter1
-		  '
-		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
-		  '
-		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  'Dim result As Variant= runner.Run
-		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
-		  'TextAreaWriter1.AppendText expr.ToString+ EndOfLine
-		  'TextAreaWriter1.AppendText "result: "+ result.StringValue
-		  
-		  
-		  // call:
-		  'Dim expr As EXS.Expressions.Expression
-		  'expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!"))
-		  '
-		  'Dim compiler As New EXS.Expressions.Compiler(expr)
-		  'compiler.BinaryCode.Disassemble TextAreaWriter1
-		  '
-		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
-		  '
-		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  'Dim result As Variant= runner.Run
-		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
-		  'TextAreaWriter1.AppendText expr.ToString+ EndOfLine
-		  'TextAreaWriter1.AppendText "result: "+ result.StringValue
-		  'Break
-		  
-		  
 		  // u32, u64:
 		  'Dim expr As EXS.Expressions.Expression
 		  ''expr= expr.Constant(&hFFFFFFFF)
@@ -419,30 +276,6 @@ End
 		  '
 		  'Dim compiler As New EXS.Expressions.Compiler(expr)
 		  'compiler.BinaryCode.Disassemble TextAreaWriter1
-		  'Break
-		  
-		  
-		  // not equal, gratherOrEqual, lessOrEqual:
-		  'Dim expr As EXS.Expressions.Expression
-		  ''expr= expr.NotEqual(expr.Constant(1), expr.Constant(2))
-		  ''expr= expr.NotEqual(expr.Constant(1), expr.Constant(1))
-		  ''expr= expr.GreaterThanOrEqual(expr.Constant(2), expr.Constant(1))
-		  ''expr= expr.GreaterThanOrEqual(expr.Constant(2), expr.Constant(2))
-		  ''expr= expr.GreaterThanOrEqual(expr.Constant(1), expr.Constant(2))
-		  ''expr= expr.LessThanOrEqual(expr.Constant(1), expr.Constant(2))
-		  ''expr= expr.LessThanOrEqual(expr.Constant(1), expr.Constant(1))
-		  'expr= expr.LessThanOrEqual(expr.Constant(2), expr.Constant(1))
-		  '
-		  'Dim compiler As New EXS.Expressions.Compiler(expr)
-		  'compiler.BinaryCode.Disassemble TextAreaWriter1
-		  '
-		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
-		  '
-		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  'Dim result As Variant= runner.Run
-		  'TextAreaWriter1.AppendText EndOfLine+ EndOfLine
-		  'TextAreaWriter1.AppendText expr.ToString+ EndOfLine
-		  'TextAreaWriter1.AppendText "result: "+ result.StringValue
 		  'Break
 		  
 		  
