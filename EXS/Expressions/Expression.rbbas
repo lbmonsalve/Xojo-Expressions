@@ -2,7 +2,7 @@
 Protected Class Expression
 	#tag Method, Flags = &h0
 		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
-		  
+		  #pragma Unused visitor
 		End Function
 	#tag EndMethod
 

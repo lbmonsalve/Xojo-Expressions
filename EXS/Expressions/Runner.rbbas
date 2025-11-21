@@ -78,7 +78,7 @@ Protected Class Runner
 		    
 		  Case OpCodes.Store
 		    Dim idx As Integer= GetVUInt(bs)
-		    If mStack.LastIdxEXS> 0 Then
+		    If mStack.LastIdxEXS<> idx Then
 		      mStack(idx)= mStack.Pop
 		    End If
 		    mLocals.Value(idx)= mStack(idx)
@@ -106,6 +106,20 @@ Protected Class Runner
 		    Dim value As Variant= mStack.Pop
 		    
 		    If debug Then Trace("# Pop "+ Str(value))
+		    
+		  Case OpCodes.Jump
+		    Dim pos As UInt64= bs.ReadUInt16
+		    bs.Position= pos
+		    
+		    If debug Then Trace("# Jump "+ Str(pos, kFpos))
+		    
+		  Case OpCodes.JumpFalse
+		    Dim pos As UInt64= bs.ReadUInt16
+		    Dim test As Variant= Not mStack(mStack.LastIdxEXS)
+		    
+		    If test.BooleanValue Then bs.Position= pos
+		    
+		    If debug Then Trace("# JumpFalse "+ Str(test)+ " "+ Str(pos, kFpos))
 		    
 		  Case OpCodes.Not_
 		    Dim value As Boolean= mStack.Pop.BooleanValue
@@ -210,20 +224,6 @@ Protected Class Runner
 		    mStack.Append Bitwise.ShiftRight(left, right)
 		    
 		    If debug Then Trace("# RightShift "+ Str(left)+ " "+ Str(right))
-		    
-		  Case OpCodes.Jump
-		    Dim pos As UInt64= bs.ReadUInt16
-		    bs.Position= pos
-		    
-		    If debug Then Trace("# Jump "+ Str(pos, kFpos))
-		    
-		  Case OpCodes.JumpFalse
-		    Dim pos As UInt64= bs.ReadUInt16
-		    Dim test As Variant= Not mStack(mStack.LastIdxEXS)
-		    
-		    If test.BooleanValue Then bs.Position= pos
-		    
-		    If debug Then Trace("# JumpFalse "+ Str(test)+ " "+ Str(pos, kFpos))
 		    
 		  Case OpCodes.Ret
 		    Dim idx As Integer= GetVUInt(bs)

@@ -47,6 +47,8 @@ Implements IVisitor
 		    name= ConstantExpression(expr.Left).Value.StringValue
 		  ElseIf expr.Left IsA ParameterExpression Then
 		    name= ParameterExpression(expr.Left).Name
+		  Else
+		    Break
 		  End If
 		  
 		  'Compile expr.Left
@@ -94,7 +96,7 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitConstant(expr As EXS.Expressions.ConstantExpression) As Variant
-		  Dim idx As Integer= mLocals.ReverseScopeLookup(expr.Value.StringValue, mScope)
+		  Dim idx As Integer= mLocals.ReverseScopeLookup(expr.Value.StringValue)
 		  
 		  If idx= -1 Then
 		    mBinaryCode.EmitCode OpCodes.Load
@@ -111,7 +113,13 @@ Implements IVisitor
 		  Dim params() As ParameterExpression= expr.Parameters
 		  
 		  For i As Integer= 0 To params.LastIdxEXS
-		    Call mBinaryCode.StoreSymbol params(i)
+		    Dim param As ParameterExpression= params(i)
+		    
+		    mBinaryCode.EmitCode OpCodes.Load
+		    mBinaryCode.EmitValue mBinaryCode.StoreSymbol(param)
+		    
+		    mBinaryCode.EmitCode OpCodes.Store
+		    mBinaryCode.EmitValue mLocals.ReverseScopeLookupOrAppend(param.Name, mScope)
 		  Next
 		  
 		  Compile expr.Body
@@ -139,7 +147,7 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitParameter(expr As EXS.Expressions.ParameterExpression) As Variant
-		  Dim idx As Integer= mLocals.ReverseScopeLookup(expr.Name, mScope)
+		  Dim idx As Integer= mLocals.ReverseScopeLookup(expr.Name)
 		  
 		  If idx= -1 Then
 		    mBinaryCode.EmitCode OpCodes.Load
@@ -155,16 +163,16 @@ Implements IVisitor
 		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
 		  Compile expr.Left
 		  
-		  // short-circuit
-		  Dim endJump As Integer
-		  If expr.NodeType= ExpressionType.And_ Then
-		    endJump= mBinaryCode.EmitJump(OpCodes.JumpFalse)
-		  ElseIf expr.NodeType= ExpressionType.Or_ Then
-		    Dim elseJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
-		    endJump= mBinaryCode.EmitJump(OpCodes.Jump)
-		    
-		    mBinaryCode.PatchJump elseJump
-		  End If
+		  // short-circuit number And/Or number ??
+		  'Dim endJump As Integer
+		  'If expr.NodeType= ExpressionType.And_ Then
+		  'endJump= mBinaryCode.EmitJump(OpCodes.JumpFalse)
+		  'ElseIf expr.NodeType= ExpressionType.Or_ Then
+		  'Dim elseJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
+		  'endJump= mBinaryCode.EmitJump(OpCodes.Jump)
+		  '
+		  'mBinaryCode.PatchJump elseJump
+		  'End If
 		  
 		  Compile expr.Right
 		  
@@ -187,9 +195,9 @@ Implements IVisitor
 		  End Select
 		  
 		  // short-circuit
-		  If expr.NodeType= ExpressionType.And_ Or expr.NodeType= ExpressionType.Or_ Then
-		    mBinaryCode.PatchJump endJump
-		  End If
+		  'If expr.NodeType= ExpressionType.And_ Or expr.NodeType= ExpressionType.Or_ Then
+		  'mBinaryCode.PatchJump endJump
+		  'End If
 		End Function
 	#tag EndMethod
 
@@ -209,7 +217,18 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitWhile(expr As EXS.Expressions.WhileExpression) As Variant
+		  Dim pos As UInt64= mBinaryCode.InstructionsBS.Position
 		  
+		  Compile expr.Left
+		  
+		  Dim exitJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
+		  mBinaryCode.EmitCode OpCodes.Pop
+		  
+		  Compile expr.Right
+		  
+		  Call mBinaryCode.EmitJump OpCodes.Jump, pos
+		  mBinaryCode.PatchJump exitJump
+		  mBinaryCode.EmitCode OpCodes.Pop
 		End Function
 	#tag EndMethod
 
