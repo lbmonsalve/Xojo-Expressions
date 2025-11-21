@@ -98,6 +98,12 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function VisitReturn(expr As EXS.Expressions.ReturnExpression) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
 		  Return Parenthesize(expr.NodeType.ToStringSymbol, expr.Left, expr.Right)
 		End Function

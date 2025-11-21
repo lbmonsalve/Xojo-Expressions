@@ -22,11 +22,30 @@ Inherits EXS.Expressions.BinaryExpression
 
 	#tag Method, Flags = &h0
 		Function ToString() As String
-		  If Left Is Nil Or Right Is Nil Then Raise GetRuntimeExc("Left Is Nil Or Right Is Nil")
+		  If Condition Is Nil Or Body Is Nil Then Raise GetRuntimeExc("Condition Is Nil Or Body")
 		  
-		  Return mNodeType.ToStringSymbol+ "("+ Left.ToString+ ") "+ Right.ToString
+		  Return mNodeType.ToStringSymbol+ "("+ Condition.ToString+ ") "+ Body.ToString
 		End Function
 	#tag EndMethod
+
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return Right
+			End Get
+		#tag EndGetter
+		Body As Expression
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return Left
+			End Get
+		#tag EndGetter
+		Condition As Expression
+	#tag EndComputedProperty
 
 
 	#tag ViewBehavior

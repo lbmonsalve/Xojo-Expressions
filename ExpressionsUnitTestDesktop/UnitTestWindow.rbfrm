@@ -196,7 +196,7 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // while:
+		  // return:
 		  Dim expr As EXS.Expressions.Expression
 		  Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
 		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
@@ -204,9 +204,12 @@ End
 		  Dim exprs() As EXS.Expressions.Expression
 		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
 		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
+		  exprs.Append expr.Condition(expr.Equal(paramI, expr.Constant(5)), expr.Ret(paramI), Nil)
 		  
-		  expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN), expr.Block(exprs)), _
-		  paramI, paramN)
+		  expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN)_
+		  , New EXS.Expressions.BlockExpression(exprs))_
+		  , paramI, paramN)
+		  
 		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
 		  
 		  Dim compiler As New EXS.Expressions.Compiler(expr)
@@ -215,10 +218,35 @@ End
 		  TextAreaWriter1.WriteLn EndOfLine
 		  
 		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  Dim result As Variant= runner.Run(1, 4)
+		  Dim result As Variant= runner.Run(1, 10)
 		  
 		  TextAreaWriter1.WriteLn EndOfLine
 		  TextAreaWriter1.WriteLn "result: "+ result.StringValue
+		  
+		  
+		  // while:
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
+		  'Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
+		  '
+		  'Dim exprs() As EXS.Expressions.Expression
+		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
+		  'exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
+		  '
+		  'expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN), expr.Block(exprs)), _
+		  'paramI, paramN)
+		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  '
+		  'TextAreaWriter1.WriteLn EndOfLine
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim result As Variant= runner.Run(1, 4)
+		  '
+		  'TextAreaWriter1.WriteLn EndOfLine
+		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue
 		  
 		  
 		  // boolean short-circuit
@@ -624,6 +652,7 @@ End
 		  'End If
 		  'Break
 		  
+		  
 		  'Dim i1 As Integer= 85
 		  'Dim i2 As Integer= 170
 		  'Dim i3 As Integer= i1 Or i2
@@ -641,35 +670,7 @@ End
 		  'Break
 		  
 		  
-		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(GetType("Integer"), "a")
-		  'Dim lambdaExpr As EXS.Expressions.LambdaExpression= expr.Lambda(_
-		  'expr.RightShift(paramExpr, expr.Constant(2)), _
-		  'paramExpr)
-		  'Dim str1 As String= lambdaExpr.ToString
-		  'Dim params() As Variant
-		  'params.Append &b00011111
-		  'result= lambdaExpr.Compile.Invoke(params)
-		  'Break
-		  '
-		  'Dim p1 As EXS.Expressions.ParameterExpression= expr.Parameter(GetType("String"), "s1")
-		  'Dim assignExpr1 As EXS.Expressions.BinaryExpression= expr.Assign(p1, expr.Constant("hello"))
-		  'Dim str1 As String= assignExpr1.ToString
-		  '
-		  'Dim p2 As EXS.Expressions.ParameterExpression= expr.Parameter(GetType("String"), "s2")
-		  'Dim assignExpr2 As EXS.Expressions.BinaryExpression= expr.Assign(p2, p1)
-		  'Dim str2 As String= assignExpr2.ToString
-		  '
-		  'Dim blockExpr As EXS.Expressions.Expression= expr.Block(assignExpr1, assignExpr2, p2)
-		  'result= expr.Lambda(blockExpr).Compile.Invoke(Nil)
-		  'Break
-		  '
-		  'Dim parm1 As EXS.Expressions.ParameterExpression
-		  'parm1= EXS.Expressions.ParameterExpression.Make(GetTypeInfo(Pair), "p1", True)
-		  'Break
-		  '
-		  'Dim o1 As New ObjectWithBinaryExprMethod(10)
-		  'Dim methodBin As Introspection.MethodInfo= Introspection.GetType(o1).GetMethodInfo("Operator_Subscript")
-		  '
+		  ''Dim expr As EXS.Expressions.Expression
 		  'Dim aVar() As Integer
 		  'aVar.Append 10
 		  'aVar.Append 20
@@ -677,35 +678,18 @@ End
 		  'Dim binExpr As EXS.Expressions.Expression= expr.Subscript(expr.Constant(aVar), expr.Constant(1))
 		  'Dim str1 As String= binExpr.ToString
 		  'Break
-		  '
-		  'Dim binExpr As EXS.Expressions.BinaryExpression= expr.Subtract(expr.Constant(2), expr.Constant(2))
-		  '
-		  'Dim o1 As New ObjectWithBinaryExprMethod(10)
-		  'Dim o2 As New ObjectWithBinaryExprMethod(20)
-		  'Dim o3 As ObjectWithBinaryExprMethod= o1- o2
-		  'Dim methodBin As Introspection.MethodInfo= Introspection.GetType(o1).GetMethodInfo("Operator_Subtract")
-		  '
-		  'Dim binExpr As EXS.Expressions.Expression= expr.Subtract(expr.Constant(o1), expr.Constant(o2), methodBin)
-		  'Dim str1 As String= binExpr.ToString
-		  'result= EXS.Expressions.ConstantExpression(binExpr.Left).Value- _
-		  'EXS.Expressions.ConstantExpression(binExpr.Right).Value
-		  '
-		  'Dim params() As Variant
-		  'params.Append o2
-		  'Dim o4 As ObjectWithBinaryExprMethod= methodBin.Invoke(o1, params)
-		  'Break
-		  '
-		  'Dim test1() As Variant
-		  'test1.Append 10
-		  'test1.Append "hello"
 		  
+		  
+		  // TODO:
+		  ''Dim expr As EXS.Expressions.Expression
 		  'Dim test1() As EXS.Expressions.ConstantExpression
 		  'test1.Append expr.Constant(1)
 		  'test1.Append expr.Constant(2)
 		  'Dim constExpr As EXS.Expressions.ConstantExpression= expr.Constant(test1)
 		  'Dim str1 As String= constExpr.ToString
-		  'Dim str2 As String= Join(test1.ToString, ",")
+		  ''Dim str2 As String= Join(test1.ToString, ",")
 		  'Break
+		  
 		  
 		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(GetType("Integer"), "arg")
 		  'Dim lambdaExpr As EXS.Expressions.LambdaExpression= expr.Lambda(_
@@ -719,23 +703,6 @@ End
 		  'System.DebugLog CurrentMethodName+ " "+ Introspection.GetType(exc).FullName
 		  'End Try
 		  
-		  'Dim expr As EXS.Expressions.Expression
-		  'Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
-		  'expr.CallExpr(Nil, GetTypeInfo(System), "DebugLog", expr.Constant("hello")), _
-		  'expr.CallExpr(Nil, GetTypeInfo(System), "DebugLog", expr.Constant("World!")), _
-		  'expr.Constant(42))
-		  'Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
-		  'Break
-		  
-		  'Dim constExpr As EXS.Expressions.ConstantExpression= expr.Constant(1)
-		  'Dim typ As Introspection.TypeInfo= constExpr.Type
-		  'Dim value As Integer= CType(constExpr.Value, Integer)
-		  
-		  'Dim mc As EXS.Expressions.MethodCallExpression= expr.CallExpr(GetTypeInfo(System), "Log", "Integer": 1, "String": "Hello")
-		  'Dim scope As EXS.Expressions.BlockExpression= expr.Block(_
-		  'Array(New EXS.Expressions.ParameterExpression(GetType("String"), "var1")), _
-		  'expr.Constant(42) _
-		  ')
 		  'Break
 		  
 		  

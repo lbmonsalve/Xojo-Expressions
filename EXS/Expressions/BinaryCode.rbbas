@@ -165,11 +165,10 @@ Protected Class BinaryCode
 		  Dim opCode As OpCodes= instruction.ToOpCodes
 		  
 		  Select Case opCode
-		  Case OpCodes.Nop, OpCodes.Not_, OpCodes.Pop
+		  Case OpCodes.Nop, OpCodes.Not_, OpCodes.Pop, OpCodes.Ret
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString
 		    
-		  Case OpCodes.Load, OpCodes.Store, OpCodes.Local, OpCodes.Call_, _
-		    OpCodes.Ret
+		  Case OpCodes.Load, OpCodes.Store, OpCodes.Local, OpCodes.Call_
 		    Dim idx As Integer= GetVUInt(bs)
 		    
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
@@ -188,9 +187,7 @@ Protected Class BinaryCode
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
 		    " "+ Str(idx, kFidx)+ "idxType: "+ Str(idxType, kFidx)
 		    
-		  Case OpCodes.Jump, OpCodes.JumpEqual, OpCodes.JumpFalse, _
-		    OpCodes.JumpGreater, OpCodes.JumpGreaterOrEqual, OpCodes.JumpLess, _
-		    OpCodes.JumpLessOrEqual, OpCodes.JumpTrue
+		  Case OpCodes.Jump, OpCodes.JumpFalse
 		    Dim pos As UInt16= bs.ReadUInt16
 		    
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
@@ -790,15 +787,9 @@ Protected Class BinaryCode
 		Convert= &h15  
 		
 		Jump= &h16  
-		JumpTrue= &h17  
-		JumpFalse= &h18  
-		JumpEqual= &h19  
-		JumpGreater= &h1A  
-		JumpGreaterOrEqual= &h1B  
-		JumpLess= &h1C  
-		JumpLessOrEqual= &h1D  
+		JumpFalse= &h17  
 		
-		Ret= &h1E
+		Ret= &h18
 	#tag EndNote
 
 
@@ -870,15 +861,6 @@ Protected Class BinaryCode
 		Private mSymbols() As Variant
 	#tag EndProperty
 
-
-	#tag Constant, Name = kFidx, Type = String, Dynamic = False, Default = \"\\[#\\]\\ ", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = kFoff, Type = String, Dynamic = False, Default = \"00000", Scope = Private
-	#tag EndConstant
-
-	#tag Constant, Name = kFtyp, Type = String, Dynamic = False, Default = \"(0#)\\ ", Scope = Private
-	#tag EndConstant
 
 	#tag Constant, Name = kSTypeMask, Type = Double, Dynamic = False, Default = \"&b00011111", Scope = Private
 	#tag EndConstant

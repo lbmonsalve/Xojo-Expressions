@@ -160,6 +160,15 @@ Implements IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function VisitReturn(expr As EXS.Expressions.ReturnExpression) As Variant
+		  Compile expr.Expr
+		  
+		  mBinaryCode.EmitCode OpCodes.Ret
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
 		  Compile expr.Left
 		  
@@ -219,12 +228,12 @@ Implements IVisitor
 		Function VisitWhile(expr As EXS.Expressions.WhileExpression) As Variant
 		  Dim pos As UInt64= mBinaryCode.InstructionsBS.Position
 		  
-		  Compile expr.Left
+		  Compile expr.Condition
 		  
 		  Dim exitJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
 		  mBinaryCode.EmitCode OpCodes.Pop
 		  
-		  Compile expr.Right
+		  Compile expr.Body
 		  
 		  Call mBinaryCode.EmitJump OpCodes.Jump, pos
 		  mBinaryCode.PatchJump exitJump

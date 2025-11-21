@@ -603,21 +603,9 @@ Protected Module EXS
 		  Case &h16
 		    Return "Jump"
 		  Case &h17
-		    Return "JumpTrue"
-		  Case &h18
 		    Return "JumpFalse"
-		  Case &h19
-		    Return "JumpEqual"
-		  Case &h1A
-		    Return "JumpGreater"
-		  Case &h1B
-		    Return "JumpGreaterOrEqual"
-		  Case &h1C
-		    Return "JumpLess"
-		  Case &h1D
-		    Return "JumpLessOrEqual"
 		    
-		  Case &h1E
+		  Case &h18
 		    Return "Ret"
 		    
 		  Case Else
@@ -840,21 +828,9 @@ Protected Module EXS
 		  Case &h16
 		    Return OpCodes.Jump
 		  Case &h17
-		    Return OpCodes.JumpTrue
-		  Case &h18
 		    Return OpCodes.JumpFalse
-		  Case &h19
-		    Return OpCodes.JumpEqual
-		  Case &h1A
-		    Return OpCodes.JumpGreater
-		  Case &h1B
-		    Return OpCodes.JumpGreaterOrEqual
-		  Case &h1C
-		    Return OpCodes.JumpLess
-		  Case &h1D
-		    Return OpCodes.JumpLessOrEqual
 		    
-		  Case &h1E
+		  Case &h18
 		    Return OpCodes.Ret
 		    
 		  Case Else
@@ -1236,6 +1212,15 @@ Protected Module EXS
 	#tag EndNote
 
 
+	#tag Constant, Name = kFidx, Type = String, Dynamic = False, Default = \"\\[#\\]\\ ", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = kFoff, Type = String, Dynamic = False, Default = \"00000", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = kFtyp, Type = String, Dynamic = False, Default = \"(0#)\\ ", Scope = Private
+	#tag EndConstant
+
 	#tag Constant, Name = kSize1Byte, Type = Double, Dynamic = False, Default = \"&b10000000", Scope = Private
 	#tag EndConstant
 
@@ -1275,62 +1260,41 @@ Protected Module EXS
 
 	#tag Enum, Name = ExpressionType, Flags = &h0
 		Add
-		  AddChecked
 		  And_
-		  AndAlso
-		  ArrayLength
 		  ArrayIndex
 		  Call_
-		  Coalesce
 		  Conditional
 		  Constant
 		  Convert
-		  ConvertChecked
 		  Divide
 		  Equal
 		  ExclusiveOr
 		  GreaterThan
 		  GreaterThanOrEqual
-		  Invoke
 		  Lambda
 		  LeftShift
 		  LessThan
 		  LessThanOrEqual
-		  ListInit
-		  MemberAccess
-		  MemberInit
 		  Modulo
 		  Multiply
-		  MultiplyChecked
 		  UnaryPlus
-		  NegateChecked
 		  New_
-		  NewArrayInit
-		  NewArrayBounds
 		  Not_
 		  NotEqual
 		  Or_
 		  OrElse
 		  Parameter
 		  Power
-		  Quote
 		  RightShift
 		  Subtract
-		  SubtractChecked
-		  TypeAs
-		  TypeIs
 		  Assign
 		  Block
 		  DebugInfo
 		  Decrement
 		  Dynamic
 		  Default
-		  Extension
-		  Goto_
 		  Increment
 		  Index
-		  Label
-		  RuntimeVariables
 		  Loop_
 		  Switch
 		  Throw
@@ -1347,9 +1311,6 @@ Protected Module EXS
 		  PowerAssign
 		  RightShiftAssign
 		  SubtractAssign
-		  AddAssignChecked
-		  MultiplyAssignChecked
-		  SubtractAssignChecked
 		  PreIncrementAssign
 		  PreDecrementAssign
 		  PostIncrementAssign
@@ -1386,14 +1347,8 @@ Protected Module EXS
 		  RightShift= &h14
 		  Convert= &h15
 		  Jump= &h16
-		  JumpTrue= &h17
-		  JumpFalse= &h18
-		  JumpEqual= &h19
-		  JumpGreater= &h1A
-		  JumpGreaterOrEqual= &h1B
-		  JumpLess= &h1C
-		  JumpLessOrEqual= &h1D
-		Ret= &h1E
+		  JumpFalse= &h17
+		Ret= &h18
 	#tag EndEnum
 
 	#tag Enum, Name = SymbolType, Type = Integer, Flags = &h0

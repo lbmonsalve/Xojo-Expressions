@@ -122,6 +122,27 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub ReturnTest()
+		  Dim expr As EXS.Expressions.Expression
+		  Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
+		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
+		  
+		  Dim exprs() As EXS.Expressions.Expression
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
+		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
+		  exprs.Append expr.Condition(expr.Equal(paramI, expr.Constant(5)), expr.Ret(paramI), Nil)
+		  
+		  expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN)_
+		  , New EXS.Expressions.BlockExpression(exprs))_
+		  , paramI, paramN)
+		  
+		  Dim resolver As New EXS.Misc.Resolver(1, 10)
+		  Dim result As Variant= resolver.Resolve(expr)
+		  Assert.AreEqual 5, result.IntegerValue, "AreEqual 5, result.IntegerValue"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub WhileTest()
 		  Dim expr As EXS.Expressions.Expression
 		  Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")

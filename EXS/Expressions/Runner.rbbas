@@ -61,9 +61,6 @@ Protected Class Runner
 		  Dim instruction As UInt8= bs.ReadUInt8
 		  Dim symbols() As Variant= mBinaryCode.Symbols
 		  
-		  Const kFidx= "\[#\]"
-		  Const kFpos= "00000"
-		  
 		  Select Case instruction.ToOpCodes
 		  Case OpCodes.Load
 		    Dim idx As Integer= GetVUInt(bs)
@@ -111,7 +108,7 @@ Protected Class Runner
 		    Dim pos As UInt64= bs.ReadUInt16
 		    bs.Position= pos
 		    
-		    If debug Then Trace("# Jump "+ Str(pos, kFpos))
+		    If debug Then Trace("# Jump "+ Str(pos, kFoff))
 		    
 		  Case OpCodes.JumpFalse
 		    Dim pos As UInt64= bs.ReadUInt16
@@ -119,7 +116,7 @@ Protected Class Runner
 		    
 		    If test.BooleanValue Then bs.Position= pos
 		    
-		    If debug Then Trace("# JumpFalse "+ Str(test)+ " "+ Str(pos, kFpos))
+		    If debug Then Trace("# JumpFalse "+ Str(test)+ " "+ Str(pos, kFoff))
 		    
 		  Case OpCodes.Not_
 		    Dim value As Boolean= mStack.Pop.BooleanValue
@@ -226,10 +223,9 @@ Protected Class Runner
 		    If debug Then Trace("# RightShift "+ Str(left)+ " "+ Str(right))
 		    
 		  Case OpCodes.Ret
-		    Dim idx As Integer= GetVUInt(bs)
-		    mStack.Append symbols(idx)
+		    bs.Position= bs.Length
 		    
-		    If debug Then Trace("# Ret "+ Str(idx, kFidx))
+		    If debug Then Trace("# Ret ")
 		    
 		  Case OpCodes.Nop // do nothing
 		    If debug Then Trace(instruction.OpCodesToString)
@@ -278,7 +274,7 @@ Protected Class Runner
 	#tag Method, Flags = &h21
 		Private Sub TraceStack()
 		  For i As Integer= mStack.LastIdxEXS To 0 Step -1
-		    mDebugTrace.WriteLn Str(i, "00000")+ " "+ mStack(i).ToStringVart
+		    mDebugTrace.WriteLn Str(i, kFoff)+ " "+ mStack(i).ToStringVart
 		  Next
 		End Sub
 	#tag EndMethod

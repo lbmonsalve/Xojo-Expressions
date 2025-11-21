@@ -23,7 +23,9 @@ Implements EXS.Expressions.ILambdaCompiler
 
 	#tag Method, Flags = &h0
 		Sub Save(file As FolderItem)
+		  #pragma Unused file
 		  
+		  Raise GetRuntimeExc("save unsupported")
 		End Sub
 	#tag EndMethod
 

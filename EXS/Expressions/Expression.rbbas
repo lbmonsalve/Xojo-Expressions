@@ -128,8 +128,11 @@ Protected Class Expression
 
 	#tag Method, Flags = &h0
 		 Shared Function Condition(test As Expression, ifTrue As Expression, ifFalse As Expression) As ConditionalExpression
+		  If ifFalse Is Nil Then ifFalse= New DefaultExpression(ifTrue.Type)
+		  
 		  If test.Type<> GetType("Boolean") Then Raise GetRuntimeExc("test.Type<> GetType(""Boolean"")")
-		  If Not ifTrue.Type.IsEquivalent(ifFalse.Type) Then Raise GetRuntimeExc("Not ifTrue.Type.IsEquivalent(ifFalse.Type)")
+		  If Not ifTrue.Type.IsEquivalent(ifFalse.Type) Then _
+		  Raise GetRuntimeExc("Not ifTrue.Type.IsEquivalent(ifFalse.Type)")
 		  
 		  Return ConditionalExpression.Make(test, ifTrue, ifFalse, ifTrue.Type)
 		End Function
@@ -137,6 +140,8 @@ Protected Class Expression
 
 	#tag Method, Flags = &h0
 		 Shared Function Condition(test As Expression, ifTrue As Expression, ifFalse As Expression, typeExpr As Introspection.TypeInfo) As ConditionalExpression
+		  If ifFalse Is Nil Then ifFalse= New DefaultExpression(ifTrue.Type)
+		  
 		  If test.Type<> GetType("Boolean") Then Raise GetRuntimeExc("test.Type<> GetType(""Boolean"")")
 		  If typeExpr<> GetType("Ptr") Then
 		    If Not ifTrue.Type.IsReferenceAssignable(typeExpr) Or Not ifFalse.Type.IsReferenceAssignable(typeExpr) Then _
@@ -383,6 +388,12 @@ Protected Class Expression
 		  Raise GetRuntimeExc("Not method.ChkMethodParams(left.Type, right.Type)")
 		  
 		  Return New MethodBinaryExpression(ExpressionType.Power, left, right, method.ReturnType, method)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Ret(value As Expression) As ReturnExpression
+		  Return New ReturnExpression(value)
 		End Function
 	#tag EndMethod
 

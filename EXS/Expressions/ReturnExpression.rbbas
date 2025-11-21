@@ -1,6 +1,12 @@
 #tag Class
 Protected Class ReturnExpression
 Inherits EXS.Expressions.Expression
+	#tag Method, Flags = &h0
+		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
+		  Return visitor.VisitReturn(Self)
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Sub Constructor(expr As Expression)
 		  // Calling the overridden superclass constructor.
@@ -10,6 +16,12 @@ Inherits EXS.Expressions.Expression
 		  mType= expr.Type
 		  mExpr= expr
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ToString() As String
+		  Return "Return "+ Expr.ToString
+		End Function
 	#tag EndMethod
 
 
