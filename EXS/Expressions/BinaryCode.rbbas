@@ -1,7 +1,7 @@
 #tag Class
 Protected Class BinaryCode
 	#tag Method, Flags = &h0
-		Sub Constructor()
+		Sub Constructor(Optional actionFlags As FlagsAction)
 		  // use bigEndian for vuint type
 		  
 		  mHeaderMB= New MemoryBlock(kStreamMinSize) // 10bytes
@@ -12,10 +12,15 @@ Protected Class BinaryCode
 		  mHeaderBS.WriteUInt32 kStreamMagicHeader // 4bytes
 		  mHeaderBS.Write GetVersion // 3bytes
 		  mHeaderBS.Write GetVUInt64(GetFlags) // 1byte
+		  
+		  If Not (actionFlags Is Nil) Then // RaiseEvent flagsAction
+		    actionFlags.Invoke(GetFlags, mHeaderBS)
+		  End If
+		  
 		  mHeaderFirstInstruction= mHeaderBS.Position
 		  mHeaderBS.WriteUInt16 mHeaderBS.Length // address first instruction 2bytes= 10bytes
 		  
-		  mInstructionsMB= New MemoryBlock(2) // twoBytes -> ret zero
+		  mInstructionsMB= New MemoryBlock(2) // twoBytes -> Nop Nop
 		  mInstructionsMB.LittleEndian= False // bigEndian
 		  mInstructionsBS= New BinaryStream(mInstructionsMB)
 		  'mInstructionsBS.LittleEndian= False // bigEndian
@@ -26,7 +31,6 @@ Protected Class BinaryCode
 
 	#tag Method, Flags = &h0
 		Sub Constructor(file As FolderItem, Optional loading As LoadingAction)
-		  mLoading= loading
 		  mLoaded= False
 		  
 		  If file Is Nil Then Raise GetRuntimeExc("file Is Nil")
@@ -47,12 +51,12 @@ Protected Class BinaryCode
 		  bs.Position= bs.Position- 1
 		  Dim flags As UInt64= GetVUInt64Value(bs.Read(sizeByte))
 		  
+		  If Not (loading Is Nil) Then // RaiseEvent Loading
+		    If loading.Invoke(versionMajor, versionMinor, flags, bs) Then Return
+		  End If
+		  
 		  Dim instructionsPosition As UInt16= bs.ReadUInt16
 		  Dim symbolsPos As Integer= bs.Position
-		  
-		  If Not (mLoading Is Nil) Then // RaiseEvent Loading
-		    If mLoading.Invoke(versionMajor, versionMinor, flags) Then Return
-		  End If
 		  
 		  bs.Position= 0
 		  mHeaderMB= bs.Read(instructionsPosition)
@@ -127,7 +131,7 @@ Protected Class BinaryCode
 		  bs.Position= 0
 		  
 		  debugTrace.WriteLn "# Instructions"
-		  debugTrace.WriteLn "offset type"
+		  debugTrace.WriteLn "offset opcode"
 		  
 		  While Not bs.EndFileEXS
 		    debugTrace.WriteLn DisassembleInstruction(bs)
@@ -144,7 +148,7 @@ Protected Class BinaryCode
 		  bs.Position= 0
 		  
 		  debugTrace.WriteLn "# HEX view "+ Str(bs.Length)+ " Bytes"
-		  debugTrace.WriteLn "address 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  dump"
+		  debugTrace.WriteLn "address  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F dump"
 		  
 		  While Not bs.EndFileEXS
 		    Dim pos As String= Hex(bs.Position)
@@ -168,32 +172,27 @@ Protected Class BinaryCode
 		  Dim opCode As OpCodes= instruction.ToOpCodes
 		  
 		  Select Case opCode
-		  Case OpCodes.Nop, OpCodes.Not_, OpCodes.Pop, OpCodes.Ret
-		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString
-		    
-		  Case OpCodes.Load, OpCodes.Store, OpCodes.Local, OpCodes.Call_
+		  Case OpCodes.Load, OpCodes.Store, OpCodes.Local, OpCodes.Call_, _
+		    OpCodes.Convert
 		    Dim idx As Integer= GetVUInt(bs)
 		    
-		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
+		    Return Str(offset, kFoff)+ "  "+ instruction.OpCodesToString+ _
 		    " "+ Str(idx, kFidx)
+		    
+		  Case OpCodes.Nop, OpCodes.Not_, OpCodes.Pop, OpCodes.Ret
+		    Return Str(offset, kFoff)+ "  "+ instruction.OpCodesToString
+		    
+		  Case OpCodes.Jump, OpCodes.JumpFalse
+		    Dim pos As UInt16= bs.ReadUInt16
+		    
+		    Return Str(offset, kFoff)+ "  "+ instruction.OpCodesToString+ _
+		    " "+ Str(pos, kFoff)
 		    
 		  Case OpCodes.And_, OpCodes.Or_, OpCodes.ExclusiveOr, OpCodes.LeftShift, _
 		    OpCodes.RightShift, OpCodes.Equal, OpCodes.Greater, OpCodes.Less, _
 		    OpCodes.Add, OpCodes.Subtract, OpCodes.Multiply, OpCodes.Divide, _
 		    OpCodes.Modulo, OpCodes.Power
-		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString
-		    
-		  Case OpCodes.Convert
-		    Dim idx As Integer= GetVUInt(bs)
-		    
-		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
-		    " "+ Str(idx, kFidx)
-		    
-		  Case OpCodes.Jump, OpCodes.JumpFalse
-		    Dim pos As UInt16= bs.ReadUInt16
-		    
-		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
-		    " "+ Str(pos, kFoff)
+		    Return Str(offset, kFoff)+ "  "+ instruction.OpCodesToString
 		    
 		  Case Else
 		    Return "Unknown opcode 0x"+ Hex(instruction)
@@ -310,6 +309,10 @@ Protected Class BinaryCode
 		End Sub
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub FlagsAction(flags As UInt64, bs As BinaryStream)
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h21
 		Private Sub Init()
 		  mSymbolCache= New Dictionary
@@ -318,7 +321,7 @@ Protected Class BinaryCode
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h0
-		Delegate Function LoadingAction(majorVersion As UInt8, minorVersion As UInt16, flags As UInt64) As Boolean
+		Delegate Function LoadingAction(majorVersion As UInt8, minorVersion As UInt16, flags As UInt64, bs As BinaryStream) As Boolean
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
@@ -445,6 +448,7 @@ Protected Class BinaryCode
 		Sub PatchJump(pos As UInt16, value As Integer = 0)
 		  Dim currPos As UInt64= mInstructionsBS.Position
 		  If value= 0 Then value= currPos//- pos+ 1 // 1= opcode
+		  If value> &hFFFF Then Raise GetRuntimeExc("value> &hFFFF")
 		  
 		  mInstructionsBS.Position= pos
 		  mInstructionsBS.WriteUInt16 value
@@ -862,10 +866,6 @@ Protected Class BinaryCode
 
 	#tag Property, Flags = &h21
 		Private mLoaded As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mLoading As LoadingAction
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

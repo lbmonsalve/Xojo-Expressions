@@ -48,7 +48,7 @@ Protected Module EXS
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function EncodePrintable(Extends value As String, unPrintable As String = "º") As String
+		Protected Function EncodePrintable(Extends value As String, unPrintable As String = "·") As String
 		  Dim result() As String
 		  
 		  For i As Integer= 1 To value.LenB

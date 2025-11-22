@@ -234,7 +234,9 @@ Implements IVisitor
 		  Dim exitJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
 		  mBinaryCode.EmitCode OpCodes.Pop
 		  
+		  ScopeBegin
 		  Compile expr.Body
+		  ScopeEnd
 		  
 		  Call mBinaryCode.EmitJump OpCodes.Jump, pos
 		  mBinaryCode.PatchJump exitJump

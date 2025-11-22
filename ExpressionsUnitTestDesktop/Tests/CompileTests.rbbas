@@ -160,10 +160,11 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function CompileLoading(majorVersion As UInt8, minorVersion As UInt16, flags As UInt64) As Boolean
+		Private Function CompileLoading(majorVersion As UInt8, minorVersion As UInt16, flags As UInt64, bs As BinaryStream) As Boolean
 		  #pragma Unused majorVersion
 		  #pragma Unused minorVersion
 		  #pragma Unused flags
+		  #pragma Unused bs
 		  
 		  Assert.Message "Return True do not load the bin file, .Loaded is False"
 		  

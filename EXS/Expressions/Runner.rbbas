@@ -67,8 +67,7 @@ Protected Class Runner
 		    Dim idx As Integer= GetVUInt(bs)
 		    Dim value As Variant= symbols(idx)
 		    If value IsA ParameterExpression Then
-		      Dim param As ParameterExpression= ParameterExpression(value)
-		      value= mLocals.Value(param.Name)
+		      value= mLocals.Value(ParameterExpression(value).Name)
 		    End If
 		    mStack.Append value
 		    
@@ -77,13 +76,12 @@ Protected Class Runner
 		  Case OpCodes.Store
 		    Dim idx As Integer= GetVUInt(bs)
 		    If mStack.LastIdxEXS<> idx Then mStack(idx)= mStack.Pop
-		    mLocals.Value(idx)= mStack(idx)
 		    
 		    If mDebug Then Trace("# Store "+ Str(idx, kFidx))
 		    
 		  Case OpCodes.Local
 		    Dim idx As Integer= GetVUInt(bs)
-		    mStack.Append mLocals.Value(idx)
+		    mStack.Append mStack(idx)
 		    
 		    If mDebug Then Trace("# Local "+ Str(idx, kFidx))
 		    
