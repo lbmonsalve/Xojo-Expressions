@@ -155,12 +155,16 @@ Inherits TestGroup
 		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!"))
 		  
 		  Dim result As Variant= expr.Lambda(expr.Block(expr)).Compile.Invoke(Nil)
-		  Assert.Pass "Pass"
+		  Assert.IsNil result, "IsNil result"
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Function CompileLoading(majorVersion As UInt8, minorVersion As UInt16, flags As UInt64) As Boolean
+		  #pragma Unused majorVersion
+		  #pragma Unused minorVersion
+		  #pragma Unused flags
+		  
 		  Assert.Message "Return True do not load the bin file, .Loaded is False"
 		  
 		  Return True
@@ -234,16 +238,16 @@ Inherits TestGroup
 
 	#tag Method, Flags = &h0
 		Sub ConvertTest()
-		  'Dim expr As EXS.Expressions.Expression
-		  '
-		  'Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
-		  'expr.Convert(expr.Constant(10), EXS.GetType("String")))
-		  'Dim str1 As String= blockExpr.ToString
-		  'Assert.AreSame "{(10 -> String)}", str1, "AreSame ""{(10 -> String)}"", str1"
-		  '
-		  'Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
-		  ''Assert.AreEqual Variant.TypeString, result.Type, "AreEqual Variant.TypeString, result.Type"
-		  'Assert.AreEqual "10", result.StringValue, "AreEqual ""10"", result.StringValue"
+		  Dim expr As EXS.Expressions.Expression
+		  
+		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
+		  expr.Convert(expr.Constant(10), EXS.GetType("String")))
+		  Dim str1 As String= blockExpr.ToString
+		  Assert.AreSame "{(10 -> String)}", str1, "AreSame ""{(10 -> String)}"", str1"
+		  
+		  Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
+		  'Assert.AreEqual Variant.TypeString, result.Type, "AreEqual Variant.TypeString, result.Type"
+		  Assert.AreEqual "10", result.StringValue, "AreEqual ""10"", result.StringValue"
 		End Sub
 	#tag EndMethod
 

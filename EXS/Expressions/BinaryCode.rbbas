@@ -185,10 +185,9 @@ Protected Class BinaryCode
 		    
 		  Case OpCodes.Convert
 		    Dim idx As Integer= GetVUInt(bs)
-		    Dim idxType As Integer= GetVUInt(bs)
 		    
 		    Return Str(offset, kFoff)+ " "+ instruction.OpCodesToString+ _
-		    " "+ Str(idx, kFidx)+ "idxType: "+ Str(idxType, kFidx)
+		    " "+ Str(idx, kFidx)
 		    
 		  Case OpCodes.Jump, OpCodes.JumpFalse
 		    Dim pos As UInt16= bs.ReadUInt16
@@ -896,6 +895,11 @@ Protected Class BinaryCode
 			Group="Position"
 			InitialValue="0"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Loaded"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"

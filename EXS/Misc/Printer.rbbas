@@ -99,7 +99,7 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitReturn(expr As EXS.Expressions.ReturnExpression) As Variant
-		  
+		  Return expr.ToString
 		End Function
 	#tag EndMethod
 

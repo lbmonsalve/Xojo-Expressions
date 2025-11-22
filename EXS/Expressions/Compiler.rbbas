@@ -216,11 +216,12 @@ Implements IVisitor
 		  
 		  If expr.NodeType= ExpressionType.Not_ Then
 		    mBinaryCode.EmitCode OpCodes.Not_
-		    Return Nil
+		  ElseIf expr.NodeType= ExpressionType.Convert Then
+		    mBinaryCode.Emitcode OpCodes.Convert
+		    mBinaryCode.EmitValue mBinaryCode.StoreSymbol(expr.Type.FullName)
+		  Else
+		    Break
 		  End If
-		  
-		  // TODO: convert
-		  Break
 		End Function
 	#tag EndMethod
 
