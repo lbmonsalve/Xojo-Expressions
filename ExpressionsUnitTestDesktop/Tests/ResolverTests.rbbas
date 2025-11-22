@@ -7,9 +7,9 @@ Inherits TestGroup
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s1")
 		  
 		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  exprs.Append expr.Assign(paramExpr, expr.Constant("world"))
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  exprs.Append paramExpr
 		  
 		  expr= expr.Lambda(New EXS.Expressions.BlockExpression(exprs), paramExpr)
@@ -24,7 +24,7 @@ Inherits TestGroup
 		Sub BlockTest()
 		  Dim expr As EXS.Expressions.Expression
 		  expr= expr.Block(_
-		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("1 + 2 * 3")),_
+		  expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("1 + 2 * 3")),_
 		  expr.Add(expr.Constant(1), expr.Multiply(expr.Constant(2), expr.Constant(3)))_
 		  )
 		  
@@ -102,15 +102,15 @@ Inherits TestGroup
 		  result= resolver.Resolve(expr)
 		  Assert.AreEqual -10, ObjectWithBinaryExprMethod(result).Value.IntegerValue, "AreEqual -10, ObjectWithBinaryExprMethod(result).Value.IntegerValue"
 		  
-		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!"))
+		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("hello world!"))
 		  result= resolver.Resolve(expr)
 		  Assert.IsNil result, "IsNil result"
 		  
-		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "Random")
+		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "Random")
 		  result= resolver.Resolve(expr)
 		  Assert.IsTrue result IsA Random, "IsTrue result IsA Random"
 		  
-		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "GetEnvironment", expr.Constant("HOMEPATH"))
+		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "GetEnvironment", expr.Constant("HOMEPATH"))
 		  result= resolver.Resolve(expr)
 		  Assert.IsTrue result.StringValue.Len> 0, "IsTrue result.StringValue.Len> 0"
 		  
@@ -128,7 +128,7 @@ Inherits TestGroup
 		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
 		  
 		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramI)
 		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
 		  exprs.Append expr.Condition(expr.Equal(paramI, expr.Constant(5)), expr.Ret(paramI), Nil)
 		  
@@ -149,7 +149,7 @@ Inherits TestGroup
 		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
 		  
 		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramI)
 		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
 		  
 		  expr= expr.Lambda(expr.Block(expr.While_(_

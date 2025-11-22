@@ -135,8 +135,8 @@ Inherits TestGroup
 		  Assert.AreSame str1, str2, "AreSame str1, str2"
 		  
 		  blockExpr= expr.Block(_
-		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello")), _
-		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("World!")), _
+		  expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("hello")), _
+		  expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("World!")), _
 		  expr.Constant(42))
 		  Assert.IsNotNil blockExpr, "IsNotNil blockExpr"
 		  
@@ -146,7 +146,7 @@ Inherits TestGroup
 		  Dim exprs() As EXS.Expressions.Expression= blockExpr.Expressions
 		  Assert.AreEqual 2, exprs.LastIdxEXS, "AreEqual 2, exprs.LastIdx"
 		  
-		  str1= "{System.DebugLog(""hello"")"+ EndOfLine.Unix+ "System.DebugLog(""World!"")"+ _
+		  str1= "{Sys.DebugLog(""hello"")"+ EndOfLine.Unix+ "Sys.DebugLog(""World!"")"+ _
 		  EndOfLine.Unix+ "42}"
 		  str2= ReplaceLineEndings(blockExpr.ToString, EndOfLine.UNIX)
 		  Assert.AreSame str1, str2, "AreSame str1, str2"
@@ -353,11 +353,11 @@ Inherits TestGroup
 	#tag Method, Flags = &h0
 		Sub MethodCallTest()
 		  Dim expr As EXS.Expressions.Expression
-		  Dim mc As EXS.Expressions.MethodCallExpression= expr.CallExpr(GetTypeInfo(EXS.System), "Log", "Integer": 1, "String": "Hello")
+		  Dim mc As EXS.Expressions.MethodCallExpression= expr.CallExpr(GetTypeInfo(EXS.Sys), "Log", "Integer": 1, "String": "Hello")
 		  Assert.IsNotNil mc, "IsNotNil mc"
 		  
 		  Dim ti As Introspection.TypeInfo= mc.Type
-		  Assert.AreEqual "System", ti.Name, "AreEqual ""System"", ti.Name"
+		  Assert.AreEqual "Sys", ti.Name, "AreEqual ""Sys"", ti.Name"
 		  
 		  Dim methodInfo As Introspection.MethodInfo= mc.Method
 		  Assert.AreEqual "Log", methodInfo.Name, "AreEqual ""Log"", methodInfo.Name"
@@ -365,7 +365,7 @@ Inherits TestGroup
 		  Dim args() As EXS.Expressions.Expression= mc.Arguments
 		  Assert.AreEqual 1, args.LastIdxEXS, "AreEqual 1, args.LastIdx"
 		  
-		  Dim expect As String= "System.Log(1,""Hello"")"
+		  Dim expect As String= "Sys.Log(1,""Hello"")"
 		  Dim actual As String= mc.ToString
 		  Assert.AreSame expect, actual, "AreSame expect, actual"
 		End Sub

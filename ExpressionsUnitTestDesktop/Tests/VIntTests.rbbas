@@ -24,7 +24,7 @@ Inherits TestGroup
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
-		  exp= EXS.System.Random.InRange(rangeMin, rangeMax)
+		  exp= EXS.Sys.Random.InRange(rangeMin, rangeMax)
 		  mb= EXS.GetVUint64(exp)
 		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
@@ -56,7 +56,7 @@ Inherits TestGroup
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
-		  exp= EXS.System.Random.InRange(rangeMin, rangeMax)
+		  exp= EXS.Sys.Random.InRange(rangeMin, rangeMax)
 		  mb= EXS.GetVUint64(exp)
 		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
@@ -88,7 +88,7 @@ Inherits TestGroup
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
-		  exp= EXS.System.Random.InRange(rangeMin, rangeMax)
+		  exp= EXS.Sys.Random.InRange(rangeMin, rangeMax)
 		  mb= EXS.GetVUint64(exp)
 		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
@@ -120,7 +120,7 @@ Inherits TestGroup
 		  Assert.AreEqual exp, act, "AreEqual exp, act"
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
-		  exp= EXS.System.Random.InRange(rangeMin, rangeMax)
+		  exp= EXS.Sys.Random.InRange(rangeMin, rangeMax)
 		  mb= EXS.GetVUint64(exp)
 		  act= EXS.GetVUint64Value(mb)
 		  Assert.AreEqual nbytes, mb.Size, "AreEqual nbytes, mb.Size"
@@ -153,7 +153,7 @@ Inherits TestGroup
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  Dim rangeRnd As UInt64= (rangeMax- rangeMin)
-		  rangeRnd= rangeRnd* EXS.System.Random.Number
+		  rangeRnd= rangeRnd* EXS.Sys.Random.Number
 		  rangeRnd= rangeMin+ rangeRnd
 		  exp= rangeRnd
 		  mb= EXS.GetVUint64(exp)
@@ -188,7 +188,7 @@ Inherits TestGroup
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  Dim rangeRnd As UInt64= (rangeMax- rangeMin)
-		  rangeRnd= rangeRnd* EXS.System.Random.Number
+		  rangeRnd= rangeRnd* EXS.Sys.Random.Number
 		  rangeRnd= rangeMin+ rangeRnd
 		  exp= rangeRnd
 		  mb= EXS.GetVUint64(exp)
@@ -223,7 +223,7 @@ Inherits TestGroup
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  Dim rangeRnd As UInt64= (rangeMax- rangeMin)
-		  rangeRnd= rangeRnd* EXS.System.Random.Number
+		  rangeRnd= rangeRnd* EXS.Sys.Random.Number
 		  rangeRnd= rangeMin+ rangeRnd
 		  exp= rangeRnd
 		  mb= EXS.GetVUint64(exp)
@@ -258,7 +258,7 @@ Inherits TestGroup
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  Dim rangeRnd As UInt64= (rangeMax- rangeMin)
-		  rangeRnd= rangeRnd* EXS.System.Random.Number
+		  rangeRnd= rangeRnd* EXS.Sys.Random.Number
 		  rangeRnd= rangeMin+ rangeRnd
 		  exp= rangeRnd
 		  mb= EXS.GetVUint64(exp)
@@ -292,7 +292,7 @@ Inherits TestGroup
 		  Assert.Message Str(act)+ " encode: &h"+ EncodeHex(mb)
 		  
 		  Dim rangeRnd As UInt64= (rangeMax- rangeMin)
-		  rangeRnd= rangeRnd* EXS.System.Random.Number
+		  rangeRnd= rangeRnd* EXS.Sys.Random.Number
 		  rangeRnd= rangeMin+ rangeRnd
 		  exp= rangeRnd
 		  mb= EXS.GetVUint64(exp)

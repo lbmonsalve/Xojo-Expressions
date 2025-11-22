@@ -7,9 +7,9 @@ Inherits TestGroup
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "s1")
 		  
 		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  exprs.Append expr.Assign(paramExpr, expr.Constant("world"))
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  
 		  expr= expr.Lambda(New EXS.Expressions.BlockExpression(exprs), paramExpr)
 		  
@@ -24,14 +24,14 @@ Inherits TestGroup
 		Sub BlockTest()
 		  Dim expr As EXS.Expressions.Expression
 		  expr= expr.Block(_
-		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("1 + 2 * 3")),_
+		  expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("1 + 2 * 3")),_
 		  expr.Add(expr.Constant(1), expr.Multiply(expr.Constant(2), expr.Constant(3)))_
 		  )
 		  
 		  Dim printer As New EXS.Misc.Printer
 		  Dim actual As String= printer.Print(expr)
-		  Assert.AreSame "{System.DebugLog(""1 + 2 * 3""); ( + ,1,( * ,2,3))}", _
-		  actual, "AreSame ""{System.DebugLog(""1 + 2 * 3""); ( + ,1,( * ,2,3))}"", actual"
+		  Assert.AreSame "{Sys.DebugLog(""1 + 2 * 3""); ( + ,1,( * ,2,3))}", _
+		  actual, "AreSame ""{Sys.DebugLog(""1 + 2 * 3""); ( + ,1,( * ,2,3))}"", actual"
 		  
 		End Sub
 	#tag EndMethod
@@ -96,17 +96,17 @@ Inherits TestGroup
 		  actual= printer.Print(expr)
 		  Assert.AreSame "(Operator_Subtract,10,20)", actual, "AreSame ""(Operator_Subtract,10,20)"", actual"
 		  
-		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!"))
+		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("hello world!"))
 		  actual= printer.Print(expr)
-		  Assert.AreSame "System.DebugLog(""hello world!"")", actual, "AreSame ""System.DebugLog(""hello world!"")"", actual"
+		  Assert.AreSame "Sys.DebugLog(""hello world!"")", actual, "AreSame ""Sys.DebugLog(""hello world!"")"", actual"
 		  
-		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "Random")
+		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "Random")
 		  actual= printer.Print(expr)
-		  Assert.AreSame "System.Random", actual, "AreSame ""System.Random"", actual"
+		  Assert.AreSame "Sys.Random", actual, "AreSame ""Sys.Random"", actual"
 		  
-		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "GetEnvironment", expr.Constant("HOMEPATH"))
+		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "GetEnvironment", expr.Constant("HOMEPATH"))
 		  actual= printer.Print(expr)
-		  Assert.AreSame "System.GetEnvironment(""HOMEPATH"")", actual, "AreSame ""System.GetEnvironment(""HOMEPATH"")"", actual"
+		  Assert.AreSame "Sys.GetEnvironment(""HOMEPATH"")", actual, "AreSame ""Sys.GetEnvironment(""HOMEPATH"")"", actual"
 		  
 		  expr= expr.Convert(expr.Constant(40), EXS.GetType("String"))
 		  actual= printer.Print(expr)
@@ -131,7 +131,7 @@ Inherits TestGroup
 		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
 		  
 		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramI)
 		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
 		  
 		  expr= expr.Lambda(expr.Block(expr.While_(_
@@ -146,10 +146,10 @@ Inherits TestGroup
 	#tag EndMethod
 
 
-	#tag Constant, Name = kAssign, Type = String, Dynamic = False, Default = \"(s1) \x3D> {System.DebugLog(s1); ( \x3D \x2Cs1\x2C\"world\"); System.DebugLog(s1)}", Scope = Private
+	#tag Constant, Name = kAssign, Type = String, Dynamic = False, Default = \"(s1) \x3D> {Sys.DebugLog(s1); ( \x3D \x2Cs1\x2C\"world\"); Sys.DebugLog(s1)}", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = kWhile, Type = String, Dynamic = False, Default = \"(i\x2C n) \x3D> {( while \x2C( < \x2Ci\x2Cn)\x2C{System.DebugLog(i); ( \x3D \x2Ci\x2C( + \x2Ci\x2C1))}); 42}", Scope = Private
+	#tag Constant, Name = kWhile, Type = String, Dynamic = False, Default = \"(i\x2C n) \x3D> {( while \x2C( < \x2Ci\x2Cn)\x2C{Sys.DebugLog(i); ( \x3D \x2Ci\x2C( + \x2Ci\x2C1))}); 42}", Scope = Private
 	#tag EndConstant
 
 

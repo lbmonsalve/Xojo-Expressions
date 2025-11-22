@@ -228,7 +228,7 @@ End
 		  'expr.Assign(paramExpr, expr.Constant("num > 10")), _
 		  'expr.Assign(paramExpr, expr.Constant("num < 10")) _
 		  ')
-		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  'expr= expr.Lambda(expr.Block(exprs), paramExpr)
 		  '
 		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
@@ -445,7 +445,7 @@ End
 		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
 		  ''expr= expr.Lambda(expr.Divide(expr.Constant(5), paramExpr), paramExpr)
 		  'expr= expr.Lambda(_
-		  'expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr),_
+		  'expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr),_
 		  'expr.Parameter(EXS.GetType("Integer"), "b"))
 		  '
 		  ''Dim printer As New EXS.Misc.Printer

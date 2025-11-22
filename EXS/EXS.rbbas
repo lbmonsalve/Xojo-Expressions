@@ -652,7 +652,7 @@ Protected Module EXS
 		    #endif
 		  Next
 		  
-		  Register GetTypeInfo(EXS.System), "EXS.System"
+		  Register GetTypeInfo(EXS.Sys), "EXS.Sys"
 		  
 		  once= True
 		End Sub

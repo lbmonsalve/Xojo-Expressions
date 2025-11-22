@@ -70,11 +70,11 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
 		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  exprs.Append expr.Assign(paramExpr, expr.Constant("world"))
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  
 		  Dim params() As Variant
 		  params.Append "hallo"
@@ -130,14 +130,14 @@ Inherits TestGroup
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
 		  Dim exprs() As EXS.Expressions.Expression
 		  exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  
 		  Dim exprs1() As EXS.Expressions.Expression
-		  exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  exprs1.Append expr.Assign(paramExpr, expr.Constant("hallo"))
-		  exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  exprs1.Append expr.Block(exprs)
-		  exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramExpr)
+		  exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
 		  
 		  expr= expr.Lambda(expr.Block(exprs1), paramExpr)
 		  
@@ -152,7 +152,7 @@ Inherits TestGroup
 	#tag Method, Flags = &h0
 		Sub CallTest()
 		  Dim expr As EXS.Expressions.Expression
-		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!"))
+		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("hello world!"))
 		  
 		  Dim result As Variant= expr.Lambda(expr.Block(expr)).Compile.Invoke(Nil)
 		  Assert.IsNil result, "IsNil result"
@@ -175,8 +175,8 @@ Inherits TestGroup
 		Sub CompileSaveLoadTest()
 		  Dim expr As EXS.Expressions.Expression
 		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
-		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello")), _
-		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("World!")), _
+		  expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("hello")), _
+		  expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("World!")), _
 		  expr.Constant(42))
 		  Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
 		  Assert.AreEqual 42, result.IntegerValue, "AreEqual 42, result.IntegerValue"
@@ -330,9 +330,9 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  
 		  Dim blockExpr As EXS.Expressions.BlockExpression= expr.Block(_
-		  expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", expr.Constant("hello world!")), _
+		  expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("hello world!")), _
 		  expr.Constant(42))
-		  Dim str1 As String= "{System.DebugLog(""hello world!"")"+ EndOfLine.UNIX+ "42}"
+		  Dim str1 As String= "{Sys.DebugLog(""hello world!"")"+ EndOfLine.UNIX+ "42}"
 		  Dim str2 As String= ReplaceLineEndings(blockExpr.ToString, EndOfLine.UNIX)
 		  Assert.AreSame str1, str2, "AreSame str1, str2"
 		  
@@ -435,7 +435,7 @@ Inherits TestGroup
 		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
 		  
 		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramI)
 		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
 		  exprs.Append expr.Condition(expr.Equal(paramI, expr.Constant(5)), expr.Ret(paramI), Nil)
 		  
@@ -495,7 +495,7 @@ Inherits TestGroup
 		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
 		  
 		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.System), "DebugLog", paramI)
+		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramI)
 		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
 		  
 		  expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN), expr.Block(exprs)), _

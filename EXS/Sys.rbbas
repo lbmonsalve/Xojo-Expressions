@@ -1,5 +1,5 @@
 #tag Class
-Protected Class System
+Protected Class Sys
 	#tag Method, Flags = &h0
 		 Shared Sub Beep()
 		  Beep
@@ -95,7 +95,7 @@ Protected Class System
 		Shared CommandLine As String
 	#tag EndComputedProperty
 
-	#tag ComputedProperty, Flags = &h0, CompatibilityFlags =                                       TargetHasGUI
+	#tag ComputedProperty, Flags = &h0, CompatibilityFlags =                                         TargetHasGUI
 		#tag Getter
 			Get
 			  Return FontCount
