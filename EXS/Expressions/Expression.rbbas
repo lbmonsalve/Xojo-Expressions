@@ -3,6 +3,7 @@ Protected Class Expression
 	#tag Method, Flags = &h0
 		Function Accept(visitor As EXS.Expressions.IVisitor) As Variant
 		  #pragma Unused visitor
+		  'Return visitor.Visit<name>(Self)
 		End Function
 	#tag EndMethod
 
@@ -127,12 +128,12 @@ Protected Class Expression
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Condition(test As Expression, ifTrue As Expression, ifFalse As Expression) As ConditionalExpression
+		 Shared Function Condition(test As Expression, ifTrue As Expression, Optional ifFalse As Expression) As ConditionalExpression
 		  If ifFalse Is Nil Then ifFalse= New DefaultExpression(ifTrue.Type)
 		  
 		  If test.Type<> GetType("Boolean") Then Raise GetRuntimeExc("test.Type<> GetType(""Boolean"")")
-		  If Not ifTrue.Type.IsEquivalent(ifFalse.Type) Then _
-		  Raise GetRuntimeExc("Not ifTrue.Type.IsEquivalent(ifFalse.Type)")
+		  'If Not ifTrue.Type.IsEquivalent(ifFalse.Type) Then _
+		  'Raise GetRuntimeExc("Not ifTrue.Type.IsEquivalent(ifFalse.Type)")
 		  
 		  Return ConditionalExpression.Make(test, ifTrue, ifFalse, ifTrue.Type)
 		End Function
@@ -224,6 +225,12 @@ Protected Class Expression
 	#tag Method, Flags = &h0
 		 Shared Function GreaterThanOrEqual(left As Expression, right As Expression) As SimpleBinaryExpression
 		  Return New EXS.Expressions.SimpleBinaryExpression(EXS.ExpressionType.GreaterThanOrEqual, left, right, EXS.GetType("Boolean"))
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Function Invoke(expr As Expression, ParamArray args As Expression) As InvocationExpression
+		  Return New EXS.Expressions.InvocationExpression(expr, expr.Type, args)
 		End Function
 	#tag EndMethod
 

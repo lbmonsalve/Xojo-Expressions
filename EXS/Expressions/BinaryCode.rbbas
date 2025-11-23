@@ -1,7 +1,7 @@
 #tag Class
 Protected Class BinaryCode
 	#tag Method, Flags = &h0
-		Sub Constructor(Optional actionFlags As FlagsAction)
+		Sub Constructor(Optional creating As CreatingAction)
 		  // use bigEndian for vuint type
 		  
 		  mHeaderMB= New MemoryBlock(kStreamMinSize) // 10bytes
@@ -13,8 +13,8 @@ Protected Class BinaryCode
 		  mHeaderBS.Write GetVersion // 3bytes
 		  mHeaderBS.Write GetVUInt64(GetFlags) // 1byte
 		  
-		  If Not (actionFlags Is Nil) Then // RaiseEvent flagsAction
-		    actionFlags.Invoke(GetFlags, mHeaderBS)
+		  If Not (creating Is Nil) Then // RaiseEvent creatingAction
+		    creating.Invoke(GetFlags, mHeaderBS)
 		  End If
 		  
 		  mHeaderFirstInstruction= mHeaderBS.Position
@@ -83,6 +83,10 @@ Protected Class BinaryCode
 		  mLoaded= True
 		End Sub
 	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub CreatingAction(flags As UInt64, bs As BinaryStream)
+	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
 		Sub Disassemble(debugTrace As Writeable)
@@ -308,10 +312,6 @@ Protected Class BinaryCode
 		  mInstructionsBS.Write GetVUInt64(value)
 		End Sub
 	#tag EndMethod
-
-	#tag DelegateDeclaration, Flags = &h0
-		Delegate Sub FlagsAction(flags As UInt64, bs As BinaryStream)
-	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
 		Private Sub Init()

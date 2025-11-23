@@ -196,21 +196,73 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // convert:
+		  // recursive fibonacci:
 		  Dim expr As EXS.Expressions.Expression
-		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
-		  Dim typeAsExpr As EXS.Expressions.UnaryExpression= expr.Convert(_
-		  paramExpr, _
-		  EXS.GetType("String"))
-		  Dim lambdaExpr As EXS.Expressions.LambdaExpression= expr.Lambda(_
-		  typeAsExpr, paramExpr)
-		  TextAreaWriter1.WriteLn lambdaExpr.ToString+ EndOfLine
+		  Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
+		  Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "fibonacci")
+		  Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
+		  Dim two As EXS.Expressions.ConstantExpression= expr.Constant(2)
 		  
-		  Dim compiler As New EXS.Expressions.Compiler(lambdaExpr)
-		  compiler.BinaryCode.Disassemble TextAreaWriter1
-		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  Dim result As Variant= runner.Run(5)
-		  TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
+		  Dim test As EXS.Expressions.Expression= expr.LessThan(nParam, two)
+		  Dim thuthy As EXS.Expressions.Expression= nParam
+		  Dim invoka As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, two))
+		  Dim invokb As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, one))
+		  Dim falsy As EXS.Expressions.Expression= expr.Add(invoka, invokb)
+		  
+		  Dim lambda As EXS.Expressions.Expression= expr.Lambda(expr.Condition(test, thuthy, falsy), nParam)
+		  
+		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, lambda), expr.Invoke(methodVar, nParam)) _
+		  , nParam)
+		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  
+		  Dim n As Double= 22
+		  Dim resolver As New EXS.Misc.Resolver(n)
+		  
+		  Dim elapse As Double= Microseconds
+		  Dim result As Variant= resolver.Resolve(expr)
+		  elapse= (Microseconds- elapse)/ 1000
+		  
+		  TextAreaWriter1.WriteLn "fibonacci"+ Str(n, "\(#\)\=\ ")+ Str(result)+ " "+ Str(elapse, "#\m\s")
+		  
+		  
+		  // recursive factorial:
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
+		  'Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "factorial")
+		  'Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
+		  '
+		  'Dim factorial As EXS.Expressions.LambdaExpression= expr.Lambda(_
+		  'expr.Condition(expr.LessThanOrEqual(nParam, one), one, _
+		  'expr.Multiply(nParam, expr.Invoke(methodVar, expr.Subtract(nParam, one))))_
+		  ', nParam)
+		  '
+		  'expr= expr.Lambda(expr.Block(expr.Assign(methodVar, factorial), expr.Invoke(methodVar, nParam)), nParam)
+		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  '
+		  'Dim resolver As New EXS.Misc.Resolver(30)
+		  '
+		  'Dim elapse As Double= Microseconds
+		  'Dim result As Variant= resolver.Resolve(expr)
+		  'elapse= (Microseconds- elapse)/ 1000
+		  '
+		  'TextAreaWriter1.WriteLn "factorial(30)= "+ Str(result)+ " "+ Str(elapse)+ "ms"
+		  
+		  
+		  // convert:
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
+		  'Dim typeAsExpr As EXS.Expressions.UnaryExpression= expr.Convert(_
+		  'paramExpr, _
+		  'EXS.GetType("String"))
+		  'Dim lambdaExpr As EXS.Expressions.LambdaExpression= expr.Lambda(_
+		  'typeAsExpr, paramExpr)
+		  'TextAreaWriter1.WriteLn lambdaExpr.ToString+ EndOfLine
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(lambdaExpr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim result As Variant= runner.Run(5)
+		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
 		  
 		  'Dim params() As Variant
 		  'params.Append 5

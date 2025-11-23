@@ -1320,7 +1320,8 @@ Protected Module EXS
 		  IsTrue
 		  IsFalse
 		  Ret
-		While_
+		  While_
+		Invocation
 	#tag EndEnum
 
 	#tag Enum, Name = OpCodes, Flags = &h0

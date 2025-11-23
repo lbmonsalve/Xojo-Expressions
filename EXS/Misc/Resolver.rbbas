@@ -28,47 +28,39 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h0
 		Function Resolve(expr As EXS.Expressions.Expression) As Variant
-		  Try
-		    Return ResolveInternal(expr)
-		  Catch exc As ReturnException
-		    Return mReturnValue
-		  Catch exc As RuntimeException
-		    Raise exc
-		  End Try
+		  Return expr.Accept(Self)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Function ResolveBlock(expressions() As EXS.Expressions.Expression, newEnv As Env) As Variant
-		  Dim mRetValue As Variant
+		  Dim retValue As Variant
 		  Dim previous As Env= mEnv
 		  
 		  mEnv= newEnv
 		  
 		  For i As Integer= 0 To expressions.LastIdxEXS
-		    mRetValue= ResolveInternal(expressions(i))
+		    retValue= Resolve(expressions(i))
 		  Next
 		  
 		  mEnv= previous
 		  
-		  Return mRetValue
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function ResolveInternal(expr As EXS.Expressions.Expression) As Variant
-		  Return expr.Accept(Self)
+		  Return retValue
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function VisitAssign(expr As EXS.Expressions.AssignExpression) As Variant
 		  Dim name As String= EXS.Expressions.ParameterExpression(expr.Left).Name
-		  Dim value As Variant= ResolveInternal(expr.Right)
 		  
-		  mEnv.Assign name, value
-		  
-		  Return value
+		  If expr.Right IsA EXS.Expressions.LambdaExpression Then
+		    mEnv.Define name, False
+		    mEnv.Assign name, expr.Right
+		  Else
+		    Dim value As Variant= Resolve(expr.Right)
+		    mEnv.Assign name, value
+		    Return value
+		  End If
 		End Function
 	#tag EndMethod
 
@@ -80,10 +72,10 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitConditional(expr As EXS.Expressions.ConditionalExpression) As Variant
-		  If ResolveInternal(expr.Test) Then
-		    Return ResolveInternal(expr.IfTrue)
+		  If Resolve(expr.Test) Then
+		    Return Resolve(expr.IfTrue)
 		  ElseIf Not (expr.IfFalse Is Nil) Then
-		    Return ResolveInternal(expr.IfFalse)
+		    Return Resolve(expr.IfFalse)
 		  End If
 		End Function
 	#tag EndMethod
@@ -97,17 +89,70 @@ Implements EXS.Expressions.IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function VisitInvocation(expr As EXS.Expressions.InvocationExpression) As Variant
+		  Dim args() As EXS.Expressions.Expression= expr.Arguments
+		  Dim paramsValues() As Variant
+		  
+		  For i As Integer= 0 To args.LastIdxEXS
+		    paramsValues.Append Resolve(args(i))
+		  Next
+		  
+		  Dim dele As Variant
+		  
+		  If expr.Expr IsA EXS.Expressions.ParameterExpression Then
+		    Dim param As EXS.Expressions.ParameterExpression= EXS.Expressions.ParameterExpression(expr.Expr)
+		    dele= mEnv.Get(param.Name)
+		  End If
+		  
+		  If dele Is Nil Then Raise GetRuntimeExc("dele Is Nil")
+		  
+		  If dele IsA EXS.Expressions.LambdaExpression Then
+		    Dim lambda As EXS.Expressions.LambdaExpression= EXS.Expressions.LambdaExpression(dele)
+		    Dim params() As EXS.Expressions.ParameterExpression= lambda.Parameters
+		    
+		    'If Not params.MatchTypeWith(paramsValues) Then _
+		    'Raise GetRuntimeExc("Not params.MatchTypeWith(paramsValues)")
+		    If params.LastIdxEXS<> paramsValues.LastIdxEXS Then _ // for speed
+		    Raise GetRuntimeExc("params.LastIdxEXS<> paramsValues.LastIdxEXS")
+		    
+		    Dim newEnv As New Env(mEnv)
+		    Dim previous As Env= mEnv
+		    mEnv= newEnv
+		    
+		    For i As Integer= 0 To params.LastIdxEXS
+		      Dim param As EXS.Expressions.ParameterExpression= params(i)
+		      mEnv.Define param.Name, paramsValues(i)
+		    Next
+		    
+		    Dim retValue As Variant= Resolve(lambda.Body)
+		    
+		    mEnv= previous
+		    
+		    Return retValue
+		  Else
+		    Break
+		  End If
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function VisitLambda(expr As EXS.Expressions.LambdaExpression) As Variant
 		  DefineParams expr.Parameters
 		  
-		  Return ResolveInternal(expr.Body)
+		  Try
+		    Return Resolve(expr.Body)
+		  Catch exc As ReturnException
+		    Return mReturnValue
+		  Catch exc As RuntimeException
+		    Raise exc
+		  End Try
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function VisitMethodBinary(expr As EXS.Expressions.MethodBinaryExpression) As Variant
-		  Dim left As Variant= ResolveInternal(expr.Left)
-		  Dim right As Variant= ResolveInternal(expr.Right)
+		  Dim left As Variant= Resolve(expr.Left)
+		  Dim right As Variant= Resolve(expr.Right)
 		  
 		  Dim params() As Variant
 		  params.Append right
@@ -124,7 +169,7 @@ Implements EXS.Expressions.IVisitor
 		  Dim args() As EXS.Expressions.Expression= expr.Arguments
 		  
 		  For i As Integer= 0 To args.LastIdxEXS
-		    Dim arg As Variant= ResolveInternal(args(i))
+		    Dim arg As Variant= Resolve(args(i))
 		    methodParams.Append arg
 		  Next
 		  
@@ -149,7 +194,7 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitReturn(expr As EXS.Expressions.ReturnExpression) As Variant
-		  mReturnValue= ResolveInternal(expr.Expr)
+		  mReturnValue= Resolve(expr.Expr)
 		  
 		  #pragma BreakOnExceptions Off
 		  Raise New ReturnException
@@ -160,26 +205,26 @@ Implements EXS.Expressions.IVisitor
 	#tag Method, Flags = &h0
 		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
 		  Dim left, right As Variant
-		  left= ResolveInternal(expr.Left)
+		  left= Resolve(expr.Left)
 		  
 		  If left.Type= 11 Then // TypeBoolean
 		    Select Case expr.NodeType // short-circuit
 		    Case EXS.ExpressionType.And_
 		      If Not left Then Return left
 		      
-		      right= ResolveInternal(expr.Right)
+		      right= Resolve(expr.Right)
 		      Return left And right
 		      
 		    Case EXS.ExpressionType.Or_
 		      If left Then Return left
 		      
-		      right= ResolveInternal(expr.Right)
+		      right= Resolve(expr.Right)
 		      Return left Or right
 		      
 		    End Select
 		  End If
 		  
-		  right= ResolveInternal(expr.Right)
+		  right= Resolve(expr.Right)
 		  
 		  Select Case expr.NodeType
 		  Case EXS.ExpressionType.And_
@@ -216,19 +261,19 @@ Implements EXS.Expressions.IVisitor
 		    Return left.Equals(right)
 		    
 		  Case EXS.ExpressionType.Add
-		    Return left+ right
+		    Return left.DoubleValue+ right.DoubleValue
 		    
 		  Case EXS.ExpressionType.Subtract
-		    Return left- right
+		    Return left.DoubleValue- right.DoubleValue
 		    
 		  Case EXS.ExpressionType.Multiply
-		    Return left* right
+		    Return left.DoubleValue* right.DoubleValue
 		    
 		  Case EXS.ExpressionType.Divide
-		    Return left/ right
+		    Return left.DoubleValue/ right.DoubleValue
 		    
 		  Case EXS.ExpressionType.Modulo
-		    Return left Mod right
+		    Return left.DoubleValue Mod right.DoubleValue
 		    
 		  Case EXS.ExpressionType.Power
 		    Return left.DoubleValue^ right.DoubleValue
@@ -239,7 +284,7 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitUnary(expr As EXS.Expressions.UnaryExpression) As Variant
-		  Dim from As Variant= ResolveInternal(expr.Operand)
+		  Dim from As Variant= Resolve(expr.Operand)
 		  
 		  Return Convert(from, expr.Type.Name)
 		End Function
@@ -247,8 +292,8 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitWhile(expr As EXS.Expressions.WhileExpression) As Variant
-		  While ResolveInternal(expr.Left)
-		    Call ResolveInternal(expr.Right)
+		  While Resolve(expr.Left)
+		    Call Resolve(expr.Right)
 		  Wend
 		End Function
 	#tag EndMethod

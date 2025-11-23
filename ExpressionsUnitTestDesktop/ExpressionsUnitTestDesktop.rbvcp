@@ -36,6 +36,7 @@ Class=ConstantExpression;../EXS/Expressions/ConstantExpression.rbbas;&hA359FFF;&
 Class=UnaryExpression;../EXS/Expressions/UnaryExpression.rbbas;&h4B5D0FFF;&h37A9FFF;false
 Class=ParameterExpression;../EXS/Expressions/ParameterExpression.rbbas;&h1EC51FFF;&h37A9FFF;false
 Class=ReturnExpression;../EXS/Expressions/ReturnExpression.rbbas;&h39EDFFF;&h37A9FFF;false
+Class=InvocationExpression;../EXS/Expressions/InvocationExpression.rbbas;&h2A6F8FFF;&h37A9FFF;false
 Interface=ILambdaCompiler;../EXS/Expressions/ILambdaCompiler.rbbas;&h283B37FF;&h37A9FFF;false
 Class=LambdaExpression;../EXS/Expressions/LambdaExpression.rbbas;&h6880E7FF;&h37A9FFF;false
 Class=DefaultTypes;../EXS/TypesUtils/DefaultTypes.rbbas;&h36BD1FFF;&h776E57FF;false

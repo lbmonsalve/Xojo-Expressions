@@ -109,6 +109,12 @@ Implements IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function VisitInvocation(expr As EXS.Expressions.InvocationExpression) As Variant
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function VisitLambda(expr As EXS.Expressions.LambdaExpression) As Variant
 		  Dim params() As ParameterExpression= expr.Parameters
 		  
