@@ -3,8 +3,8 @@ Protected Class Resolver
 Implements EXS.Expressions.IVisitor
 	#tag Method, Flags = &h0
 		Sub Constructor(paramValues() As Variant)
-		  mParamValues= paramValues
 		  mEnv= New Env
+		  mEnv.Define kParamValuesName, paramValues
 		End Sub
 	#tag EndMethod
 
@@ -16,12 +16,14 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h21
 		Private Sub DefineParams(paramsExpr() As EXS.Expressions.ParameterExpression)
-		  If Not paramsExpr.MatchTypeWith(mParamValues) Then _
-		  Raise GetRuntimeExc("Not paramsExpr.MatchTypeWith(mParamValues)")
+		  Dim paramValues() As Variant= mEnv.Get(kParamValuesName)
+		  
+		  If Not paramsExpr.MatchTypeWith(paramValues) Then _
+		  Raise GetRuntimeExc("Not paramsExpr.MatchTypeWith(paramValues)")
 		  
 		  For i As Integer= 0 To paramsExpr.LastIdxEXS
 		    Dim paramExpr As EXS.Expressions.ParameterExpression= paramsExpr(i)
-		    mEnv.Define paramExpr.Name, mParamValues(i)
+		    mEnv.Define paramExpr.Name, paramValues(i)
 		  Next
 		End Sub
 	#tag EndMethod
@@ -91,10 +93,10 @@ Implements EXS.Expressions.IVisitor
 	#tag Method, Flags = &h0
 		Function VisitInvocation(expr As EXS.Expressions.InvocationExpression) As Variant
 		  Dim args() As EXS.Expressions.Expression= expr.Arguments
-		  Dim paramsValues() As Variant
+		  Dim paramValues() As Variant
 		  
 		  For i As Integer= 0 To args.LastIdxEXS
-		    paramsValues.Append Resolve(args(i))
+		    paramValues.Append Resolve(args(i))
 		  Next
 		  
 		  Dim dele As Variant
@@ -107,24 +109,11 @@ Implements EXS.Expressions.IVisitor
 		  If dele Is Nil Then Raise GetRuntimeExc("dele Is Nil")
 		  
 		  If dele IsA EXS.Expressions.LambdaExpression Then
-		    Dim lambda As EXS.Expressions.LambdaExpression= EXS.Expressions.LambdaExpression(dele)
-		    Dim params() As EXS.Expressions.ParameterExpression= lambda.Parameters
-		    
-		    'If Not params.MatchTypeWith(paramsValues) Then _
-		    'Raise GetRuntimeExc("Not params.MatchTypeWith(paramsValues)")
-		    If params.LastIdxEXS<> paramsValues.LastIdxEXS Then _ // for speed
-		    Raise GetRuntimeExc("params.LastIdxEXS<> paramsValues.LastIdxEXS")
-		    
-		    Dim newEnv As New Env(mEnv)
 		    Dim previous As Env= mEnv
-		    mEnv= newEnv
+		    mEnv= New Env(mEnv)
+		    mEnv.Define kParamValuesName, paramValues
 		    
-		    For i As Integer= 0 To params.LastIdxEXS
-		      Dim param As EXS.Expressions.ParameterExpression= params(i)
-		      mEnv.Define param.Name, paramsValues(i)
-		    Next
-		    
-		    Dim retValue As Variant= Resolve(lambda.Body)
+		    Dim retValue As Variant= Resolve(dele)
 		    
 		    mEnv= previous
 		    
@@ -304,12 +293,12 @@ Implements EXS.Expressions.IVisitor
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mParamValues() As Variant
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
 		Private mReturnValue As Variant
 	#tag EndProperty
+
+
+	#tag Constant, Name = kParamValuesName, Type = String, Dynamic = False, Default = \"^.^_^", Scope = Private
+	#tag EndConstant
 
 
 	#tag ViewBehavior

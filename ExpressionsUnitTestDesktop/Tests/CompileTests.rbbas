@@ -166,7 +166,7 @@ Inherits TestGroup
 		  #pragma Unused flags
 		  #pragma Unused bs
 		  
-		  Assert.Message "Return True do not load the bin file, .Loaded is False"
+		  Assert.Message "-> Return True do not load the bin file, .Loaded is False"
 		  
 		  Return True
 		End Function
@@ -197,6 +197,8 @@ Inherits TestGroup
 		  
 		  bcode= New EXS.Expressions.BinaryCode(binfile, WeakAddressOf CompileLoading)
 		  Assert.IsFalse bcode.Loaded, "IsFalse bcode.Loaded"
+		  
+		  bcode= New EXS.Expressions.BinaryCode(WeakAddressOf CreatingBinaryCode)
 		End Sub
 	#tag EndMethod
 
@@ -249,6 +251,15 @@ Inherits TestGroup
 		  Dim result As Variant= expr.Lambda(blockExpr).Compile.Invoke(Nil)
 		  'Assert.AreEqual Variant.TypeString, result.Type, "AreEqual Variant.TypeString, result.Type"
 		  Assert.AreEqual "10", result.StringValue, "AreEqual ""10"", result.StringValue"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub CreatingBinaryCode(flags As UInt64, bs As BinaryStream)
+		  #pragma Unused flags
+		  #pragma Unused bs
+		  
+		  Assert.Message "-> Creating binaryCode"
 		End Sub
 	#tag EndMethod
 

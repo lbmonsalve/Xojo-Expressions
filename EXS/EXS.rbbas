@@ -533,14 +533,15 @@ Protected Module EXS
 	#tag Method, Flags = &h0
 		Function MatchTypeWith(Extends values() As EXS.Expressions.ParameterExpression, varts() As Variant) As Boolean
 		  If values.LastIdxEXS= -1 And varts Is Nil Then Return True
-		  If values.LastIdxEXS= -1 And varts.LastIdxEXS= -1 Then Return True
 		  If values.LastIdxEXS<> varts.LastIdxEXS Then Return False
 		  
-		  For i As Integer= 0 To values.LastIdxEXS
-		    Dim valueType As Introspection.TypeInfo= values(i).Type
-		    Dim vartType As Introspection.TypeInfo= varts(i).ToTypeInfo
-		    If Not valueType.IsAssignable(vartType) Then Return False
-		  Next
+		  #if False // speed
+		    For i As Integer= 0 To values.LastIdxEXS
+		      Dim valueType As Introspection.TypeInfo= values(i).Type
+		      Dim vartType As Introspection.TypeInfo= varts(i).ToTypeInfo
+		      If Not valueType.IsAssignable(vartType) Then Return False
+		    Next
+		  #endif
 		  
 		  Return True
 		End Function

@@ -204,12 +204,12 @@ End
 		  Dim two As EXS.Expressions.ConstantExpression= expr.Constant(2)
 		  
 		  Dim test As EXS.Expressions.Expression= expr.LessThan(nParam, two)
-		  Dim thuthy As EXS.Expressions.Expression= nParam
+		  Dim truthy As EXS.Expressions.Expression= nParam
 		  Dim invoka As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, two))
 		  Dim invokb As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, one))
 		  Dim falsy As EXS.Expressions.Expression= expr.Add(invoka, invokb)
 		  
-		  Dim lambda As EXS.Expressions.Expression= expr.Lambda(expr.Condition(test, thuthy, falsy), nParam)
+		  Dim lambda As EXS.Expressions.Expression= expr.Lambda(expr.Condition(test, truthy, falsy), nParam)
 		  
 		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, lambda), expr.Invoke(methodVar, nParam)) _
 		  , nParam)
