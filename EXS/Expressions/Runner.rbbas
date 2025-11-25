@@ -39,6 +39,7 @@ Protected Class Runner
 		  DefineParams values
 		  
 		  mBinaryCode.InstructionsBS.Position= 0
+		  mRetPos= mBinaryCode.InstructionsBS.Length
 		  
 		  While Not mBinaryCode.InstructionsBS.EndFileEXS
 		    RunInstruction
@@ -129,9 +130,9 @@ Protected Class Runner
 		    If mDebug Then Trace("# Convert "+ Str(idx, kFidx))
 		    
 		  Case OpCodes.Ret
-		    bs.Position= bs.Length
+		    bs.Position= mRetPos
 		    
-		    If mDebug Then Trace("# Ret ")
+		    If mDebug Then Trace("# Ret ")+ Str(mRetPos, kFoff)
 		    
 		  Case OpCodes.Equal
 		    Dim right As Variant= mStack.Pop
@@ -298,6 +299,10 @@ Protected Class Runner
 
 	#tag Property, Flags = &h21
 		Private mLocals As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mRetPos As UInt64
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

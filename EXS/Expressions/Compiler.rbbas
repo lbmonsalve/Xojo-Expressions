@@ -82,6 +82,7 @@ Implements IVisitor
 		  
 		  If (expr.IfFalse Is Nil) Or (expr.IfFalse IsA DefaultExpression) Then
 		    mBinaryCode.PatchJump thenJump
+		    mBinaryCode.EmitCode OpCodes.Pop
 		  Else
 		    Dim elseJump As Integer= mBinaryCode.EmitJump(OpCodes.Jump)
 		    mBinaryCode.PatchJump thenJump
