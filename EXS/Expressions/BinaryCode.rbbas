@@ -177,7 +177,7 @@ Protected Class BinaryCode
 		  
 		  Select Case opCode
 		  Case OpCodes.Load, OpCodes.Store, OpCodes.Local, OpCodes.Call_, _
-		    OpCodes.Convert
+		    OpCodes.Convert, OpCodes.Invoke
 		    Dim idx As Integer= GetVUInt(bs)
 		    
 		    Return Str(offset, kFoff)+ "  "+ instruction.OpCodesToString+ _

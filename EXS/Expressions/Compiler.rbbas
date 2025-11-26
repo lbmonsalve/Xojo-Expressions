@@ -21,6 +21,33 @@ Implements IVisitor
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Function ReverseLookup(search As String) As Integer
+		  Dim last As Integer= mLocals.LastIdxEXS
+		  
+		  For i As Integer= last To 0 Step -1
+		    If mLocals(i).Name= search Then Return i
+		  Next
+		  
+		  Return -1
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function ReverseScopeLookupOrAppend(search As String, scope As Integer) As Integer
+		  Dim last As Integer= mLocals.LastIdxEXS
+		  
+		  For i As Integer= last To 0 Step -1
+		    If scope> mLocals(i).Scope Then Exit
+		    If mLocals(i).Name= search And mLocals(i).Scope= scope Then Return i
+		  Next
+		  
+		  mLocals.Append New EXS.Expressions.Local(search, scope)
+		  
+		  Return mLocals.LastIdxEXS
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub ScopeBegin()
 		  mScope= mScope+ 1
 		End Sub
@@ -40,7 +67,7 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitAssign(expr As EXS.Expressions.AssignExpression) As Variant
-		  Compile expr.Right
+		  'Compile expr.Left
 		  
 		  Dim name As String
 		  If expr.Left IsA ConstantExpression Then
@@ -51,10 +78,29 @@ Implements IVisitor
 		    Break
 		  End If
 		  
-		  'Compile expr.Left
+		  Dim idxLocal As Integer= ReverseLookup(name)
+		  If idxLocal= -1 Then idxLocal= ReverseScopeLookupOrAppend(name, mScope)
+		  
+		  If expr.Right IsA EXS.Expressions.LambdaExpression Then
+		    mLocals(idxLocal).Expr= expr.Right
+		    
+		    Dim funJump As Integer= mBinaryCode.EmitJump(OpCodes.Jump)
+		    Dim funIni As UInt16= mBinaryCode.InstructionsBS.Position
+		    
+		    Compile EXS.Expressions.LambdaExpression(expr.Right).Body
+		    
+		    mBinaryCode.EmitCode OpCodes.Ret
+		    
+		    mBinaryCode.PatchJump funJump
+		    
+		    mBinaryCode.EmitCode OpCodes.Load
+		    mBinaryCode.EmitValue mBinaryCode.StoreSymbol(New ConstantExpression(funIni))
+		  Else
+		    Compile expr.Right
+		  End If
 		  
 		  mBinaryCode.EmitCode OpCodes.Store
-		  mBinaryCode.EmitValue mLocals.ReverseScopeLookupOrAppend(name, mScope)
+		  mBinaryCode.EmitValue idxLocal
 		End Function
 	#tag EndMethod
 
@@ -97,7 +143,7 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitConstant(expr As EXS.Expressions.ConstantExpression) As Variant
-		  Dim idx As Integer= mLocals.ReverseScopeLookup(expr.Value.StringValue)
+		  Dim idx As Integer= ReverseLookup(expr.Value.StringValue)
 		  
 		  If idx= -1 Then
 		    mBinaryCode.EmitCode OpCodes.Load
@@ -111,7 +157,29 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitInvocation(expr As EXS.Expressions.InvocationExpression) As Variant
-		  
+		  If expr.Expr IsA ParameterExpression Then
+		    Dim param As ParameterExpression= ParameterExpression(expr.Expr)
+		    Dim idxLambda As Integer= ReverseLookup(param.Name)
+		    Dim lambda As LambdaExpression= LambdaExpression(mLocals(idxLambda).Expr)
+		    Dim params() As ParameterExpression= lambda.Parameters
+		    Dim args() As Expression= expr.Arguments
+		    
+		    mCallFrame= mCallFrame+ 1 // TODO: scope++
+		    ScopeBegin
+		    
+		    For i As Integer= 0 To args.LastIdxEXS
+		      Compile args(i) // emit load
+		      
+		      mBinaryCode.EmitCode OpCodes.Store
+		      mBinaryCode.EmitValue ReverseScopeLookupOrAppend(params(i).Name, mScope)
+		    Next // args are in stack
+		    
+		    mBinaryCode.EmitCode OpCodes.Invoke
+		    mBinaryCode.EmitValue idxLambda
+		  Else
+		    Break
+		    'Raise GetRuntimeExc("Not (expr.Expr IsA EXS.Expressions.ParameterExpression)")
+		  End If
 		End Function
 	#tag EndMethod
 
@@ -126,7 +194,7 @@ Implements IVisitor
 		    mBinaryCode.EmitValue mBinaryCode.StoreSymbol(param)
 		    
 		    mBinaryCode.EmitCode OpCodes.Store
-		    mBinaryCode.EmitValue mLocals.ReverseScopeLookupOrAppend(param.Name, mScope)
+		    mBinaryCode.EmitValue ReverseScopeLookupOrAppend(param.Name, mScope)
 		  Next
 		  
 		  Compile expr.Body
@@ -154,7 +222,7 @@ Implements IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitParameter(expr As EXS.Expressions.ParameterExpression) As Variant
-		  Dim idx As Integer= mLocals.ReverseScopeLookup(expr.Name)
+		  Dim idx As Integer= ReverseLookup(expr.Name)
 		  
 		  If idx= -1 Then
 		    mBinaryCode.EmitCode OpCodes.Load
@@ -172,6 +240,10 @@ Implements IVisitor
 		  
 		  mBinaryCode.EmitCode OpCodes.Ret
 		  
+		  If mCallFrame> 0 Then
+		    mCallFrame= mCallFrame- 1 // TODO: scope--
+		    ScopeEnd
+		  End If
 		End Function
 	#tag EndMethod
 
@@ -180,15 +252,18 @@ Implements IVisitor
 		  Compile expr.Left
 		  
 		  // short-circuit number And/Or number ??
-		  'Dim endJump As Integer
-		  'If expr.NodeType= ExpressionType.And_ Then
-		  'endJump= mBinaryCode.EmitJump(OpCodes.JumpFalse)
-		  'ElseIf expr.NodeType= ExpressionType.Or_ Then
-		  'Dim elseJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
-		  'endJump= mBinaryCode.EmitJump(OpCodes.Jump)
-		  '
-		  'mBinaryCode.PatchJump elseJump
-		  'End If
+		  Const kShortCircuit= False
+		  #if kShortCircuit
+		    Dim endJump As Integer
+		    If expr.NodeType= ExpressionType.And_ Then
+		      endJump= mBinaryCode.EmitJump(OpCodes.JumpFalse)
+		    ElseIf expr.NodeType= ExpressionType.Or_ Then
+		      Dim elseJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
+		      endJump= mBinaryCode.EmitJump(OpCodes.Jump)
+		      
+		      mBinaryCode.PatchJump elseJump
+		    End If
+		  #endif
 		  
 		  Compile expr.Right
 		  
@@ -211,9 +286,11 @@ Implements IVisitor
 		  End Select
 		  
 		  // short-circuit
-		  'If expr.NodeType= ExpressionType.And_ Or expr.NodeType= ExpressionType.Or_ Then
-		  'mBinaryCode.PatchJump endJump
-		  'End If
+		  #if kShortCircuit
+		    If expr.NodeType= ExpressionType.And_ Or expr.NodeType= ExpressionType.Or_ Then
+		      mBinaryCode.PatchJump endJump
+		    End If
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -246,6 +323,7 @@ Implements IVisitor
 		  ScopeEnd
 		  
 		  Call mBinaryCode.EmitJump OpCodes.Jump, pos
+		  
 		  mBinaryCode.PatchJump exitJump
 		  mBinaryCode.EmitCode OpCodes.Pop
 		End Function
@@ -263,6 +341,10 @@ Implements IVisitor
 
 	#tag Property, Flags = &h21
 		Private mBinaryCode As BinaryCode
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mCallFrame As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

@@ -196,29 +196,85 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // ret
+		  // compile recursive fibonacci:
 		  Dim expr As EXS.Expressions.Expression
-		  Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
-		  Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
+		  Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
+		  Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "fibonacci")
+		  Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
+		  Dim two As EXS.Expressions.ConstantExpression= expr.Constant(2)
 		  
-		  Dim exprs() As EXS.Expressions.Expression
-		  exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramI)
-		  exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
-		  exprs.Append expr.Condition(expr.Equal(paramI, expr.Constant(5)), expr.Ret(paramI))
+		  Dim test As EXS.Expressions.Expression= expr.LessThan(nParam, two)
+		  Dim truthy As EXS.Expressions.Expression= nParam
+		  Dim invoka As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, two))
+		  Dim invokb As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, one))
+		  Dim falsy As EXS.Expressions.Expression= expr.Add(invoka, invokb)
 		  
-		  expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN)_
-		  , New EXS.Expressions.BlockExpression(exprs))_
-		  , paramI, paramN)
+		  Dim lambda As EXS.Expressions.Expression= expr.Lambda(expr.Condition(test, truthy, falsy), nParam)
+		  
+		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, lambda), expr.Invoke(methodVar, nParam)) _
+		  , nParam)
 		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
 		  
 		  Dim compiler As New EXS.Expressions.Compiler(expr)
 		  compiler.BinaryCode.Disassemble TextAreaWriter1
 		  TextAreaWriter1.WriteLn EndOfLine
 		  
-		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim n As Double= 2
+		  '
+		  'Dim elapse As Double, result As Variant
+		  'Try
+		  'elapse= Microseconds
+		  'result= runner.Run(n)
+		  'elapse= (Microseconds- elapse)/ 1000
+		  'Catch exc As RuntimeException
+		  ''Break
+		  'End Try
+		  '
+		  'TextAreaWriter1.WriteLn "fibonacci"+ Str(n, "\(#\)\=\ ")+ Str(result)+ " "+ Str(elapse, "#\m\s")
 		  
-		  Dim result As Variant= runner.Run(1, 10)
-		  TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
+		  
+		  // compile fun lambda
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "debug")
+		  '
+		  'Dim lambda As EXS.Expressions.Expression= expr.Lambda(expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("hallo")))
+		  'expr= expr.Lambda(expr.Block(expr.Assign(methodVar, lambda), expr.Invoke(methodVar)))
+		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  'TextAreaWriter1.WriteLn EndOfLine
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  '
+		  'Dim result As Variant= runner.Run
+		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
+		  
+		  
+		  // test ret
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
+		  'Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
+		  '
+		  'Dim exprs() As EXS.Expressions.Expression
+		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramI)
+		  'exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
+		  'exprs.Append expr.Condition(expr.Equal(paramI, expr.Constant(5)), expr.Ret(paramI))
+		  '
+		  'expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN)_
+		  ', New EXS.Expressions.BlockExpression(exprs))_
+		  ', paramI, paramN)
+		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  'TextAreaWriter1.WriteLn EndOfLine
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  '
+		  'Dim result As Variant= runner.Run(1, 10)
+		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
 		  
 		  
 		  // recursive fibonacci:
@@ -366,6 +422,76 @@ End
 		  '
 		  'TextAreaWriter1.WriteLn EndOfLine
 		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue
+		  
+		  
+		  // while:
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim paramI As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "i")
+		  'Dim paramN As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
+		  '
+		  'Dim exprs() As EXS.Expressions.Expression
+		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramI)
+		  'exprs.Append expr.Assign(paramI, expr.Add(paramI, expr.Constant(1)))
+		  '
+		  'expr= expr.Lambda(expr.While_(expr.LessThan(paramI, paramN), expr.Block(exprs)), _
+		  'paramI, paramN)
+		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  'TextAreaWriter1.WriteLn EndOfLine
+		  
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim result As Variant= runner.Run(1, 10)
+		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
+		  
+		  
+		  // assign block:
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
+		  'Dim exprs() As EXS.Expressions.Expression
+		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
+		  'exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
+		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
+		  'exprs.Append expr.Assign(paramExpr, expr.Constant("world"))
+		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
+		  'expr= expr.Lambda(expr.Block(exprs), paramExpr)
+		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  'TextAreaWriter1.WriteLn EndOfLine
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  '
+		  'Dim result As Variant= runner.Run("hallo")
+		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
+		  
+		  
+		  // block:
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("String"), "a")
+		  'Dim exprs() As EXS.Expressions.Expression
+		  'exprs.Append expr.Assign(paramExpr, expr.Add(expr.Constant("hello"), expr.Constant("world")))
+		  'exprs.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
+		  '
+		  'Dim exprs1() As EXS.Expressions.Expression
+		  'exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
+		  'exprs1.Append expr.Assign(paramExpr, expr.Constant("hallo"))
+		  'exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
+		  'exprs1.Append expr.Block(exprs)
+		  'exprs1.Append expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", paramExpr)
+		  '
+		  'expr= expr.Lambda(expr.Block(exprs1), paramExpr)
+		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  'TextAreaWriter1.WriteLn EndOfLine
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim result As Variant= runner.Run("hello")
+		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
 		  
 		  
 		  // u32, u64:

@@ -9,6 +9,10 @@ Protected Class Local
 
 
 	#tag Property, Flags = &h0
+		Expr As Expression
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		Name As String
 	#tag EndProperty
 

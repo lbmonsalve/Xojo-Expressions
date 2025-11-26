@@ -23,6 +23,8 @@ Protected Class Runner
 		    End If
 		  Next
 		  
+		  If Not (paramValues Is Nil) And paramValues.LastIdxEXS= -1 Then Return
+		  
 		  If Not paramsExpr.MatchTypeWith(paramValues) Then _
 		  Raise GetRuntimeExc("Not paramsExpr.MatchTypeWith(mParamValues)")
 		  
@@ -64,6 +66,15 @@ Protected Class Runner
 		  Dim symbols() As Variant= mBinaryCode.Symbols
 		  
 		  Select Case instruction.ToOpCodes
+		  Case OpCodes.Invoke
+		    Dim idx As Integer= GetVUInt(bs)
+		    Dim value As Variant= mStack(idx)
+		    
+		    mRetPos= bs.Position
+		    bs.Position= value
+		    
+		    If mDebug Then Trace("# Invoke "+ Str(idx, kFidx))
+		    
 		  Case OpCodes.Load
 		    Dim idx As Integer= GetVUInt(bs)
 		    Dim value As Variant= symbols(idx)

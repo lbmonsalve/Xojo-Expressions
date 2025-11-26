@@ -609,6 +609,9 @@ Protected Module EXS
 		  Case &h18
 		    Return "Ret"
 		    
+		  Case &h19
+		    Return "Invoke"
+		    
 		  Case Else
 		    Raise GetRuntimeExc("cant decode ""OpCodes""")
 		  End Select
@@ -680,36 +683,6 @@ Protected Module EXS
 		  Next
 		  
 		  Return Join(result, "")
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ReverseScopeLookup(Extends values() As EXS.Expressions.Local, search As String) As Integer
-		  Dim last As Integer= values.LastIdxEXS
-		  
-		  'For i As Integer= last To 0 Step -1
-		  'Dim loc As EXS.Expressions.Local= values(i)
-		  'If scope> loc.Scope Then Exit
-		  'If loc.Name= search And loc.Scope= scope Then Return i
-		  'Next
-		  
-		  For i As Integer= last To 0 Step -1
-		    Dim loc As EXS.Expressions.Local= values(i)
-		    If loc.Name= search Then Return i
-		  Next
-		  
-		  Return -1
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ReverseScopeLookupOrAppend(Extends values() As EXS.Expressions.Local, search As String, scope As Integer) As Integer
-		  Dim idx As Integer= values.ReverseScopeLookup(search)
-		  If idx<> -1 Then Return idx
-		  
-		  values.Append New EXS.Expressions.Local(search, scope)
-		  
-		  Return values.LastIdxEXS
 		End Function
 	#tag EndMethod
 
@@ -833,6 +806,9 @@ Protected Module EXS
 		    
 		  Case &h18
 		    Return OpCodes.Ret
+		    
+		  Case &h19
+		    Return OpCodes.Invoke
 		    
 		  Case Else
 		    Raise GetRuntimeExc("can't convert value to ""OpCodes""")
@@ -1350,7 +1326,8 @@ Protected Module EXS
 		  Convert= &h15
 		  Jump= &h16
 		  JumpFalse= &h17
-		Ret= &h18
+		  Ret= &h18
+		Invoke= &h19
 	#tag EndEnum
 
 	#tag Enum, Name = SymbolType, Type = Integer, Flags = &h0

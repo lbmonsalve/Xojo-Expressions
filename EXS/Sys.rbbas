@@ -95,7 +95,7 @@ Protected Class Sys
 		Shared CommandLine As String
 	#tag EndComputedProperty
 
-	#tag ComputedProperty, Flags = &h0, CompatibilityFlags =                                             TargetHasGUI
+	#tag ComputedProperty, Flags = &h0, CompatibilityFlags =                                                  TargetHasGUI
 		#tag Getter
 			Get
 			  Return FontCount
