@@ -41,7 +41,7 @@ Protected Class Runner
 		  DefineParams values
 		  
 		  mBinaryCode.InstructionsBS.Position= 0
-		  mRetPos= mBinaryCode.InstructionsBS.Length
+		  mRetPos.Append mBinaryCode.InstructionsBS.Length
 		  
 		  While Not mBinaryCode.InstructionsBS.EndFileEXS
 		    RunInstruction
@@ -66,15 +66,6 @@ Protected Class Runner
 		  Dim symbols() As Variant= mBinaryCode.Symbols
 		  
 		  Select Case instruction.ToOpCodes
-		  Case OpCodes.Invoke
-		    Dim idx As Integer= GetVUInt(bs)
-		    Dim value As Variant= mStack(idx)
-		    
-		    mRetPos= bs.Position
-		    bs.Position= value
-		    
-		    If mDebug Then Trace("# Invoke "+ Str(idx, kFidx))
-		    
 		  Case OpCodes.Load
 		    Dim idx As Integer= GetVUInt(bs)
 		    Dim value As Variant= symbols(idx)
@@ -86,13 +77,13 @@ Protected Class Runner
 		    If mDebug Then Trace("# Load "+ Str(idx, kFidx))
 		    
 		  Case OpCodes.Store
-		    Dim idx As Integer= GetVUInt(bs)
+		    Dim idx As Integer= GetVUInt(bs)+ mCallFrame
 		    If mStack.LastIdxEXS<> idx Then mStack(idx)= mStack.Pop
 		    
 		    If mDebug Then Trace("# Store "+ Str(idx, kFidx))
 		    
 		  Case OpCodes.Local
-		    Dim idx As Integer= GetVUInt(bs)
+		    Dim idx As Integer= GetVUInt(bs)+ mCallFrame
 		    mStack.Append mStack(idx)
 		    
 		    If mDebug Then Trace("# Local "+ Str(idx, kFidx))
@@ -140,11 +131,6 @@ Protected Class Runner
 		    
 		    If mDebug Then Trace("# Convert "+ Str(idx, kFidx))
 		    
-		  Case OpCodes.Ret
-		    bs.Position= mRetPos
-		    
-		    If mDebug Then Trace("# Ret ")+ Str(mRetPos, kFoff)
-		    
 		  Case OpCodes.Equal
 		    Dim right As Variant= mStack.Pop
 		    Dim left As Variant= mStack.Pop
@@ -165,6 +151,24 @@ Protected Class Runner
 		    mStack.Append left< right
 		    
 		    If mDebug Then Trace("# Less "+ Str(left)+ " "+ Str(right))
+		    
+		  Case OpCodes.Ret
+		    bs.Position= mRetPos.Pop
+		    
+		    If mCallFrame> 0 Then mCallFrame= mCallFrame- 1
+		    
+		    If mDebug Then Trace("# Ret ")+ Str(bs.Position, kFoff)
+		    
+		  Case OpCodes.Invoke
+		    Dim idx As Integer= GetVUInt(bs)
+		    Dim value As Variant= symbols(idx)
+		    
+		    mRetPos.Append bs.Position
+		    bs.Position= value
+		    
+		    mCallFrame= mCallFrame+ 1
+		    
+		    If mDebug Then Trace("# Invoke "+ Str(idx, kFidx))
 		    
 		  Case OpCodes.And_
 		    Dim right As Variant= mStack.Pop
@@ -301,6 +305,10 @@ Protected Class Runner
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mCallFrame As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mDebug As Boolean
 	#tag EndProperty
 
@@ -313,7 +321,7 @@ Protected Class Runner
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mRetPos As UInt64
+		Private mRetPos() As UInt32
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

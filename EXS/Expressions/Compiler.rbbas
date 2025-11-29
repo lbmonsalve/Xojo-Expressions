@@ -10,6 +10,7 @@ Implements IVisitor
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  mBinaryCode= New BinaryCode
+		  mInvokes= New Dictionary
 		End Sub
 	#tag EndMethod
 
@@ -78,29 +79,35 @@ Implements IVisitor
 		    Break
 		  End If
 		  
-		  Dim idxLocal As Integer= ReverseLookup(name)
-		  If idxLocal= -1 Then idxLocal= ReverseScopeLookupOrAppend(name, mScope)
-		  
 		  If expr.Right IsA EXS.Expressions.LambdaExpression Then
-		    mLocals(idxLocal).Expr= expr.Right
-		    
 		    Dim funJump As Integer= mBinaryCode.EmitJump(OpCodes.Jump)
-		    Dim funIni As UInt16= mBinaryCode.InstructionsBS.Position
+		    
+		    Dim funIni As Integer= mBinaryCode.InstructionsBS.Position
+		    Dim fun As New Pair(expr.Right, mBinaryCode.StoreSymbol(New ConstantExpression(funIni)))
+		    mInvokes.Value(name)= fun
+		    
+		    // CallFrame ini
+		    Dim currIdx As Integer= mLocals.LastIdxEXS
+		    // Callframe ini
 		    
 		    Compile EXS.Expressions.LambdaExpression(expr.Right).Body
+		    
+		    // CallFrame end
+		    ReDim mLocals(currIdx)
+		    // CallFrame end
 		    
 		    mBinaryCode.EmitCode OpCodes.Ret
 		    
 		    mBinaryCode.PatchJump funJump
-		    
-		    mBinaryCode.EmitCode OpCodes.Load
-		    mBinaryCode.EmitValue mBinaryCode.StoreSymbol(New ConstantExpression(funIni))
 		  Else
+		    Dim idxLocal As Integer= ReverseLookup(name)
+		    If idxLocal= -1 Then idxLocal= ReverseScopeLookupOrAppend(name, mScope)
+		    
 		    Compile expr.Right
+		    
+		    mBinaryCode.EmitCode OpCodes.Store
+		    mBinaryCode.EmitValue idxLocal
 		  End If
-		  
-		  mBinaryCode.EmitCode OpCodes.Store
-		  mBinaryCode.EmitValue idxLocal
 		End Function
 	#tag EndMethod
 
@@ -159,13 +166,13 @@ Implements IVisitor
 		Function VisitInvocation(expr As EXS.Expressions.InvocationExpression) As Variant
 		  If expr.Expr IsA ParameterExpression Then
 		    Dim param As ParameterExpression= ParameterExpression(expr.Expr)
-		    Dim idxLambda As Integer= ReverseLookup(param.Name)
-		    Dim lambda As LambdaExpression= LambdaExpression(mLocals(idxLambda).Expr)
-		    Dim params() As ParameterExpression= lambda.Parameters
-		    Dim args() As Expression= expr.Arguments
 		    
-		    mCallFrame= mCallFrame+ 1 // TODO: scope++
-		    ScopeBegin
+		    Dim fun As Pair= mInvokes.Value(param.Name)
+		    Dim lambda As LambdaExpression= LambdaExpression(fun.Left)
+		    Dim params() As ParameterExpression= lambda.Parameters
+		    Dim idxLambda As Integer= fun.Right.IntegerValue
+		    
+		    Dim args() As Expression= expr.Arguments
 		    
 		    For i As Integer= 0 To args.LastIdxEXS
 		      Compile args(i) // emit load
@@ -176,6 +183,11 @@ Implements IVisitor
 		    
 		    mBinaryCode.EmitCode OpCodes.Invoke
 		    mBinaryCode.EmitValue idxLambda
+		    
+		    For i As Integer= 0 To args.LastIdxEXS
+		      Call mLocals.Pop
+		    Next // remove params
+		    
 		  Else
 		    Break
 		    'Raise GetRuntimeExc("Not (expr.Expr IsA EXS.Expressions.ParameterExpression)")
@@ -239,11 +251,6 @@ Implements IVisitor
 		  Compile expr.Expr
 		  
 		  mBinaryCode.EmitCode OpCodes.Ret
-		  
-		  If mCallFrame> 0 Then
-		    mCallFrame= mCallFrame- 1 // TODO: scope--
-		    ScopeEnd
-		  End If
 		End Function
 	#tag EndMethod
 
@@ -344,7 +351,7 @@ Implements IVisitor
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mCallFrame As Integer
+		Private mInvokes As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

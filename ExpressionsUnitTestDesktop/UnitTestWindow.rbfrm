@@ -219,19 +219,19 @@ End
 		  compiler.BinaryCode.Disassemble TextAreaWriter1
 		  TextAreaWriter1.WriteLn EndOfLine
 		  
-		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  'Dim n As Double= 2
-		  '
-		  'Dim elapse As Double, result As Variant
-		  'Try
-		  'elapse= Microseconds
-		  'result= runner.Run(n)
-		  'elapse= (Microseconds- elapse)/ 1000
-		  'Catch exc As RuntimeException
-		  ''Break
-		  'End Try
-		  '
-		  'TextAreaWriter1.WriteLn "fibonacci"+ Str(n, "\(#\)\=\ ")+ Str(result)+ " "+ Str(elapse, "#\m\s")
+		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  Dim n As Double= 2
+		  
+		  Dim elapse As Double, result As Variant
+		  Try
+		    elapse= Microseconds
+		    result= runner.Run(n)
+		    elapse= (Microseconds- elapse)/ 1000
+		  Catch exc As RuntimeException
+		    'Break
+		  End Try
+		  
+		  TextAreaWriter1.WriteLn "fibonacci"+ Str(n, "\(#\)\=\ ")+ Str(result)+ " "+ Str(elapse, "#\m\s")
 		  
 		  
 		  // compile fun lambda
