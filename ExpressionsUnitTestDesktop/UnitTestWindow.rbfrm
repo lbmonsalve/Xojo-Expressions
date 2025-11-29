@@ -197,41 +197,41 @@ End
 	#tag Event
 		Sub Action()
 		  // compile recursive fibonacci:
-		  Dim expr As EXS.Expressions.Expression
-		  Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
-		  Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "fibonacci")
-		  Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
-		  Dim two As EXS.Expressions.ConstantExpression= expr.Constant(2)
-		  
-		  Dim test As EXS.Expressions.Expression= expr.LessThan(nParam, two)
-		  Dim truthy As EXS.Expressions.Expression= nParam
-		  Dim invoka As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, two))
-		  Dim invokb As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, one))
-		  Dim falsy As EXS.Expressions.Expression= expr.Add(invoka, invokb)
-		  
-		  Dim lambda As EXS.Expressions.Expression= expr.Lambda(expr.Condition(test, truthy, falsy), nParam)
-		  
-		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, lambda), expr.Invoke(methodVar, nParam)) _
-		  , nParam)
-		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
-		  
-		  Dim compiler As New EXS.Expressions.Compiler(expr)
-		  compiler.BinaryCode.Disassemble TextAreaWriter1
-		  TextAreaWriter1.WriteLn EndOfLine
-		  
-		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  Dim n As Double= 2
-		  
-		  Dim elapse As Double, result As Variant
-		  Try
-		    elapse= Microseconds
-		    result= runner.Run(n)
-		    elapse= (Microseconds- elapse)/ 1000
-		  Catch exc As RuntimeException
-		    'Break
-		  End Try
-		  
-		  TextAreaWriter1.WriteLn "fibonacci"+ Str(n, "\(#\)\=\ ")+ Str(result)+ " "+ Str(elapse, "#\m\s")
+		  'Dim expr As EXS.Expressions.Expression
+		  'Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
+		  'Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "fibonacci")
+		  'Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
+		  'Dim two As EXS.Expressions.ConstantExpression= expr.Constant(2)
+		  '
+		  'Dim test As EXS.Expressions.Expression= expr.LessThan(nParam, two)
+		  'Dim truthy As EXS.Expressions.Expression= nParam
+		  'Dim invoka As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, two))
+		  'Dim invokb As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, one))
+		  'Dim falsy As EXS.Expressions.Expression= expr.Add(invoka, invokb)
+		  '
+		  'Dim lambda As EXS.Expressions.Expression= expr.Lambda(expr.Condition(test, truthy, falsy), nParam)
+		  '
+		  'expr= expr.Lambda(expr.Block(expr.Assign(methodVar, lambda), expr.Invoke(methodVar, nParam)) _
+		  ', nParam)
+		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  '
+		  'Dim compiler As New EXS.Expressions.Compiler(expr)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  'TextAreaWriter1.WriteLn EndOfLine
+		  '
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim n As Integer= 6
+		  '
+		  'Dim elapse As Double, result As Variant
+		  'Try
+		  'elapse= Microseconds
+		  'result= runner.Run(n)
+		  'elapse= (Microseconds- elapse)/ 1000
+		  'Catch exc As RuntimeException
+		  'Break
+		  'End Try
+		  '
+		  'TextAreaWriter1.WriteLn "fibonacci"+ Str(n, "\(#\)\=\ ")+ Str(result)+ " "+ Str(elapse, "#\m\s")
 		  
 		  
 		  // compile fun lambda
@@ -304,6 +304,30 @@ End
 		  'elapse= (Microseconds- elapse)/ 1000
 		  '
 		  'TextAreaWriter1.WriteLn "fibonacci"+ Str(n, "\(#\)\=\ ")+ Str(result)+ " "+ Str(elapse, "#\m\s")
+		  
+		  
+		  // compile factorial:
+		  Dim expr As EXS.Expressions.Expression
+		  Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
+		  Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "factorial")
+		  Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
+		  
+		  Dim factorial As EXS.Expressions.LambdaExpression= expr.Lambda(_
+		  expr.Condition(expr.LessThanOrEqual(nParam, one), one, _
+		  expr.Multiply(nParam, expr.Invoke(methodVar, expr.Subtract(nParam, one))))_
+		  , nParam)
+		  
+		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, factorial), expr.Invoke(methodVar, nParam)), nParam)
+		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  
+		  Dim compiler As New EXS.Expressions.Compiler(expr)
+		  compiler.BinaryCode.Disassemble TextAreaWriter1
+		  TextAreaWriter1.WriteLn EndOfLine
+		  
+		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode)
+		  
+		  Dim result As Variant= runner.Run(10)
+		  TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
 		  
 		  
 		  // recursive factorial:

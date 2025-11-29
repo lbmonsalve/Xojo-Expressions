@@ -62,6 +62,53 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub FactorialTest()
+		  Dim expr As EXS.Expressions.Expression
+		  Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
+		  Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "factorial")
+		  Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
+		  
+		  Dim factorial As EXS.Expressions.LambdaExpression= expr.Lambda(_
+		  expr.Condition(expr.LessThanOrEqual(nParam, one), one, _
+		  expr.Multiply(nParam, expr.Invoke(methodVar, expr.Subtract(nParam, one))))_
+		  , nParam)
+		  
+		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, factorial), expr.Invoke(methodVar, nParam)), nParam)
+		  
+		  Dim resolver As New EXS.Misc.Resolver(30)
+		  Dim result As Variant= resolver.Resolve(expr)
+		  Assert.AreEqual 2.6525285981219103e+32, result.DoubleValue, "AreEqual 2.6525285981219103e+32, result.DoubleValue"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub FibonacciTest()
+		  Dim expr As EXS.Expressions.Expression
+		  Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
+		  Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "fibonacci")
+		  Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
+		  Dim two As EXS.Expressions.ConstantExpression= expr.Constant(2)
+		  
+		  Dim test As EXS.Expressions.Expression= expr.LessThan(nParam, two)
+		  Dim truthy As EXS.Expressions.Expression= nParam
+		  Dim invoka As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, two))
+		  Dim invokb As EXS.Expressions.Expression= expr.Invoke(methodVar, expr.Subtract(nParam, one))
+		  Dim falsy As EXS.Expressions.Expression= expr.Add(invoka, invokb)
+		  
+		  Dim lambda As EXS.Expressions.Expression= expr.Lambda(expr.Condition(test, truthy, falsy), nParam)
+		  
+		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, lambda), expr.Invoke(methodVar, nParam)) _
+		  , nParam)
+		  
+		  Dim n As Integer= 22
+		  Dim resolver As New EXS.Misc.Resolver(n)
+		  
+		  Dim result As Variant= resolver.Resolve(expr)
+		  Assert.AreEqual 17711, result.IntegerValue, "AreEqual 17711, result.IntegerValue"
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub LambdaTest()
 		  Dim expr As EXS.Expressions.Expression
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")

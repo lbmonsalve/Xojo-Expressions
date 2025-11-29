@@ -61,6 +61,8 @@ Protected Class Runner
 
 	#tag Method, Flags = &h21
 		Private Sub RunInstruction()
+		  #pragma DisableBackgroundTasks True
+		  
 		  Dim bs As BinaryStream= mBinaryCode.InstructionsBS
 		  Dim instruction As UInt8= bs.ReadUInt8
 		  Dim symbols() As Variant= mBinaryCode.Symbols
