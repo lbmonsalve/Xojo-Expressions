@@ -196,6 +196,30 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
+		  // compile factorial:
+		  Dim expr As EXS.Expressions.Expression
+		  Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
+		  Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "factorial")
+		  Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
+		  
+		  Dim factorial As EXS.Expressions.LambdaExpression= expr.Lambda(_
+		  expr.Condition(expr.LessThanOrEqual(nParam, one), one, _
+		  expr.Multiply(nParam, expr.Invoke(methodVar, expr.Subtract(nParam, one))))_
+		  , nParam)
+		  
+		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, factorial), expr.Invoke(methodVar, nParam)), nParam)
+		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
+		  
+		  Dim compiler As New EXS.Expressions.Compiler(expr)
+		  compiler.BinaryCode.Disassemble TextAreaWriter1
+		  TextAreaWriter1.WriteLn EndOfLine
+		  
+		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  '
+		  'Dim result As Variant= runner.Run(3)
+		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
+		  
+		  
 		  // compile recursive fibonacci:
 		  'Dim expr As EXS.Expressions.Expression
 		  'Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "n")
@@ -304,30 +328,6 @@ End
 		  'elapse= (Microseconds- elapse)/ 1000
 		  '
 		  'TextAreaWriter1.WriteLn "fibonacci"+ Str(n, "\(#\)\=\ ")+ Str(result)+ " "+ Str(elapse, "#\m\s")
-		  
-		  
-		  // compile factorial:
-		  Dim expr As EXS.Expressions.Expression
-		  Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
-		  Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "factorial")
-		  Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
-		  
-		  Dim factorial As EXS.Expressions.LambdaExpression= expr.Lambda(_
-		  expr.Condition(expr.LessThanOrEqual(nParam, one), one, _
-		  expr.Multiply(nParam, expr.Invoke(methodVar, expr.Subtract(nParam, one))))_
-		  , nParam)
-		  
-		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, factorial), expr.Invoke(methodVar, nParam)), nParam)
-		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
-		  
-		  Dim compiler As New EXS.Expressions.Compiler(expr)
-		  compiler.BinaryCode.Disassemble TextAreaWriter1
-		  TextAreaWriter1.WriteLn EndOfLine
-		  
-		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode)
-		  
-		  Dim result As Variant= runner.Run(10)
-		  TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
 		  
 		  
 		  // recursive factorial:

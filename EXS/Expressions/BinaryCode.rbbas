@@ -2,7 +2,7 @@
 Protected Class BinaryCode
 	#tag Method, Flags = &h0
 		Sub Constructor(Optional creating As CreatingAction)
-		  // use bigEndian for vuint type
+		   // use bigEndian for vuint type
 		  
 		  mHeaderMB= New MemoryBlock(kStreamMinSize) // 10bytes
 		  mHeaderMB.LittleEndian= False // bigEndian
@@ -89,7 +89,7 @@ Protected Class BinaryCode
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
-		Sub Disassemble(debugTrace As Writeable)
+		Sub Disassemble(debugTrace As Writeable, Optional actionDisassemble As DisassembleAction)
 		  If debugTrace Is Nil Then Raise GetRuntimeExc("debugTrace Is Nil")
 		  
 		  Dim headerPosition As UInt64= mHeaderBS.Position
@@ -117,6 +117,7 @@ Protected Class BinaryCode
 		  Dim flags As UInt64= GetVUInt64Value(bs.Read(sizeByte))
 		  
 		  debugTrace.WriteLn kL06.Replace("%", Str(sizeByte)).Replace("$", Bin(flags))
+		  If Not (actionDisassemble Is Nil) Then actionDisassemble.Invoke(flags, bs, debugTrace)
 		  debugTrace.WriteLn kL07.Replace("%", Str(bs.Position)).Replace("$", Str(bs.ReadUInt16))
 		  
 		  // symbols
@@ -168,6 +169,10 @@ Protected Class BinaryCode
 		  mInstructionsBS.Position= instructionsPosition
 		End Sub
 	#tag EndMethod
+
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Sub DisassembleAction(flags As UInt64, bs As BinaryStream, debugTrace As Writeable)
+	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h21
 		Private Function DisassembleInstruction(bs As BinaryStream) As String

@@ -97,14 +97,20 @@ Inherits TestGroup
 		  
 		  Dim lambda As EXS.Expressions.Expression= expr.Lambda(expr.Condition(test, truthy, falsy), nParam)
 		  
-		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, lambda), expr.Invoke(methodVar, nParam)) _
+		  Dim lambdaExpr As EXS.Expressions.LambdaExpression= _
+		  expr.Lambda(expr.Block(expr.Assign(methodVar, lambda), expr.Invoke(methodVar, nParam)) _
 		  , nParam)
 		  
 		  Dim n As Integer= 22
 		  Dim resolver As New EXS.Misc.Resolver(n)
-		  
-		  Dim result As Variant= resolver.Resolve(expr)
+		  Dim result As Variant= resolver.Resolve(lambdaExpr)
 		  Assert.AreEqual 17711, result.IntegerValue, "AreEqual 17711, result.IntegerValue"
+		  
+		  Dim params() As Variant
+		  params.Append 20
+		  
+		  result= lambdaExpr.Compile(New EXS.Misc.LambdaResolver(lambdaExpr)).Invoke(params)
+		  Assert.AreEqual 6765, result.IntegerValue, "fibonacci(20)= 6765"
 		End Sub
 	#tag EndMethod
 

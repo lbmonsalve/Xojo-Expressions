@@ -8,7 +8,7 @@ Inherits EXS.Expressions.Expression
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Compile(Optional compiler As ILambdaCompiler) As LambdaDelegate
+		Function Compile(Optional compiler As EXS.Expressions.ILambdaCompiler) As LambdaDelegate
 		  If compiler Is Nil Then compiler= New LambdaCompiler(Self)
 		  
 		  mCompiler= compiler

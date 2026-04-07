@@ -157,7 +157,13 @@ Protected Class Runner
 		  Case OpCodes.Ret
 		    bs.Position= mRetPos.Pop
 		    
-		    If mCallFrame> 0 Then mCallFrame= mCallFrame- 1
+		    If mCallFrames.LastIdxEXS> 0 Then
+		      Call mCallFrames.Pop
+		      mCallFrame= mCallFrames(mCallFrames.LastIdxEXS) // TODO: num locals
+		    ElseIf mCallFrames.LastIdxEXS> -1 Then
+		      Call mCallFrames.Pop
+		      mCallFrame= 0
+		    End If
 		    
 		    If mDebug Then Trace("# Ret ")+ Str(bs.Position, kFoff)
 		    
@@ -168,7 +174,8 @@ Protected Class Runner
 		    mRetPos.Append bs.Position
 		    bs.Position= value
 		    
-		    mCallFrame= mCallFrame+ 1
+		    mCallFrames.Append mStack.LastIdxEXS
+		    mCallFrame= mStack.LastIdxEXS // TODO: num locals
 		    
 		    If mDebug Then Trace("# Invoke "+ Str(idx, kFidx))
 		    
@@ -308,6 +315,10 @@ Protected Class Runner
 
 	#tag Property, Flags = &h21
 		Private mCallFrame As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mCallFrames() As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

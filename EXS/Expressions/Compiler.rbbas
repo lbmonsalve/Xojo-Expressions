@@ -80,17 +80,20 @@ Implements IVisitor
 		  End If
 		  
 		  If expr.Right IsA EXS.Expressions.LambdaExpression Then
+		    Dim lambda As LambdaExpression= LambdaExpression(expr.Right)
+		    
 		    Dim funJump As Integer= mBinaryCode.EmitJump(OpCodes.Jump)
 		    
 		    Dim funIni As Integer= mBinaryCode.InstructionsBS.Position
-		    Dim fun As New Pair(expr.Right, mBinaryCode.StoreSymbol(New ConstantExpression(funIni)))
+		    Dim fun As New Pair(lambda, mBinaryCode.StoreSymbol(New ConstantExpression(funIni)))
 		    mInvokes.Value(name)= fun
 		    
 		    // CallFrame ini
 		    Dim currIdx As Integer= mLocals.LastIdxEXS
 		    // Callframe ini
 		    
-		    Compile EXS.Expressions.LambdaExpression(expr.Right).Body
+		    Compile lambda.Body
+		    'Compile lambda
 		    
 		    // CallFrame end
 		    ReDim mLocals(currIdx)
