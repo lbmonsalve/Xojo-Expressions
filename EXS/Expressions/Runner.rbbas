@@ -107,13 +107,13 @@ Protected Class Runner
 		    If mDebug Then Trace("# Pop "+ Str(value))
 		    
 		  Case OpCodes.Jump
-		    Dim pos As UInt64= bs.ReadUInt16
+		    Dim pos As UInt64= bs.ReadUInt32
 		    bs.Position= pos
 		    
 		    If mDebug Then Trace("# Jump "+ Str(pos, kFoff))
 		    
 		  Case OpCodes.JumpFalse
-		    Dim pos As UInt64= bs.ReadUInt16
+		    Dim pos As UInt64= bs.ReadUInt32
 		    Dim test As Variant= Not mStack(mStack.LastIdxEXS)
 		    
 		    If test.BooleanValue Then bs.Position= pos

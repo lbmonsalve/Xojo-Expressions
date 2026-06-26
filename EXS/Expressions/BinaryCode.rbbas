@@ -2,9 +2,9 @@
 Protected Class BinaryCode
 	#tag Method, Flags = &h0
 		Sub Constructor(Optional creating As CreatingAction)
-		   // use bigEndian for vuint type
+		  // use bigEndian for vuint type
 		  
-		  mHeaderMB= New MemoryBlock(kStreamMinSize) // 10bytes
+		  mHeaderMB= New MemoryBlock(kStreamMinSize) // 12bytes
 		  mHeaderMB.LittleEndian= False // bigEndian
 		  mHeaderBS= New BinaryStream(mHeaderMB)
 		  'mHeaderBS.LittleEndian= False // bigEndian
@@ -18,7 +18,7 @@ Protected Class BinaryCode
 		  End If
 		  
 		  mHeaderFirstInstruction= mHeaderBS.Position
-		  mHeaderBS.WriteUInt16 mHeaderBS.Length // address first instruction 2bytes= 10bytes
+		  mHeaderBS.WriteUInt32 mHeaderBS.Length // 4bytes
 		  
 		  mInstructionsMB= New MemoryBlock(2) // twoBytes -> Nop Nop
 		  mInstructionsMB.LittleEndian= False // bigEndian
@@ -55,7 +55,7 @@ Protected Class BinaryCode
 		    If loading.Invoke(versionMajor, versionMinor, flags, bs) Then Return
 		  End If
 		  
-		  Dim instructionsPosition As UInt16= bs.ReadUInt16
+		  Dim instructionsPosition As UInt32= bs.ReadUInt32
 		  Dim symbolsPos As Integer= bs.Position
 		  
 		  bs.Position= 0
@@ -104,7 +104,7 @@ Protected Class BinaryCode
 		  Const kL04= "00004  1    version %"
 		  Const kL05= "00005  2    minor   %"
 		  Const kL06= "00007  %    flags   $"
-		  Const kL07= "0000%  2    ioffset $"
+		  Const kL07= "0000%  4    ioffset $"
 		  
 		  debugTrace.WriteLn kL01
 		  debugTrace.WriteLn kL02
@@ -118,7 +118,7 @@ Protected Class BinaryCode
 		  
 		  debugTrace.WriteLn kL06.Replace("%", Str(sizeByte)).Replace("$", Bin(flags))
 		  If Not (actionDisassemble Is Nil) Then actionDisassemble.Invoke(flags, bs, debugTrace)
-		  debugTrace.WriteLn kL07.Replace("%", Str(bs.Position)).Replace("$", Str(bs.ReadUInt16))
+		  debugTrace.WriteLn kL07.Replace("%", Str(bs.Position)).Replace("$", Str(bs.ReadUInt32))
 		  
 		  // symbols
 		  Dim idx As UInt32
@@ -192,7 +192,7 @@ Protected Class BinaryCode
 		    Return Str(offset, kFoff)+ "  "+ instruction.OpCodesToString
 		    
 		  Case OpCodes.Jump, OpCodes.JumpFalse
-		    Dim pos As UInt16= bs.ReadUInt16
+		    Dim pos As UInt32= bs.ReadUInt32
 		    
 		    Return Str(offset, kFoff)+ "  "+ instruction.OpCodesToString+ _
 		    " "+ Str(pos, kFoff)
@@ -302,11 +302,11 @@ Protected Class BinaryCode
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function EmitJump(code As OpCodes, maxJump As UInt16 = &hFFFF) As UInt16
+		Function EmitJump(code As OpCodes, maxJump As UInt32 = &hFFFFFFFF) As UInt32
 		  EmitCode code
 		  
-		  Dim pos As UInt16= mInstructionsBS.Position
-		  mInstructionsBS.WriteUInt16 maxJump
+		  Dim pos As UInt32= mInstructionsBS.Position
+		  mInstructionsBS.WriteUInt32 maxJump
 		  
 		  Return pos
 		End Function
@@ -450,13 +450,13 @@ Protected Class BinaryCode
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub PatchJump(pos As UInt16, value As Integer = 0)
+		Sub PatchJump(pos As UInt32, value As UInt32 = 0)
 		  Dim currPos As UInt64= mInstructionsBS.Position
 		  If value= 0 Then value= currPos//- pos+ 1 // 1= opcode
-		  If value> &hFFFF Then Raise GetRuntimeExc("value> &hFFFF")
+		  If value> &hFFFFFFFF Then Raise GetRuntimeExc("value> &hFFFFFFFF")
 		  
 		  mInstructionsBS.Position= pos
-		  mInstructionsBS.WriteUInt16 value
+		  mInstructionsBS.WriteUInt32 value
 		  
 		  mInstructionsBS.Position= currPos
 		End Sub
@@ -550,7 +550,7 @@ Protected Class BinaryCode
 		  Case Else
 		    Raise GetRuntimeExc("variant type not implemented!")
 		  End Select
-		  mHeaderMB.UInt16Value(mHeaderFirstInstruction)= mHeaderBS.Length
+		  mHeaderMB.UInt32Value(mHeaderFirstInstruction)= mHeaderBS.Length
 		  
 		  mSymbols.Append value
 		  mSymbolCache.Value(value)= mSymbols.LastIdxEXS
@@ -569,7 +569,7 @@ Protected Class BinaryCode
 		  mHeaderBS.WriteUInt8 Integer(SymbolType.Method)
 		  mHeaderBS.Write GetVUInt64(idx)
 		  
-		  mHeaderMB.UInt16Value(mHeaderFirstInstruction)= mHeaderBS.Length
+		  mHeaderMB.UInt32Value(mHeaderFirstInstruction)= mHeaderBS.Length
 		  
 		  mSymbols.Append expr
 		  mSymbolCache.Value(name)= mSymbols.LastIdxEXS
@@ -589,7 +589,7 @@ Protected Class BinaryCode
 		  mHeaderBS.Write GetVUInt64(name)
 		  mHeaderBS.Write GetVUInt64(typ)
 		  
-		  mHeaderMB.UInt16Value(mHeaderFirstInstruction)= mHeaderBS.Length
+		  mHeaderMB.UInt32Value(mHeaderFirstInstruction)= mHeaderBS.Length
 		  
 		  mSymbols.Append expr
 		  mSymbolCache.Value(expr)= mSymbols.LastIdxEXS
@@ -615,7 +615,7 @@ Protected Class BinaryCode
 		  End If
 		  
 		  mHeaderBS.Write s
-		  mHeaderMB.UInt16Value(mHeaderFirstInstruction)= mHeaderBS.Length
+		  mHeaderMB.UInt32Value(mHeaderFirstInstruction)= mHeaderBS.Length
 		  
 		  mSymbols.Append s
 		  mSymbolCache.Value(s)= mSymbols.LastIdxEXS
@@ -753,7 +753,8 @@ Protected Class BinaryCode
 		## Instructions
 		instructions are variable-length in size  
 		instruction begin with 1byte as opCode follows by variable operands  
-		operands are coded in vUint format  
+		operands are coded in vUint format.  
+		Jump and JumpFalse follows 4bytes addres from begin of file.  
 		
 		```
 		+---------+-------+---------------------+

@@ -82,9 +82,9 @@ Implements IVisitor
 		  If expr.Right IsA EXS.Expressions.LambdaExpression Then
 		    Dim lambda As LambdaExpression= LambdaExpression(expr.Right)
 		    
-		    Dim funJump As Integer= mBinaryCode.EmitJump(OpCodes.Jump)
+		    Dim funJump As UInt32= mBinaryCode.EmitJump(OpCodes.Jump)
 		    
-		    Dim funIni As Integer= mBinaryCode.InstructionsBS.Position
+		    Dim funIni As UInt32= mBinaryCode.InstructionsBS.Position
 		    Dim fun As New Pair(lambda, mBinaryCode.StoreSymbol(New ConstantExpression(funIni)))
 		    mInvokes.Value(name)= fun
 		    
@@ -131,7 +131,7 @@ Implements IVisitor
 		Function VisitConditional(expr As EXS.Expressions.ConditionalExpression) As Variant
 		  Compile expr.Test
 		  
-		  Dim thenJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
+		  Dim thenJump As UInt32= mBinaryCode.EmitJump(OpCodes.JumpFalse)
 		  mBinaryCode.EmitCode OpCodes.Pop
 		  
 		  Compile expr.IfTrue
@@ -140,7 +140,7 @@ Implements IVisitor
 		    mBinaryCode.PatchJump thenJump
 		    mBinaryCode.EmitCode OpCodes.Pop
 		  Else
-		    Dim elseJump As Integer= mBinaryCode.EmitJump(OpCodes.Jump)
+		    Dim elseJump As UInt32= mBinaryCode.EmitJump(OpCodes.Jump)
 		    mBinaryCode.PatchJump thenJump
 		    mBinaryCode.EmitCode OpCodes.Pop
 		    
@@ -256,11 +256,11 @@ Implements IVisitor
 		  // short-circuit number And/Or number ??
 		  Const kShortCircuit= False
 		  #if kShortCircuit
-		    Dim endJump As Integer
+		    Dim endJump As UInt32
 		    If expr.NodeType= ExpressionType.And_ Then
 		      endJump= mBinaryCode.EmitJump(OpCodes.JumpFalse)
 		    ElseIf expr.NodeType= ExpressionType.Or_ Then
-		      Dim elseJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
+		      Dim elseJump As UInt32= mBinaryCode.EmitJump(OpCodes.JumpFalse)
 		      endJump= mBinaryCode.EmitJump(OpCodes.Jump)
 		      
 		      mBinaryCode.PatchJump elseJump
@@ -317,7 +317,7 @@ Implements IVisitor
 		  
 		  Compile expr.Condition
 		  
-		  Dim exitJump As Integer= mBinaryCode.EmitJump(OpCodes.JumpFalse)
+		  Dim exitJump As UInt32= mBinaryCode.EmitJump(OpCodes.JumpFalse)
 		  mBinaryCode.EmitCode OpCodes.Pop
 		  
 		  ScopeBegin

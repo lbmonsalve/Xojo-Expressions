@@ -1225,7 +1225,7 @@ Protected Module EXS
 	#tag Constant, Name = kStreamMagicHeader, Type = Double, Dynamic = False, Default = \"&hBEBECAFE", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = kStreamMinSize, Type = Double, Dynamic = False, Default = \"10", Scope = Private
+	#tag Constant, Name = kStreamMinSize, Type = Double, Dynamic = False, Default = \"12", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = kVersionMayor, Type = Double, Dynamic = False, Default = \"0", Scope = Private

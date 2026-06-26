@@ -196,7 +196,7 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  // recursive factorial:
+		  // compile factorial:
 		  Dim expr As EXS.Expressions.Expression
 		  Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
 		  Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "factorial")
@@ -210,16 +210,17 @@ End
 		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, factorial), expr.Invoke(methodVar, nParam)), nParam)
 		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
 		  
-		  Dim resolver As New EXS.Misc.Resolver(expr)
+		  Dim compiler As New EXS.Expressions.Compiler(expr)
+		  compiler.BinaryCode.Disassemble TextAreaWriter1
+		  TextAreaWriter1.WriteLn EndOfLine
 		  
-		  Dim elapse As Double= Microseconds
-		  Dim result As Variant= resolver.Resolve(30)
-		  elapse= (Microseconds- elapse)/ 1000
+		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
 		  
-		  TextAreaWriter1.WriteLn "factorial(30)= "+ Str(result)+ " "+ Str(elapse)+ "ms"
+		  Dim result As Variant= runner.Run(3)
+		  TextAreaWriter1.WriteLn "factorial(3)= "+ result.StringValue+ " type:"+ Str(result.Type)
 		  
 		  
-		  // compile factorial:
+		  // recursive factorial:
 		  'Dim expr As EXS.Expressions.Expression
 		  'Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
 		  'Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "factorial")
@@ -233,14 +234,13 @@ End
 		  'expr= expr.Lambda(expr.Block(expr.Assign(methodVar, factorial), expr.Invoke(methodVar, nParam)), nParam)
 		  'TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
 		  '
-		  'Dim compiler As New EXS.Expressions.Compiler(expr)
-		  'compiler.BinaryCode.Disassemble TextAreaWriter1
-		  'TextAreaWriter1.WriteLn EndOfLine
+		  'Dim resolver As New EXS.Misc.Resolver(expr)
 		  '
-		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  'Dim elapse As Double= Microseconds
+		  'Dim result As Variant= resolver.Resolve(30)
+		  'elapse= (Microseconds- elapse)/ 1000
 		  '
-		  'Dim result As Variant= runner.Run(3)
-		  'TextAreaWriter1.WriteLn "factorial(3)= "+ result.StringValue+ " type:"+ Str(result.Type)
+		  'TextAreaWriter1.WriteLn "factorial(30)= "+ Str(result)+ " "+ Str(elapse)+ "ms"
 		  
 		  
 		  // compile recursive fibonacci:
