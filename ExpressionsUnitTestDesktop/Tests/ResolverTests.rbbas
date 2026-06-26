@@ -14,8 +14,8 @@ Inherits TestGroup
 		  
 		  expr= expr.Lambda(New EXS.Expressions.BlockExpression(exprs), paramExpr)
 		  
-		  Dim resolver As New EXS.Misc.Resolver("hello")
-		  Dim result As Variant= resolver.Resolve(expr)
+		  Dim resolver As New EXS.Misc.Resolver(expr)
+		  Dim result As Variant= resolver.Resolve("hello")
 		  Assert.AreSame "world", result.StringValue, "AreSame ""world"", result.StringValue"
 		End Sub
 	#tag EndMethod
@@ -28,8 +28,8 @@ Inherits TestGroup
 		  expr.Add(expr.Constant(1), expr.Multiply(expr.Constant(2), expr.Constant(3)))_
 		  )
 		  
-		  Dim resolver As New EXS.Misc.Resolver
-		  Dim result As Variant= resolver.Resolve(expr)
+		  Dim resolver As New EXS.Misc.Resolver(expr)
+		  Dim result As Variant= resolver.Resolve
 		  Assert.AreEqual 7, result.IntegerValue, "AreEqual 7, result.IntegerValue"
 		End Sub
 	#tag EndMethod
@@ -44,8 +44,8 @@ Inherits TestGroup
 		  expr.Constant("num < 10") _
 		  )
 		  
-		  Dim resolver As New EXS.Misc.Resolver
-		  Dim result As Variant= resolver.Resolve(expr)
+		  Dim resolver As New EXS.Misc.Resolver(expr)
+		  Dim result As Variant= resolver.Resolve
 		  Assert.AreSame "num > 10", result.StringValue, "AreSame ""num > 10"", result.StringValue"
 		  
 		  num= 9
@@ -55,7 +55,7 @@ Inherits TestGroup
 		  expr.Constant("num < 10") _
 		  )
 		  
-		  result= resolver.Resolve(expr)
+		  result= resolver.ResolveExpression(expr)
 		  Assert.AreSame "num < 10", result.StringValue, "AreSame ""num < 10"", result.StringValue"
 		  
 		End Sub
@@ -75,8 +75,8 @@ Inherits TestGroup
 		  
 		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, factorial), expr.Invoke(methodVar, nParam)), nParam)
 		  
-		  Dim resolver As New EXS.Misc.Resolver(30)
-		  Dim result As Variant= resolver.Resolve(expr)
+		  Dim resolver As New EXS.Misc.Resolver(expr)
+		  Dim result As Variant= resolver.Resolve(30)
 		  Assert.AreEqual 2.6525285981219103e+32, result.DoubleValue, "AreEqual 2.6525285981219103e+32, result.DoubleValue"
 		End Sub
 	#tag EndMethod
@@ -102,8 +102,8 @@ Inherits TestGroup
 		  , nParam)
 		  
 		  Dim n As Integer= 22
-		  Dim resolver As New EXS.Misc.Resolver(n)
-		  Dim result As Variant= resolver.Resolve(lambdaExpr)
+		  Dim resolver As New EXS.Misc.Resolver(lambdaExpr)
+		  Dim result As Variant= resolver.Resolve(n)
 		  Assert.AreEqual 17711, result.IntegerValue, "AreEqual 17711, result.IntegerValue"
 		  
 		  Dim params() As Variant
@@ -120,8 +120,8 @@ Inherits TestGroup
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
 		  expr= expr.Lambda(expr.Add(paramExpr, expr.Constant(5)), paramExpr)
 		  
-		  Dim resolver As New EXS.Misc.Resolver(10)
-		  Dim result As Variant= resolver.Resolve(expr)
+		  Dim resolver As New EXS.Misc.Resolver(expr)
+		  Dim result As Variant= resolver.Resolve(10)
 		  Assert.AreEqual 15, result.IntegerValue, "AreEqual 15, result.IntegerValue"
 		End Sub
 	#tag EndMethod
@@ -131,16 +131,16 @@ Inherits TestGroup
 		  Dim expr As EXS.Expressions.Expression
 		  expr= expr.Add(expr.Constant(1), expr.Multiply(expr.Constant(2), expr.Constant(2)))
 		  
-		  Dim resolver As New EXS.Misc.Resolver
-		  Dim result As Variant= resolver.Resolve(expr)
+		  Dim resolver As New EXS.Misc.Resolver(expr)
+		  Dim result As Variant= resolver.Resolve
 		  Assert.AreEqual 5, result.IntegerValue, "AreEqual 5, result.IntegerValue"
 		  
 		  expr= expr.And_(expr.Constant(True), expr.Constant(True))
-		  result= resolver.Resolve(expr)
+		  result= resolver.ResolveExpression(expr)
 		  Assert.IsTrue result.BooleanValue, "IsTrue result.BooleanValue"
 		  
 		  expr= expr.LeftShift(expr.Constant(&b00011111), expr.Constant(2))
-		  result= resolver.Resolve(expr)
+		  result= resolver.ResolveExpression(expr)
 		  Assert.AreEqual 124, result.IntegerValue, "AreEqual 124, result.IntegerValue"
 		  
 		  Dim o1 As New ObjectWithBinaryExprMethod(10)
@@ -148,27 +148,27 @@ Inherits TestGroup
 		  Dim o3 As ObjectWithBinaryExprMethod= o1+ o2
 		  Dim methodAdd As Introspection.MethodInfo= Introspection.GetType(o1).GetMethodInfo("Operator_Add")
 		  expr= expr.Add(expr.Constant(o1), expr.Constant(o2), methodAdd)
-		  result= resolver.Resolve(expr)
+		  result= resolver.ResolveExpression(expr)
 		  Assert.AreEqual o3.Value.IntegerValue, ObjectWithBinaryExprMethod(result).Value.IntegerValue, "AreEqual o3.Value.IntegerValue, ObjectWithBinaryExprMethod(result).Value.IntegerValue"
 		  
 		  expr= expr.Subtract(expr.Constant(o1), expr.Constant(o2), Introspection.GetType(o1).GetMethodInfo("Operator_Subtract"))
-		  result= resolver.Resolve(expr)
+		  result= resolver.ResolveExpression(expr)
 		  Assert.AreEqual -10, ObjectWithBinaryExprMethod(result).Value.IntegerValue, "AreEqual -10, ObjectWithBinaryExprMethod(result).Value.IntegerValue"
 		  
 		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "DebugLog", expr.Constant("hello world!"))
-		  result= resolver.Resolve(expr)
+		  result= resolver.ResolveExpression(expr)
 		  Assert.IsNil result, "IsNil result"
 		  
 		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "Random")
-		  result= resolver.Resolve(expr)
+		  result= resolver.ResolveExpression(expr)
 		  Assert.IsTrue result IsA Random, "IsTrue result IsA Random"
 		  
 		  expr= expr.CallExpr(Nil, GetTypeInfo(EXS.Sys), "GetEnvironment", expr.Constant("HOMEPATH"))
-		  result= resolver.Resolve(expr)
+		  result= resolver.ResolveExpression(expr)
 		  Assert.IsTrue result.StringValue.Len> 0, "IsTrue result.StringValue.Len> 0"
 		  
 		  expr= expr.Convert(expr.Constant(40), EXS.GetType("String"))
-		  result= resolver.Resolve(expr)
+		  result= resolver.ResolveExpression(expr)
 		  Assert.AreSame "40", result.StringValue, "AreSame ""40"", result.StringValue"
 		  
 		End Sub
@@ -189,8 +189,8 @@ Inherits TestGroup
 		  , New EXS.Expressions.BlockExpression(exprs))_
 		  , paramI, paramN)
 		  
-		  Dim resolver As New EXS.Misc.Resolver(1, 10)
-		  Dim result As Variant= resolver.Resolve(expr)
+		  Dim resolver As New EXS.Misc.Resolver(expr)
+		  Dim result As Variant= resolver.Resolve(1, 10)
 		  Assert.AreEqual 5, result.IntegerValue, "AreEqual 5, result.IntegerValue"
 		End Sub
 	#tag EndMethod
@@ -209,8 +209,8 @@ Inherits TestGroup
 		  expr.LessThan(paramI, paramN), New EXS.Expressions.BlockExpression(exprs)), paramI)_
 		  , paramI, paramN)
 		  
-		  Dim resolver As New EXS.Misc.Resolver(1, 10)
-		  Dim result As Variant= resolver.Resolve(expr)
+		  Dim resolver As New EXS.Misc.Resolver(expr)
+		  Dim result As Variant= resolver.Resolve(1, 10)
 		  Assert.AreEqual 10, result.IntegerValue, "AreEqual 10, result.IntegerValue"
 		  
 		End Sub

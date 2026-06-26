@@ -15,9 +15,9 @@ Implements EXS.Expressions.ILambdaCompiler
 
 	#tag Method, Flags = &h0
 		Function Run(values() As Variant) As Variant
-		  Dim resolver As New EXS.Misc.Resolver(values)
+		  Dim resolver As New EXS.Misc.Resolver(mExpr)
 		  
-		  Return resolver.Resolve(mExpr)
+		  Return resolver.Resolve(values)
 		End Function
 	#tag EndMethod
 
