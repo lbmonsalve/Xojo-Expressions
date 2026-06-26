@@ -214,10 +214,10 @@ End
 		  compiler.BinaryCode.Disassemble TextAreaWriter1
 		  TextAreaWriter1.WriteLn EndOfLine
 		  
-		  'Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
-		  '
-		  'Dim result As Variant= runner.Run(3)
-		  'TextAreaWriter1.WriteLn "result: "+ result.StringValue+ " type:"+ Str(result.Type)
+		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  
+		  Dim result As Variant= runner.Run(3)
+		  TextAreaWriter1.WriteLn "factorial(3)= "+ result.StringValue+ " type:"+ Str(result.Type)
 		  
 		  
 		  // compile recursive fibonacci:

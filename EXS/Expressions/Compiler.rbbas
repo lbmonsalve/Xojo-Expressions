@@ -179,18 +179,10 @@ Implements IVisitor
 		    
 		    For i As Integer= 0 To args.LastIdxEXS
 		      Compile args(i) // emit load
-		      
-		      mBinaryCode.EmitCode OpCodes.Store
-		      mBinaryCode.EmitValue ReverseScopeLookupOrAppend(params(i).Name, mScope)
 		    Next // args are in stack
 		    
 		    mBinaryCode.EmitCode OpCodes.Invoke
 		    mBinaryCode.EmitValue idxLambda
-		    
-		    For i As Integer= 0 To args.LastIdxEXS
-		      Call mLocals.Pop
-		    Next // remove params
-		    
 		  Else
 		    Break
 		    'Raise GetRuntimeExc("Not (expr.Expr IsA EXS.Expressions.ParameterExpression)")
