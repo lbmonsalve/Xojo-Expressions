@@ -62,7 +62,7 @@ Inherits TestGroup
 		  
 		  Dim printer As New EXS.Misc.Printer
 		  Dim actual As String= printer.Print(expr)
-		  Assert.AreSame "(a) => ( + ,a,5)", actual, "AreSame ""(a) => ( + ,a,5)"", actual"
+		  Assert.AreSame "(a) -> ( + ,a,5)", actual, "AreSame ""(a) -> ( + ,a,5)"", actual"
 		  
 		End Sub
 	#tag EndMethod
@@ -119,7 +119,7 @@ Inherits TestGroup
 		  Dim paramExpr As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Integer"), "a")
 		  expr= expr.Lambda(expr.Add(paramExpr, expr.Constant(5)), paramExpr)
 		  actual= printer.Print(expr)
-		  Assert.AreSame "(a) => ( + ,a,5)", actual, "AreSame ""(a) => ( + ,a,5)"", actual"
+		  Assert.AreSame "(a) -> ( + ,a,5)", actual, "AreSame ""(a) -> ( + ,a,5)"", actual"
 		  
 		End Sub
 	#tag EndMethod
@@ -146,10 +146,10 @@ Inherits TestGroup
 	#tag EndMethod
 
 
-	#tag Constant, Name = kAssign, Type = String, Dynamic = False, Default = \"(s1) \x3D> {Sys.DebugLog(s1); ( \x3D \x2Cs1\x2C\"world\"); Sys.DebugLog(s1)}", Scope = Private
+	#tag Constant, Name = kAssign, Type = String, Dynamic = False, Default = \"(s1) -> {Sys.DebugLog(s1); ( \x3D \x2Cs1\x2C\"world\"); Sys.DebugLog(s1)}", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = kWhile, Type = String, Dynamic = False, Default = \"(i\x2C n) \x3D> {( while \x2C( < \x2Ci\x2Cn)\x2C{Sys.DebugLog(i); ( \x3D \x2Ci\x2C( + \x2Ci\x2C1))}); 42}", Scope = Private
+	#tag Constant, Name = kWhile, Type = String, Dynamic = False, Default = \"(i\x2C n) -> {( while \x2C( < \x2Ci\x2Cn)\x2C{Sys.DebugLog(i); ( \x3D \x2Ci\x2C( + \x2Ci\x2C1))}); 42}", Scope = Private
 	#tag EndConstant
 
 

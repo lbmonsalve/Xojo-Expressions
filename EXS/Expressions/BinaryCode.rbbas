@@ -219,47 +219,58 @@ Protected Class BinaryCode
 		  Select Case typ.ToSymbolType
 		  Case SymbolType.U8 // UInt8
 		    Dim value As UInt8= bs.ReadUInt8
-		    Return Str(offset, kFoff)+ "   u8"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    Return Str(offset, kFoff)+ "   u8"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(value)
 		    
 		  Case SymbolType.I8 // Int8
 		    Dim value As Int8= bs.ReadInt8
-		    Return Str(offset, kFoff)+ "   i8"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    Return Str(offset, kFoff)+ "   i8"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(value)
 		    
 		  Case SymbolType.U16 // UInt16
 		    Dim value As UInt16= bs.ReadUInt16
-		    Return Str(offset, kFoff)+ "  u16"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    Return Str(offset, kFoff)+ "  u16"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(value)
 		    
 		  Case SymbolType.I16 // Int16
 		    Dim value As Int16= bs.ReadInt16
-		    Return Str(offset, kFoff)+ "  i16"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    Return Str(offset, kFoff)+ "  i16"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(value)
 		    
 		  Case SymbolType.U32 // UInt32
 		    Dim value As UInt32= bs.ReadUInt32
-		    Return Str(offset, kFoff)+ "  u32"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    Return Str(offset, kFoff)+ "  u32"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(value)
 		    
 		  Case SymbolType.I32 // Int32
 		    Dim value As Int32= bs.ReadInt32
-		    Return Str(offset, kFoff)+ "  i32"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    Return Str(offset, kFoff)+ "  i32"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(value)
 		    
 		  Case SymbolType.U64 // UInt64
 		    Dim value As UInt64= bs.ReadUInt64
-		    Return Str(offset, kFoff)+ "  u64"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    Return Str(offset, kFoff)+ "  u64"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(value)
 		    
 		  Case SymbolType.I64 // Int64
 		    Dim value As Int64= bs.ReadInt64
-		    Return Str(offset, kFoff)+ "  i64"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    Return Str(offset, kFoff)+ "  i64"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(value)
 		    
 		  Case SymbolType.Float // Single
 		    Dim value As Single= bs.ReadSingle
-		    Return Str(offset, kFoff)+ "  f32"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    Return Str(offset, kFoff)+ "  f32"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(value)
 		    
 		  Case SymbolType.Double // Double
 		    Dim value As Double= bs.ReadDouble
-		    Return Str(offset, kFoff)+ "  f64"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    Return Str(offset, kFoff)+ "  f64"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(value)
 		    
 		  Case SymbolType.Bool // Boolean
 		    Dim value As Boolean= bs.ReadBoolean
-		    Return Str(offset, kFoff)+ "  bol"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ Str(value)
+		    Return Str(offset, kFoff)+ "  bol"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(value)
 		    
 		  Case SymbolType.String // string
 		    Dim value As String
@@ -274,20 +285,21 @@ Protected Class BinaryCode
 		    Else
 		      Raise GetRuntimeExc("length of string greater than 0xFFFF")
 		    End If
-		    Return Str(offset, kFoff)+ "  str"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ """"+ value+ """"
+		    Return Str(offset, kFoff)+ "  str"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ """"+ value.ChkEllipsis+ """"
 		    
 		  Case SymbolType.Method
 		    Dim idxName As Integer= GetVUInt(bs)
 		    
-		    Return Str(offset, kFoff)+ "  mtd"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ _
-		    Str(idxName, kFidx)
+		    Return Str(offset, kFoff)+ "  mtd"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(idxName, kFidx)
 		    
 		  Case SymbolType.Parameter
 		    Dim idxName As Integer= GetVUInt(bs)
 		    Dim idxType As Integer= GetVUInt(bs)
 		    
-		    Return Str(offset, kFoff)+ "  prm"+ Str(typ, kFtyp)+ Str(idx, kFidx)+ _
-		    Str(idxName, kFidx)+ Str(idxType, kFidx)
+		    Return Str(offset, kFoff)+ "  prm"+ Str(typ, kFtyp)+ _
+		    Str(idx, kFidx)+ Str(idxName, kFidx)+ Str(idxType, kFidx)
 		    
 		  Case Else
 		    Raise GetRuntimeExc("Unknown type symbol"+ Str(typ))
@@ -657,9 +669,9 @@ Protected Class BinaryCode
 		| 4      | 1    | mayor version       |
 		| 5      | 2    | minor version       |
 		| 7      | 1    | flags               |
-		| 8      | 2    | instructions offset |
-		| 10     | n    | symbols             |
-		| 10+n   | m    | instructions        |
+		| 8      | 4    | instructions offset |
+		| 12     | n    | symbols             |
+		| 12+n   | m    | instructions        |
 		+--------+------+---------------------+
 		```
 		

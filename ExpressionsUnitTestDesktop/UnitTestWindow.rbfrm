@@ -199,13 +199,14 @@ End
 		  // compile factorial:
 		  Dim expr As EXS.Expressions.Expression
 		  Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
+		  Dim mParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "m")
 		  Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "factorial")
 		  Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
 		  
 		  Dim factorial As EXS.Expressions.LambdaExpression= expr.Lambda(_
-		  expr.Condition(expr.LessThanOrEqual(nParam, one), one, _
-		  expr.Multiply(nParam, expr.Invoke(methodVar, expr.Subtract(nParam, one))))_
-		  , nParam)
+		  expr.Condition(expr.LessThanOrEqual(mParam, one), one, _
+		  expr.Multiply(mParam, expr.Invoke(methodVar, expr.Subtract(mParam, one))))_
+		  , mParam)
 		  
 		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, factorial), expr.Invoke(methodVar, nParam)), nParam)
 		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
@@ -214,10 +215,44 @@ End
 		  compiler.BinaryCode.Disassemble TextAreaWriter1
 		  TextAreaWriter1.WriteLn EndOfLine
 		  
-		  Dim runner As New EXS.Expressions.Runner(compiler.BinaryCode, TextAreaWriter1)
+		  Dim runner As New EXS.Expressions.Runner(compiler) //, TextAreaWriter1
 		  
-		  Dim result As Variant= runner.Run(3)
-		  TextAreaWriter1.WriteLn "factorial(3)= "+ result.StringValue+ " type:"+ Str(result.Type)
+		  Const kN= 3
+		  Dim elapse As Double= Microseconds
+		  Dim result As Variant= runner.Run(kN)
+		  elapse= (Microseconds- elapse)/ 1000
+		  
+		  TextAreaWriter1.WriteLn "factorial("+ Str(kN)+ ")= "+ _
+		  Str(result.DoubleValue)+ " type:"+ Str(result.Type)+ _
+		  " "+ Str(elapse)+ "ms"
+		  
+		  
+		  // compile const expr:
+		  'Dim expr As EXS.Expressions.Expression
+		  '
+		  '// 1. create expression
+		  'Dim lambda As EXS.Expressions.LambdaExpression= expr.Lambda(expr.Constant(1))
+		  'TextAreaWriter1.WriteLn lambda.ToString+ EndOfLine
+		  '
+		  '// 2. compile
+		  'Dim compiler As New EXS.Expressions.Compiler(lambda)
+		  'compiler.BinaryCode.Disassemble TextAreaWriter1
+		  'TextAreaWriter1.WriteLn EndOfLine
+		  '
+		  '// 3. run
+		  'Dim runner As New EXS.Expressions.Runner(compiler, TextAreaWriter1)
+		  '
+		  'Dim result As Variant= runner.Run
+		  'TextAreaWriter1.WriteLn EndOfLine+ "result= "+ _
+		  'result.StringValue+ " type:"+ Str(result.Type)
+		  'Break
+		  
+		  
+		  // test ChkEllipsis
+		  'Dim test As String= "some large string "
+		  'Dim str1 As String= test.ChkEllipsis
+		  'Dim str2 As String= test.ChkEllipsis(10)
+		  'Break
 		  
 		  
 		  // recursive factorial:
@@ -241,6 +276,12 @@ End
 		  'elapse= (Microseconds- elapse)/ 1000
 		  '
 		  'TextAreaWriter1.WriteLn "factorial(30)= "+ Str(result)+ " "+ Str(elapse)+ "ms"
+		  '
+		  'elapse= Microseconds
+		  'result= resolver.Resolve(40)
+		  'elapse= (Microseconds- elapse)/ 1000
+		  '
+		  'TextAreaWriter1.WriteLn "factorial(40)= "+ Str(result)+ " "+ Str(elapse)+ "ms"
 		  
 		  
 		  // compile recursive fibonacci:
@@ -637,14 +678,6 @@ End
 		  'key= Bitwise.ShiftLeft(lng, 5) Or typ
 		  'Dim example3 As String= "0x"+ Hex(key)
 		  'Break
-		  
-		  // compile:
-		  'Dim expr As EXS.Expressions.Expression
-		  'expr= expr.Lambda(expr.Constant(1))
-		  'Dim compiler As New EXS.Expressions.Compiler
-		  'compiler.Compile expr
-		  'Break
-		  
 		  
 		  // boolean short-circuit
 		  'Dim expr As EXS.Expressions.Expression

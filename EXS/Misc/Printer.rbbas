@@ -77,7 +77,7 @@ Implements EXS.Expressions.IVisitor
 		    sb.Append params(i).ToString
 		    If i< params.LastIdxEXS Then sb.Append ", "
 		  Next
-		  sb.Append ") => "
+		  sb.Append ") -> "
 		  
 		  sb.Append Print(expr.Body)
 		  

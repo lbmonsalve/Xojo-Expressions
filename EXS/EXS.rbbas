@@ -1,6 +1,14 @@
 #tag Module
 Protected Module EXS
 	#tag Method, Flags = &h0
+		Function ChkEllipsis(Extends test As String, maxLen As UInt32 = 60) As String
+		  If test.Len<= maxLen Then Return test
+		  
+		  Return test.Left(maxLen- 3)+ "..."
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function ChkMethodParams(Extends value As Introspection.MethodInfo, left As Introspection.TypeInfo, right As Introspection.TypeInfo) As Boolean
 		  Dim methodParams() As Introspection.ParameterInfo= value.GetParameters
 		  Dim lastIdx As Integer= methodParams.LastIdxEXS
@@ -1196,6 +1204,9 @@ Protected Module EXS
 	#tag EndConstant
 
 	#tag Constant, Name = kFtyp, Type = String, Dynamic = False, Default = \"(0#)\\ ", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = kLambdaOper, Type = String, Dynamic = False, Default = \"->", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = kSize1Byte, Type = Double, Dynamic = False, Default = \"&b10000000", Scope = Private

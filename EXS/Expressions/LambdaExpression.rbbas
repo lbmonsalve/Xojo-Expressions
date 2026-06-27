@@ -54,7 +54,7 @@ Inherits EXS.Expressions.Expression
 		    bs.Write mParameters(i).ToString
 		    If i< mParameters.LastIdxEXS Then bs.Write ", "
 		  Next
-		  bs.Write ") => "
+		  bs.Write ") "+ kLambdaOper+ " "
 		  
 		  bs.Write mBody.ToString
 		  bs.Position= 0

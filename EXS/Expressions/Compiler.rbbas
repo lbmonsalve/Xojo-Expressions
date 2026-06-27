@@ -92,6 +92,7 @@ Implements IVisitor
 		    Dim currIdx As Integer= mLocals.LastIdxEXS
 		    // Callframe ini
 		    
+		    Break // invoker load param before
 		    Compile lambda.Body
 		    'Compile lambda
 		    
@@ -102,15 +103,17 @@ Implements IVisitor
 		    mBinaryCode.EmitCode OpCodes.Ret
 		    
 		    mBinaryCode.PatchJump funJump
-		  Else
-		    Dim idxLocal As Integer= ReverseLookup(name)
-		    If idxLocal= -1 Then idxLocal= ReverseScopeLookupOrAppend(name, mScope)
 		    
-		    Compile expr.Right
-		    
-		    mBinaryCode.EmitCode OpCodes.Store
-		    mBinaryCode.EmitValue idxLocal
+		    Return Nil
 		  End If
+		  
+		  Dim idxLocal As Integer= ReverseLookup(name)
+		  If idxLocal= -1 Then idxLocal= ReverseScopeLookupOrAppend(name, mScope)
+		  
+		  Compile expr.Right
+		  
+		  mBinaryCode.EmitCode OpCodes.Store
+		  mBinaryCode.EmitValue idxLocal
 		End Function
 	#tag EndMethod
 
@@ -144,7 +147,7 @@ Implements IVisitor
 		    mBinaryCode.PatchJump thenJump
 		    mBinaryCode.EmitCode OpCodes.Pop
 		    
-		    Compile(expr.IfFalse)
+		    Compile expr.IfFalse
 		    
 		    mBinaryCode.PatchJump elseJump
 		  End If

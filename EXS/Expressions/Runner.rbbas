@@ -12,6 +12,12 @@ Protected Class Runner
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub Constructor(compiler As EXS.Expressions.Compiler, Optional debugTrace As Writeable)
+		  Constructor compiler.BinaryCode, debugTrace
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub DefineParams(paramValues() As Variant)
 		  Dim paramsExpr() As ParameterExpression

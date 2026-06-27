@@ -14,6 +14,7 @@ Inherits TestController
 		  group = New CompileTests(Self, "CompileTests")
 		  group = New PrinterTests(Self, "PrinterTests")
 		  group = New ResolverTests(Self, "ResolverTests")
+		  group = New DisassembleTests(Self, "DisassembleTests")
 		End Sub
 	#tag EndEvent
 
