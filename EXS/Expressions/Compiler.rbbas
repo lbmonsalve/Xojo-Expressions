@@ -92,9 +92,7 @@ Implements IVisitor
 		    Dim currIdx As Integer= mLocals.LastIdxEXS
 		    // Callframe ini
 		    
-		    Break // invoker load param before
 		    Compile lambda.Body
-		    'Compile lambda
 		    
 		    // CallFrame end
 		    ReDim mLocals(currIdx)
@@ -186,6 +184,12 @@ Implements IVisitor
 		    
 		    mBinaryCode.EmitCode OpCodes.Invoke
 		    mBinaryCode.EmitValue idxLambda
+		    
+		    // if result are stack stored
+		    // pop args
+		    // if result push stack
+		    Break
+		    
 		  Else
 		    Break
 		    'Raise GetRuntimeExc("Not (expr.Expr IsA EXS.Expressions.ParameterExpression)")

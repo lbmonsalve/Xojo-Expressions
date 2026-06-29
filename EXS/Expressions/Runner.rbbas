@@ -29,10 +29,10 @@ Protected Class Runner
 		    End If
 		  Next
 		  
-		  If Not (paramValues Is Nil) And paramValues.LastIdxEXS= -1 Then Return
-		  
-		  If Not paramsExpr.MatchTypeWith(paramValues) Then _
-		  Raise GetRuntimeExc("Not paramsExpr.MatchTypeWith(mParamValues)")
+		  'If Not (paramValues Is Nil) And paramValues.LastIdxEXS= -1 Then Return
+		  '
+		  'If Not paramsExpr.MatchTypeWith(paramValues) Then _
+		  'Raise GetRuntimeExc("Not paramsExpr.MatchTypeWith(mParamValues)")
 		  
 		  For i As Integer= 0 To paramsExpr.LastIdxEXS
 		    Dim paramExpr As EXS.Expressions.ParameterExpression= paramsExpr(i)

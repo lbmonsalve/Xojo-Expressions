@@ -215,16 +215,16 @@ End
 		  compiler.BinaryCode.Disassemble TextAreaWriter1
 		  TextAreaWriter1.WriteLn EndOfLine
 		  
-		  Dim runner As New EXS.Expressions.Runner(compiler) //, TextAreaWriter1
-		  
-		  Const kN= 3
-		  Dim elapse As Double= Microseconds
-		  Dim result As Variant= runner.Run(kN)
-		  elapse= (Microseconds- elapse)/ 1000
-		  
-		  TextAreaWriter1.WriteLn "factorial("+ Str(kN)+ ")= "+ _
-		  Str(result.DoubleValue)+ " type:"+ Str(result.Type)+ _
-		  " "+ Str(elapse)+ "ms"
+		  'Dim runner As New EXS.Expressions.Runner(compiler) //, TextAreaWriter1
+		  '
+		  'Const kN= 3
+		  'Dim elapse As Double= Microseconds
+		  'Dim result As Variant= runner.Run(kN)
+		  'elapse= (Microseconds- elapse)/ 1000
+		  '
+		  'TextAreaWriter1.WriteLn "factorial("+ Str(kN)+ ")= "+ _
+		  'Str(result.DoubleValue)+ " type:"+ Str(result.Type)+ _
+		  '" "+ Str(elapse)+ "ms"
 		  
 		  
 		  // compile const expr:
