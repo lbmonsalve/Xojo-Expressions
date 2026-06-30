@@ -78,6 +78,10 @@ Inherits EXS.Expressions.Expression
 		Body As Expression
 	#tag EndComputedProperty
 
+	#tag Property, Flags = &h0
+		IsMain As Boolean
+	#tag EndProperty
+
 	#tag Property, Flags = &h21
 		Private mBody As Expression
 	#tag EndProperty
@@ -98,6 +102,11 @@ Inherits EXS.Expressions.Expression
 			Group="ID"
 			InitialValue="-2147483648"
 			InheritedFrom="Object"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IsMain"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"

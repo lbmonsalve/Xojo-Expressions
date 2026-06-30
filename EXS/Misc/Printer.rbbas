@@ -27,7 +27,7 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitAssign(expr As EXS.Expressions.AssignExpression) As Variant
-		  Return Parenthesize(expr.NodeType.ToStringSymbol, expr.Left, expr.Right)
+		  Return Parenthesize(expr.NodeType.ToString, expr.Left, expr.Right)
 		End Function
 	#tag EndMethod
 
@@ -111,7 +111,7 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitSimpleBinary(expr As EXS.Expressions.SimpleBinaryExpression) As Variant
-		  Return Parenthesize(expr.NodeType.ToStringSymbol, expr.Left, expr.Right)
+		  Return Parenthesize(expr.NodeType.ToString, expr.Left, expr.Right)
 		End Function
 	#tag EndMethod
 
@@ -123,7 +123,7 @@ Implements EXS.Expressions.IVisitor
 
 	#tag Method, Flags = &h0
 		Function VisitWhile(expr As EXS.Expressions.WhileExpression) As Variant
-		  Return Parenthesize(expr.NodeType.ToStringSymbol, expr.Left, expr.Right)
+		  Return Parenthesize(expr.NodeType.ToString, expr.Left, expr.Right)
 		End Function
 	#tag EndMethod
 

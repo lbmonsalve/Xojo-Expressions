@@ -37,7 +37,7 @@ Inherits TestGroup
 		  Dim bsPosition As UInt64= bs.Position
 		  
 		  Dim result As Variant= runner.Run(1)
-		  Assert.AreSame "2", result.StringValue, "AreSame ""2"", result.StringValue"
+		  Assert.AreSame "2.0e+", result.StringValue, "AreSame ""2"", result.StringValue"
 		  
 		  actual= ReplaceLineEndings(kDisassembleAddRun, EndOfLine.UNIX)
 		  
@@ -112,10 +112,10 @@ Inherits TestGroup
 	#tag EndMethod
 
 
-	#tag Constant, Name = kDisassembleAddCompile, Type = String, Dynamic = False, Default = \"(n) -> n + 1\r\r# Header\roffset size name    value\r00000  4    magic   0xBEBECAFE\r00004  1    version 0\r00005  2    minor   1\r00007  1    flags   0\r00008  4    ioffset 28\r# Symbols\roffset type    idx  value\r00014  str(13) [0] \"n\"\r00017  str(13) [1] \"Double\"\r00024  prm(15) [2] [0] [1] \r00027   u8(01) [3] 1\r# Instructions\roffset opcode\r00000  Load [2] \r00002  Store [0] \r00004  Local [0] \r00006  Load [3] \r00008  Add\r# HEX view 37 Bytes\raddress  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F dump\r0000000 BE BE CA FE 00 00 01 80 00 00 00 1C 0D 01 6E 0D \xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7n\xC2\xB7\r0000010 06 44 6F 75 62 6C 65 0F 80 81 01 01 01 82 02 80 \xC2\xB7Double\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\r0000020 03 80 01 83 0D                                  \xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\r", Scope = Private
+	#tag Constant, Name = kDisassembleAddCompile, Type = String, Dynamic = False, Default = \"(n) -> n + 1\r\r# Header\roffset size name    value\r00000  4    magic   0xBEBECAFE\r00004  1    version 0\r00005  2    minor   1\r00007  1    flags   0\r00008  4    ioffset 28\r# Symbols\roffset type    idx  value\r00014  str(13) [0] \"n\"\r00017  str(13) [1] \"Double\"\r00024  prm(15) [2] [0] [1] \r00027   u8(01) [3] 1\r# Instructions\roffset opcode\r00000  Load [2] \r00002  Store [0] \r00004  Local [0] \r00006  Load [3] \r00008  Add\r00009  Set [0] \r00011  Pop\r00012  Pop\r00013  Get [0] \r# HEX view 43 Bytes\raddress  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F dump\r0000000 BE BE CA FE 00 00 01 80 00 00 00 1C 0D 01 6E 0D \xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7n\xC2\xB7\r0000010 06 44 6F 75 62 6C 65 0F 80 81 01 01 01 82 02 80 \xC2\xB7Double\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\r0000020 03 80 01 83 0D 1B 80 05 05 1C 80                \xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\r", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = kDisassembleAddRun, Type = String, Dynamic = False, Default = \"# Load [2] \r00000 1\r# Store [0] \r00000 1\r# Local [0] \r00001 1\r00000 1\r# Load [3] \r00002 1\r00001 1\r00000 1\r# Add 1 1\r00001 2\r00000 1\r", Scope = Private
+	#tag Constant, Name = kDisassembleAddRun, Type = String, Dynamic = False, Default = \"# Load [2] \r00000 1\r# Store [0] \r00000 1\r# Local [0] \r00001 1\r00000 1\r# Load [3] \r00002 1\r00001 1\r00000 1\r# Add 1 1\r00001 2.0\r00000 1\r# Set [0] \rEAX 2.0\rEBX #null\rECX #null\rEDX #null\r# Pop 2.0e+\r00000 1\r# Pop 1\r# Get [0] \r00000 2.0\r", Scope = Private
 	#tag EndConstant
 
 	#tag Constant, Name = kDisassembleConstantCompile, Type = String, Dynamic = False, Default = \"42\r\r# Header\roffset size name    value\r00000  4    magic   0xBEBECAFE\r00004  1    version 0\r00005  2    minor   1\r00007  1    flags   0\r00008  4    ioffset 14\r# Symbols\roffset type    idx  value\r00013   u8(01) [0] 42\r# Instructions\roffset opcode\r00000  Load [0] \r# HEX view 16 Bytes\raddress  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F dump\r0000000 BE BE CA FE 00 00 01 80 00 00 00 0E 01 2A 01 80 \xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7\xC2\xB7*\xC2\xB7\xC2\xB7\r", Scope = Private

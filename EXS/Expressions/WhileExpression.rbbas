@@ -24,7 +24,7 @@ Inherits EXS.Expressions.BinaryExpression
 		Function ToString() As String
 		  If Condition Is Nil Or Body Is Nil Then Raise GetRuntimeExc("Condition Is Nil Or Body")
 		  
-		  Return mNodeType.ToStringSymbol+ "("+ Condition.ToString+ ") "+ Body.ToString
+		  Return mNodeType.ToString+ "("+ Condition.ToString+ ") "+ Body.ToString
 		End Function
 	#tag EndMethod
 

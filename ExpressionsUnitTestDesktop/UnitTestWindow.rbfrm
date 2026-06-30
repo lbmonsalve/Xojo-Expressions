@@ -199,14 +199,14 @@ End
 		  // compile factorial:
 		  Dim expr As EXS.Expressions.Expression
 		  Dim nParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "n")
-		  Dim mParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "m")
+		  'Dim mParam As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Double"), "m")
 		  Dim methodVar As EXS.Expressions.ParameterExpression= expr.Parameter(EXS.GetType("Variant"), "factorial")
 		  Dim one As EXS.Expressions.ConstantExpression= expr.Constant(1)
 		  
 		  Dim factorial As EXS.Expressions.LambdaExpression= expr.Lambda(_
-		  expr.Condition(expr.LessThanOrEqual(mParam, one), one, _
-		  expr.Multiply(mParam, expr.Invoke(methodVar, expr.Subtract(mParam, one))))_
-		  , mParam)
+		  expr.Condition(expr.LessThanOrEqual(nParam, one), one, _
+		  expr.Multiply(nParam, expr.Invoke(methodVar, expr.Subtract(nParam, one))))_
+		  , nParam)
 		  
 		  expr= expr.Lambda(expr.Block(expr.Assign(methodVar, factorial), expr.Invoke(methodVar, nParam)), nParam)
 		  TextAreaWriter1.WriteLn expr.ToString+ EndOfLine
@@ -215,16 +215,15 @@ End
 		  compiler.BinaryCode.Disassemble TextAreaWriter1
 		  TextAreaWriter1.WriteLn EndOfLine
 		  
-		  'Dim runner As New EXS.Expressions.Runner(compiler) //, TextAreaWriter1
-		  '
-		  'Const kN= 3
-		  'Dim elapse As Double= Microseconds
-		  'Dim result As Variant= runner.Run(kN)
-		  'elapse= (Microseconds- elapse)/ 1000
-		  '
-		  'TextAreaWriter1.WriteLn "factorial("+ Str(kN)+ ")= "+ _
-		  'Str(result.DoubleValue)+ " type:"+ Str(result.Type)+ _
-		  '" "+ Str(elapse)+ "ms"
+		  Dim runner As New EXS.Expressions.Runner(compiler)//, TextAreaWriter1
+		  
+		  Const kN= 30
+		  Dim elapse As Double= Microseconds
+		  Dim result As Variant= runner.Run(kN)
+		  elapse= (Microseconds- elapse)/ 1000
+		  
+		  TextAreaWriter1.WriteLn "factorial("+ Str(kN)+ ")= "+ _
+		  Str(result.DoubleValue)+ " "+ Str(elapse)+ "ms"
 		  
 		  
 		  // compile const expr:

@@ -182,13 +182,13 @@ Protected Class BinaryCode
 		  
 		  Select Case opCode
 		  Case OpCodes.Load, OpCodes.Store, OpCodes.Local, OpCodes.Call_, _
-		    OpCodes.Convert, OpCodes.Invoke
+		    OpCodes.Convert, OpCodes.Invoke, OpCodes.Set, OpCodes.Get
 		    Dim idx As Integer= GetVUInt(bs)
 		    
 		    Return Str(offset, kFoff)+ "  "+ instruction.OpCodesToString+ _
 		    " "+ Str(idx, kFidx)
 		    
-		  Case OpCodes.Nop, OpCodes.Not_, OpCodes.Pop, OpCodes.Ret
+		  Case OpCodes.Nop, OpCodes.Not_, OpCodes.Pop, OpCodes.Ret, OpCodes.Null
 		    Return Str(offset, kFoff)+ "  "+ instruction.OpCodesToString
 		    
 		  Case OpCodes.Jump, OpCodes.JumpFalse
@@ -500,6 +500,7 @@ Protected Class BinaryCode
 	#tag Method, Flags = &h0
 		Function StoreSymbol(expr As ConstantExpression) As Integer
 		  Dim value As Variant= expr.Value
+		  
 		  If mSymbolCache.HasKey(value) Then Return mSymbolCache.Value(value).IntegerValue
 		  
 		  Dim valueType As Integer= value.Type
@@ -562,6 +563,7 @@ Protected Class BinaryCode
 		  Case Else
 		    Raise GetRuntimeExc("variant type not implemented!")
 		  End Select
+		  
 		  mHeaderMB.UInt32Value(mHeaderFirstInstruction)= mHeaderBS.Length
 		  
 		  mSymbols.Append value
@@ -766,7 +768,7 @@ Protected Class BinaryCode
 		instructions are variable-length in size  
 		instruction begin with 1byte as opCode follows by variable operands  
 		operands are coded in vUint format.  
-		Jump and JumpFalse follows 4bytes addres from begin of file.  
+		Jump and JumpFalse follows 4bytes address from begin of file.  
 		
 		```
 		+---------+-------+---------------------+
@@ -814,6 +816,11 @@ Protected Class BinaryCode
 		JumpFalse= &h17  
 		
 		Ret= &h18
+		Invoke= &h19
+		Null= &h1A
+		
+		Set= &h1B
+		Get= &h1C
 	#tag EndNote
 
 

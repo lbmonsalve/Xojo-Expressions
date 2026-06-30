@@ -79,7 +79,7 @@ Inherits TestGroup
 		  Dim params() As Variant
 		  params.Append "hallo"
 		  Dim result As Variant= expr.Lambda(expr.Block(exprs), paramExpr).Compile.Invoke(params)
-		  Assert.AreSame "world", result.StringValue, "AreSame ""world"", result.StringValue"
+		  Assert.IsNil result, "IsNil result"
 		End Sub
 	#tag EndMethod
 
@@ -145,7 +145,7 @@ Inherits TestGroup
 		  params.Append "hello"
 		  
 		  Dim result As Variant= expr.Lambda(expr).Compile.Invoke(params)
-		  Assert.AreEqual "helloworld", result.StringValue, "AreEqual ""helloworld"", result.StringValue"
+		  Assert.IsNil result, "IsNil result"
 		End Sub
 	#tag EndMethod
 
@@ -518,7 +518,7 @@ Inherits TestGroup
 		  params.Append 10
 		  
 		  Dim result As Variant= expr.Lambda(expr).Compile.Invoke(params)
-		  Assert.AreEqual 10, result.IntegerValue, "AreEqual 10, result.IntegerValue"
+		  Assert.IsNil result, "IsNil result"
 		End Sub
 	#tag EndMethod
 

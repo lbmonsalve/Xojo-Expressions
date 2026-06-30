@@ -27,7 +27,7 @@ Inherits EXS.Expressions.Expression
 		    
 		  End Select
 		  
-		  Return "("+ mOperand.ToString+ mNodeType.ToStringsymbol+ mType.Name+ ")"
+		  Return "("+ mOperand.ToString+ mNodeType.ToString+ mType.Name+ ")"
 		  'Return mType.Name+ "("+ mOperand.ToString+ ")"
 		  'Return "CType("+ mOperand.ToString+ ", "+ mType.Name+ ")"
 		End Function

@@ -222,6 +222,13 @@ Inherits TestGroup
 		  value= constExpr.Value
 		  Assert.AreEqual "hallo", value.StringValue, "AreEqual ""hallo"", value.StringValue"
 		  Assert.AreSame """hallo""", constExpr.ToString, "AreSame """"hallo"""", constExpr.ToString"
+		  
+		  constExpr= expr.Constant(Nil)
+		  ti= constExpr.Type
+		  Assert.IsNil ti, "IsNil ti"
+		  
+		  value= constExpr.Value
+		  Assert.IsNil value, "IsNil value"
 		End Sub
 	#tag EndMethod
 

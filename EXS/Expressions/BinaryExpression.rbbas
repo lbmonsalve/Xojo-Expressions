@@ -16,9 +16,9 @@ Inherits EXS.Expressions.Expression
 		  If mLeft Is Nil Or mRight Is Nil Then Raise GetRuntimeExc("mLeft Is Nil Or mRight Is Nil")
 		  
 		  If mNodeType= ExpressionType.ArrayIndex Then
-		    Return mLeft.ToString+ mNodeType.ToStringSymbol.Replace("idx", mRight.ToString)
+		    Return mLeft.ToString+ mNodeType.ToString.Replace("idx", mRight.ToString)
 		  Else
-		    Return mLeft.ToString+ mNodeType.ToStringSymbol+ mRight.ToString
+		    Return mLeft.ToString+ mNodeType.ToString+ mRight.ToString
 		  End If
 		End Function
 	#tag EndMethod

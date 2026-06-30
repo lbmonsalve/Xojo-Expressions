@@ -616,9 +616,15 @@ Protected Module EXS
 		    
 		  Case &h18
 		    Return "Ret"
-		    
 		  Case &h19
 		    Return "Invoke"
+		  Case &h1A
+		    Return "Null"
+		    
+		  Case &h1B
+		    Return "Set"
+		  Case &h1C
+		    Return "Get"
 		    
 		  Case Else
 		    Raise GetRuntimeExc("cant decode ""OpCodes""")
@@ -673,6 +679,24 @@ Protected Module EXS
 	#tag Method, Flags = &h1
 		Protected Function Registered(name As String) As Boolean
 		  Return EXS.TypesUtils.Registered(name)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function RegisterNamesAsString(Extends code As Integer) As String
+		  Select Case code
+		  Case &h00
+		    Return "EAX"
+		  Case &h01
+		    Return "EBX"
+		  Case &h02
+		    Return "ECX"
+		  Case &h03
+		    Return "EDX"
+		    
+		  Case Else
+		    Raise GetRuntimeExc("cant decode ""RegisterNames""")
+		  End Select
 		End Function
 	#tag EndMethod
 
@@ -814,12 +838,107 @@ Protected Module EXS
 		    
 		  Case &h18
 		    Return OpCodes.Ret
-		    
 		  Case &h19
 		    Return OpCodes.Invoke
+		  Case &h1A
+		    Return OpCodes.Null
+		    
+		  Case &h1B
+		    Return OpCodes.Set
+		  Case &h1C
+		    Return OpCodes.Get
 		    
 		  Case Else
 		    Raise GetRuntimeExc("can't convert value to ""OpCodes""")
+		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ToRegisterNames(Extends value As Integer) As RegisterNames
+		  Select Case value
+		  Case &h00
+		    Return RegisterNames.EAX
+		  Case &h01
+		    Return RegisterNames.EBX
+		  Case &h02
+		    Return RegisterNames.ECX
+		  Case &h03
+		    Return RegisterNames.EDX
+		    
+		  Case Else
+		    Raise GetRuntimeExc("can't convert value to ""RegisterNames""")
+		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ToString(Extends value As EXS.ExpressionType) As String
+		  Select Case value
+		  Case ExpressionType.Assign
+		    Return " = "
+		  Case ExpressionType.Add
+		    Return " + "
+		  Case ExpressionType.Subtract
+		    Return " - "
+		  Case ExpressionType.Multiply
+		    Return " * "
+		  Case ExpressionType.Divide
+		    Return " / "
+		  Case ExpressionType.Modulo
+		    Return " % "
+		  Case ExpressionType.Power
+		    Return " ^ "
+		  Case ExpressionType.And_
+		    Return " & "
+		  Case ExpressionType.Or_
+		    Return " | "
+		  Case ExpressionType.ExclusiveOr
+		    Return " ¿ "
+		  Case ExpressionType.LeftShift
+		    Return " << "
+		  Case ExpressionType.RightShift
+		    Return " >> "
+		  Case ExpressionType.ArrayIndex
+		    Return "(idx)"
+		  Case ExpressionType.Convert
+		    Return " -> "
+		  Case ExpressionType.Equal
+		    Return " == "
+		  Case ExpressionType.NotEqual
+		    Return " <> "
+		  Case ExpressionType.LessThan
+		    Return " < "
+		  Case ExpressionType.LessThanOrEqual
+		    Return " <= "
+		  Case ExpressionType.GreaterThan
+		    Return " > "
+		  Case ExpressionType.GreaterThanOrEqual
+		    Return " >= "
+		  Case ExpressionType.While_
+		    Return " while "
+		  Case ExpressionType.Not_
+		    Return "Not "
+		  Case Else
+		    Break
+		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ToString(Extends value As EXS.RegisterNames) As String
+		  Select Case value
+		  Case RegisterNames.EAX
+		    Return "EAX"
+		  Case RegisterNames.EBX
+		    Return "EBX"
+		  Case RegisterNames.ECX
+		    Return "EBX"
+		  Case RegisterNames.EDX
+		    Return "EDX"
+		    
+		  Case Else
+		    Break
 		  End Select
 		End Function
 	#tag EndMethod
@@ -924,59 +1043,6 @@ Protected Module EXS
 		  Next
 		  
 		  Return ret
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function ToStringSymbol(Extends value As EXS.ExpressionType) As String
-		  Select Case value
-		  Case ExpressionType.Assign
-		    Return " = "
-		  Case ExpressionType.Add
-		    Return " + "
-		  Case ExpressionType.Subtract
-		    Return " - "
-		  Case ExpressionType.Multiply
-		    Return " * "
-		  Case ExpressionType.Divide
-		    Return " / "
-		  Case ExpressionType.Modulo
-		    Return " % "
-		  Case ExpressionType.Power
-		    Return " ^ "
-		  Case ExpressionType.And_
-		    Return " & "
-		  Case ExpressionType.Or_
-		    Return " | "
-		  Case ExpressionType.ExclusiveOr
-		    Return " ¿ "
-		  Case ExpressionType.LeftShift
-		    Return " << "
-		  Case ExpressionType.RightShift
-		    Return " >> "
-		  Case ExpressionType.ArrayIndex
-		    Return "(idx)"
-		  Case ExpressionType.Convert
-		    Return " -> "
-		  Case ExpressionType.Equal
-		    Return " == "
-		  Case ExpressionType.NotEqual
-		    Return " <> "
-		  Case ExpressionType.LessThan
-		    Return " < "
-		  Case ExpressionType.LessThanOrEqual
-		    Return " <= "
-		  Case ExpressionType.GreaterThan
-		    Return " > "
-		  Case ExpressionType.GreaterThanOrEqual
-		    Return " >= "
-		  Case ExpressionType.While_
-		    Return " while "
-		  Case ExpressionType.Not_
-		    Return "Not "
-		  Case Else
-		    Break
-		  End Select
 		End Function
 	#tag EndMethod
 
@@ -1242,7 +1308,7 @@ Protected Module EXS
 	#tag Constant, Name = kVersionMayor, Type = Double, Dynamic = False, Default = \"0", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = kVersionMinor, Type = Double, Dynamic = False, Default = \"1", Scope = Private
+	#tag Constant, Name = kVersionMinor, Type = Double, Dynamic = False, Default = \"2", Scope = Private
 	#tag EndConstant
 
 
@@ -1338,7 +1404,17 @@ Protected Module EXS
 		  Jump= &h16
 		  JumpFalse= &h17
 		  Ret= &h18
-		Invoke= &h19
+		  Invoke= &h19
+		  Null= &h1A
+		  Set= &h1B
+		Get= &h1C
+	#tag EndEnum
+
+	#tag Enum, Name = RegisterNames, Type = Integer, Flags = &h0
+		EAX
+		  EBX
+		  ECX
+		EDX
 	#tag EndEnum
 
 	#tag Enum, Name = SymbolType, Type = Integer, Flags = &h0
